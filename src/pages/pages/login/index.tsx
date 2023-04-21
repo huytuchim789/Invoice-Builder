@@ -37,8 +37,8 @@ import { LoginDataResponse } from 'src/@core/models/api/auth'
 import { login } from 'src/@core/utils/api/auth'
 import { DataOpenAlert } from 'src/@core/models/zustand'
 import { useOpenHeaderStore } from 'src/zustand'
-import Cookies from 'js-cookie'
-import { AUTH_TOKEN_ADMIN } from 'src/@core/models/common'
+import { AUTH_TOKEN_ADMIN, AlertColorEnum } from 'src/@core/models/common'
+import { setCookie } from 'cookies-next'
 
 interface State {
   email: string
@@ -97,11 +97,13 @@ const LoginPage = () => {
 
       if (success) {
         router.push('/')
-        Cookies.set(AUTH_TOKEN_ADMIN, JSON.stringify(data))
-        setIsOpenAlert({ message, severity: 'success', open: true })
+        setCookie(AUTH_TOKEN_ADMIN, JSON.stringify(data))
+        setIsOpenAlert({ message, severity: AlertColorEnum.SUCCESS, open: true })
+      } else {
+        setIsOpenAlert({ message, severity: AlertColorEnum.ERROR, open: true })
       }
     } catch (error) {
-      setIsOpenAlert({ message: 'Something went wrong', severity: 'success', open: true })
+      setIsOpenAlert({ message: 'Something went wrong', severity: AlertColorEnum.ERROR, open: true })
     }
   }
 
