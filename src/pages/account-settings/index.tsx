@@ -1,4 +1,5 @@
 // ** React Imports
+import { NextPage } from 'next'
 import { SyntheticEvent, useState } from 'react'
 import { getServerSideProps } from '../../@core/common/checkAuth'
 
@@ -23,7 +24,6 @@ import TabSecurity from 'src/views/account-settings/TabSecurity'
 
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
-import { NextPage } from 'next'
 
 const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
   [theme.breakpoints.down('md')]: {

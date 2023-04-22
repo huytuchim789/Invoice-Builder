@@ -1,6 +1,5 @@
 import { LoginDataResponse } from 'src/@core/models/api/auth'
-
-export const API_BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:4000'
+import { API_BASE_URL } from '.'
 
 export const login = async ({ email, password }: { email: string; password: string }) => {
   try {
