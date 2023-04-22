@@ -1,5 +1,6 @@
 // ** React Imports
 import { SyntheticEvent, useState } from 'react'
+import { getServerSideProps } from '../../@core/common/checkAuth'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -22,6 +23,7 @@ import TabSecurity from 'src/views/account-settings/TabSecurity'
 
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
+import { NextPage } from 'next'
 
 const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
@@ -41,7 +43,7 @@ const TabName = styled('span')(({ theme }) => ({
   }
 }))
 
-const AccountSettings = () => {
+const AccountSettings: NextPage = () => {
   // ** State
   const [value, setValue] = useState<string>('account')
 
@@ -101,3 +103,5 @@ const AccountSettings = () => {
 }
 
 export default AccountSettings
+
+export { getServerSideProps }
