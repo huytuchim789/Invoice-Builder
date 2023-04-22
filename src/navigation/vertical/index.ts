@@ -47,6 +47,12 @@ const navigation = (): VerticalNavItemsType => {
       openInNewTab: true
     },
     {
+      title: 'News',
+      icon: AlertCircleOutline,
+      path: '/pages/news',
+      openInNewTab: true
+    },
+    {
       sectionTitle: 'User Interface'
     },
     {
