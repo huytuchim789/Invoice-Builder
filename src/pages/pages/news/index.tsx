@@ -17,9 +17,13 @@ import TableCommon from 'src/views/tables/TableCommon'
 // Api Data, Interface Imports
 import { NewsListDataResponse } from 'src/@core/models/api/news'
 import { getNewsList } from 'src/@core/utils/api/news'
+import { USER_INFO } from 'src/@core/models'
 
 dayjs.extend(utc)
 
+interface Cookies {
+  [name: string]: string
+}
 export interface ColumnNews {
   id: string
   label: string
@@ -89,8 +93,28 @@ const NewsPage = ({ data }: { data: NewsListDataResponse }) => {
 
 export default NewsPage
 
-export const getServerSideProps = async (context: any) => {
-  const { query } = context
+export const getServerSideProps = async (context: {
+  query: { limit: string; page: string; keyword: string; startTime: string; endTime: string }
+  req: { headers: { cookie: string } }
+}) => {
+  const cookies: Cookies = {}
+  const { query, req } = context
+
+  if (req.headers.cookie) {
+    req.headers.cookie.split(';').forEach((cookie: string) => {
+      const parts = cookie.split('=')
+      cookies[parts[0].trim()] = decodeURIComponent(parts[1].trim())
+    })
+  }
+
+  if (!!!cookies[USER_INFO]) {
+    return {
+      redirect: {
+        destination: '/pages/login',
+        permanent: false
+      }
+    }
+  }
 
   const limit = query?.limit ?? 10
   const page = query?.page ?? 1
