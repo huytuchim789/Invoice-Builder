@@ -15,11 +15,6 @@ export const getCheckAuthProps = async (cookiesProps: string) => {
   }
 
   if (!!!cookies[USER_INFO]) {
-    return {
-      redirect: {
-        destination: '/pages/login',
-        permanent: false
-      }
-    }
+    return true
   }
 }
