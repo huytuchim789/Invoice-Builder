@@ -1,6 +1,8 @@
 import dynamic from 'next/dynamic';
 import { IThemeColor, ITemplate } from './index.interface';
 
+export const USER_INFO = 'user_invoice_builder';
+
 export const SYSTEM_COLORS: IThemeColor[] = [
   {
     backgroundColor: 'white',
@@ -53,3 +55,10 @@ export const CUSTOM_THEME_COLOR: IThemeColor = {
 };
 
 export const DATE_PICKER_FORMAT = 'DD/MM/YYYY';
+
+export enum AlertColorEnum {
+  SUCCESS = 'success',
+  ERROR = 'error',
+  INFO = 'info',
+  WARNING = 'warning',
+}

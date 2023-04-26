@@ -14,6 +14,7 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Kalam&family=Roboto+Condensed:wght@700&family=Roboto+Slab&display=swap"
           rel="stylesheet"
         />
+        <link rel="icon" type="image/png" href="/icons/resume-icon.png" />
       </Head>
       <body>
         <Main />
