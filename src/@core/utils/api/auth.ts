@@ -1,4 +1,4 @@
-import { LoginDataResponse } from 'src/@core/models/api/auth'
+import { ILoginDataResponse } from 'src/@core/models/api/auth.interface'
 import { API_BASE_URL } from '.'
 
 export const login = async ({ email, password }: { email: string; password: string }) => {
@@ -19,7 +19,7 @@ export const login = async ({ email, password }: { email: string; password: stri
       body: JSON.stringify({ email, password })
     })
 
-    const rawResponse = (await response.json()) as LoginDataResponse
+    const rawResponse = (await response.json()) as ILoginDataResponse
 
     if (rawResponse) {
       return rawResponse

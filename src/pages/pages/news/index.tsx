@@ -1,21 +1,24 @@
 // ** React, Next Imports
-import { ReactElement } from 'react'
+import { ReactElement, useCallback } from 'react'
 import { ChangeEvent } from 'react'
 import { useRouter } from 'next/router'
 
 // ** Library Outside Imports
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import debounce from 'lodash.debounce'
 
 // ** MUI Imports
+import { Box, OutlinedInput, InputAdornment, Button } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
+import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone'
 
 // ** Table Import
 import TableCommon from 'src/views/tables/TableCommon'
 
 // Api Data, Interface Imports
-import { NewsListDataResponse } from 'src/@core/models/api/news'
+import { INewsListDataResponse } from 'src/@core/models/api/news.interface'
 import { getNewsList } from 'src/@core/utils/api/news'
 import { getCheckAuthProps } from 'src/@core/common/checkAuthProps'
 
@@ -55,14 +58,31 @@ const columns: readonly ColumnNews[] = [
   }
 ]
 
-const NewsPage = ({ data }: { data: NewsListDataResponse }) => {
+const NewsPage = ({ data }: { data: INewsListDataResponse }) => {
   const router = useRouter()
+
+  const debounceKeyword = (keyword: string) => {
+    router.push({
+      pathname: '/pages/news',
+      search: `?page=${router.query?.page ?? 1}&limit=${router.query?.limit ?? 2}&keyword=${keyword}`
+    })
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceInput = useCallback(
+    debounce((keyword: string) => debounceKeyword(keyword), 1000),
+    []
+  )
+
+  const onChangeKeyword = (e: { target: { value: string } }) => {
+    debounceInput(e.target.value)
+  }
 
   const handleChangePage = (event: unknown, newPage: number) => {
     if (newPage > 0) {
       router.push({
         pathname: '/pages/news',
-        search: `?page=${newPage}&limit=${router.query?.limit ?? 2}`
+        search: `?page=${newPage}&limit=${router.query?.limit ?? 2}&keyword=${router.query?.keyword ?? ''}`
       })
     }
   }
@@ -70,13 +90,32 @@ const NewsPage = ({ data }: { data: NewsListDataResponse }) => {
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     router.push({
       pathname: '/pages/news',
-      search: `?page=${router.query?.page ?? 1}&limit=${+event.target.value}`
+      search: `?page=${router.query?.page ?? 1}&limit=${+event.target.value}&keyword=${router.query?.keyword ?? ''}`
     })
   }
 
   return (
     <Card>
       <CardHeader title='News List' titleTypographyProps={{ variant: 'h6' }} />
+      <Box
+        component={'div'}
+        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+        padding={5}
+      >
+        <OutlinedInput
+          type='text'
+          placeholder='Search News here...'
+          startAdornment={
+            <InputAdornment position='start'>
+              <SearchTwoToneIcon />
+            </InputAdornment>
+          }
+          onChange={onChangeKeyword}
+        />
+        <Button href='/create/news' variant='contained'>
+          Create News
+        </Button>
+      </Box>
       <TableCommon
         title={'News List'}
         columns={columns}
@@ -120,7 +159,7 @@ export const getServerSideProps = async (context: {
       keyword,
       startTime: Number(startTime),
       endTime: Number(endTime)
-    })) as NewsListDataResponse
+    })) as INewsListDataResponse
 
     if (response.success) {
       return {

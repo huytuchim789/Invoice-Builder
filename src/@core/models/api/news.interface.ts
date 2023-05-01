@@ -1,6 +1,6 @@
-export interface NewsListDataResponse {
+export interface INewsListDataResponse {
   success: boolean
-  data: NewsListData[]
+  data: INewsListData[]
   pagination: {
     startPage: number
     limit: number
@@ -9,11 +9,17 @@ export interface NewsListDataResponse {
   }
 }
 
-export interface NewsListData {
+export interface INewsListData {
   id: string
   title: string
   image: string
   view: number
   content: string
   day: number
+}
+
+export interface ICreateNewsResponse {
+  success: boolean
+  data: null
+  message: string
 }

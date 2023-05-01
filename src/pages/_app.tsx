@@ -1,5 +1,5 @@
 // ** Next Imports
-import React from 'react'
+import React, { useEffect } from 'react'
 import Head from 'next/head'
 import { Router } from 'next/router'
 import type { NextPage } from 'next'
@@ -28,13 +28,18 @@ import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsCo
 // ** Utils Imports
 import { createEmotionCache } from 'src/@core/utils/create-emotion-cache'
 
+// ** Store Imports
+import { IDataOpenAlert, useStatusAlert } from 'src/stores/useStatusAlert'
+
 // ** React Perfect Scrollbar Style
 import 'react-perfect-scrollbar/dist/css/styles.css'
+import 'react-quill/dist/quill.snow.css'
 
 // ** Global css styles
 import '../../styles/globals.css'
-import { useOpenHeaderStore } from 'src/zustand'
-import { DataOpenAlert } from 'src/@core/models/zustand'
+import { IDataLogin, useDataLogin } from 'src/stores/useDataLogin'
+import { getCookie, hasCookie } from 'cookies-next'
+import { USER_INFO } from 'src/@core/models'
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -64,17 +69,23 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
 // ** Configure JSS & ClassName
 export default function App(props: ExtendedAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
-  const [isOpenAlert, setIsOpenAlert] = useOpenHeaderStore((state: DataOpenAlert) => [
-    state.isOpenAlert,
-    state.setIsOpenAlert
-  ])
+  const [statusAlert, update] = useStatusAlert((state: IDataOpenAlert) => [state.statusAlert, state.update])
+  const [updateUserInfo] = useDataLogin((state: IDataLogin) => [state.updateUserInfo])
+
+  useEffect(() => {
+    if (hasCookie(USER_INFO)) {
+      const data = getCookie(USER_INFO) as string
+
+      updateUserInfo(JSON.parse(data))
+    }
+  }, [])
 
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return
     }
 
-    setIsOpenAlert({ message: '', severity: 'success', open: false })
+    update({ message: '', severity: 'success', open: false })
   }
 
   // Variables
@@ -92,9 +103,9 @@ export default function App(props: ExtendedAppProps) {
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
 
-      <Snackbar open={isOpenAlert.open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={isOpenAlert.severity} sx={{ width: '100%' }}>
-          {isOpenAlert.message}
+      <Snackbar open={statusAlert.open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={statusAlert.severity} sx={{ width: '100%' }}>
+          {statusAlert.message}
         </Alert>
       </Snackbar>
 

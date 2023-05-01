@@ -12,7 +12,7 @@ import TablePagination from '@mui/material/TablePagination'
 
 // ** Interface Imports
 import { ColumnNews } from 'src/pages/pages/news'
-import { NewsListData, NewsListDataResponse } from 'src/@core/models/api/news'
+import { NewsListData, NewsListDataResponse } from 'src/@core/models/api/news.interface'
 
 interface Props {
   title: string

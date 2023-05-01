@@ -33,13 +33,12 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
-import { LoginDataResponse } from 'src/@core/models/api/auth'
+import { ILoginDataResponse } from 'src/@core/models/api/auth.interface'
 import { login } from 'src/@core/utils/api/auth'
-import { DataOpenAlert } from 'src/@core/models/zustand'
-import { useOpenHeaderStore } from 'src/zustand'
 import { AlertColorEnum } from 'src/@core/models/common'
 import { setCookie } from 'cookies-next'
 import { USER_INFO } from 'src/@core/models'
+import { IDataOpenAlert, useStatusAlert } from 'src/stores/useStatusAlert'
 
 interface State {
   email: string
@@ -66,7 +65,7 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
 }))
 
 const LoginPage = () => {
-  const [setIsOpenAlert] = useOpenHeaderStore((state: DataOpenAlert) => [state.setIsOpenAlert])
+  const [update] = useStatusAlert((state: IDataOpenAlert) => [state.update])
 
   // ** State
   const [values, setValues] = useState<State>({
@@ -94,17 +93,17 @@ const LoginPage = () => {
     try {
       e.preventDefault()
 
-      const { success, message, data } = (await login(values)) as LoginDataResponse
+      const { success, message, data } = (await login(values)) as ILoginDataResponse
 
       if (success) {
         router.push('/')
         setCookie(USER_INFO, JSON.stringify(data))
-        setIsOpenAlert({ message, severity: AlertColorEnum.SUCCESS, open: true })
+        update({ message, severity: AlertColorEnum.SUCCESS, open: true })
       } else {
-        setIsOpenAlert({ message, severity: AlertColorEnum.ERROR, open: true })
+        update({ message, severity: AlertColorEnum.ERROR, open: true })
       }
     } catch (error) {
-      setIsOpenAlert({ message: 'Something went wrong', severity: AlertColorEnum.ERROR, open: true })
+      update({ message: 'Something went wrong', severity: AlertColorEnum.ERROR, open: true })
     }
   }
 

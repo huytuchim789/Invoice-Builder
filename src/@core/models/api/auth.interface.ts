@@ -1,10 +1,10 @@
-export interface LoginDataResponse {
+export interface ILoginDataResponse {
   success: boolean
   message: string
-  data: LoginData
+  data: ILoginData
 }
 
-export interface LoginData {
+export interface ILoginData {
   id: string
   email: string
   token: string
