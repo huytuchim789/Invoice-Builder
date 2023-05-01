@@ -1,62 +1,121 @@
-import '../styles/globals.css';
+// ** Next Imports
+import React, { useEffect } from 'react'
+import Head from 'next/head'
+import { Router } from 'next/router'
+import type { NextPage } from 'next'
+import type { AppProps } from 'next/app'
 
-// eslint-disable-next-line import/no-unresolved
-import { Analytics } from '@vercel/analytics/react';
+import MuiAlert, { AlertProps } from '@mui/material/Alert'
+import Snackbar from '@mui/material/Snackbar'
 
-import type { AppProps } from 'next/app';
+// ** Loader Import
+import NProgress from 'nprogress'
 
-import { Alert, Snackbar } from '@mui/material';
-import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// ** Emotion Imports
+import { CacheProvider } from '@emotion/react'
+import type { EmotionCache } from '@emotion/cache'
 
-import { GLOBAL_MUI_THEME } from '../styles/global.theme';
-import { IDataOpenAlert, useStatusAlert } from 'src/stores/useStatusAlert';
-import { ReactElement, ReactNode } from 'react';
-import { NextPage } from 'next';
-import { UserLayout } from 'src/helpers/layout/UserLayout';
+// ** Config Imports
+import themeConfig from 'src/configs/themeConfig'
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode;
-};
+// ** Component Imports
+import UserLayout from 'src/layouts/UserLayout'
+import ThemeComponent from 'src/@core/theme/ThemeComponent'
 
-type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout;
-};
+// ** Contexts
+import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
 
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const [statusAlert, update] = useStatusAlert((state: IDataOpenAlert) => [
-    state.statusAlert,
-    state.update,
-  ]);
+// ** Utils Imports
+import { createEmotionCache } from 'src/@core/utils/create-emotion-cache'
 
-  const getLayout = Component.getLayout ?? ((page) => <UserLayout>{page}</UserLayout>);
+// ** Store Imports
+import { IDataOpenAlert, useStatusAlert } from 'src/stores/useStatusAlert'
+
+// ** React Perfect Scrollbar Style
+import 'react-perfect-scrollbar/dist/css/styles.css'
+import 'react-quill/dist/quill.snow.css'
+
+// ** Global css styles
+import '../../styles/globals.css'
+import { IDataLogin, useDataLogin } from 'src/stores/useDataLogin'
+import { getCookie, hasCookie } from 'cookies-next'
+import { USER_INFO } from 'src/@core/models'
+
+// ** Extend App Props with Emotion
+type ExtendedAppProps = AppProps & {
+  Component: NextPage
+  emotionCache: EmotionCache
+}
+
+const clientSideEmotionCache = createEmotionCache()
+
+// ** Pace Loader
+if (themeConfig.routingLoader) {
+  Router.events.on('routeChangeStart', () => {
+    NProgress.start()
+  })
+  Router.events.on('routeChangeError', () => {
+    NProgress.done()
+  })
+  Router.events.on('routeChangeComplete', () => {
+    NProgress.done()
+  })
+}
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />
+})
+
+// ** Configure JSS & ClassName
+export default function App(props: ExtendedAppProps) {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+  const [statusAlert, update] = useStatusAlert((state: IDataOpenAlert) => [state.statusAlert, state.update])
+  const [updateUserInfo] = useDataLogin((state: IDataLogin) => [state.updateUserInfo])
+
+  useEffect(() => {
+    if (hasCookie(USER_INFO)) {
+      const data = getCookie(USER_INFO) as string
+
+      updateUserInfo(JSON.parse(data))
+    }
+  }, [])
 
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
-      return;
+      return
     }
 
-    update({ message: '', severity: 'success', open: false });
-  };
+    update({ message: '', severity: 'success', open: false })
+  }
+
+  // Variables
+  const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
 
   return (
-    <StyledEngineProvider injectFirst>
+    <CacheProvider value={emotionCache}>
+      <Head>
+        <title>{`${themeConfig.templateName} - Material Design React Admin Template`}</title>
+        <meta
+          name='description'
+          content={`${themeConfig.templateName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}
+        />
+        <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
+        <meta name='viewport' content='initial-scale=1, width=device-width' />
+      </Head>
+
       <Snackbar open={statusAlert.open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={statusAlert.severity} sx={{ width: '100%' }}>
           {statusAlert.message}
         </Alert>
       </Snackbar>
 
-      <ThemeProvider theme={GLOBAL_MUI_THEME}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          {getLayout(<Component {...pageProps} />)}
-          <Analytics />
-        </LocalizationProvider>
-      </ThemeProvider>
-    </StyledEngineProvider>
-  );
+      <SettingsProvider>
+        <SettingsConsumer>
+          {({ settings }) => {
+            return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
+          }}
+        </SettingsConsumer>
+      </SettingsProvider>
+    </CacheProvider>
+  )
 }
-
-export default MyApp;

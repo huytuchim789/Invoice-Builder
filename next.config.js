@@ -1,30 +1,18 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  eslint: {
-    dirs: [
-      'stories',
-      'src/__test__',
-      'src/common',
-      'src/helpers',
-      'src/modules',
-      'src/pages',
-      'src/styles',
-      'src/templates',
-    ],
-  },
-  images: {
-    domains: ['avatars.githubusercontent.com'],
-  },
-  async redirects() {
-    return [
-      {
-        source: '/editor',
-        destination: '/builder',
-        permanent: true,
-      },
-    ];
-  },
-};
+const path = require('path')
 
-module.exports = nextConfig;
+module.exports = {
+  trailingSlash: true,
+  reactStrictMode: false,
+  experimental: {
+    esmExternals: false,
+    jsconfigPaths: true // enables it for both jsconfig.json and tsconfig.json
+  },
+  webpack: config => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      apexcharts: path.resolve(__dirname, './node_modules/apexcharts-clevision')
+    }
+
+    return config
+  }
+}
