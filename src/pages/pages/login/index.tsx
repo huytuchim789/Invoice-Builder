@@ -22,8 +22,13 @@ import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
 // ** Icons Imports
+
 import EyeOutline from 'mdi-material-ui/EyeOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
+import Google from 'mdi-material-ui/Google'
+import Github from 'mdi-material-ui/Github'
+import Twitter from 'mdi-material-ui/Twitter'
+import Facebook from 'mdi-material-ui/Facebook'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
@@ -39,6 +44,8 @@ import { AlertColorEnum } from 'src/@core/models/common'
 import { setCookie } from 'cookies-next'
 import { USER_INFO } from 'src/@core/models'
 import { IDataOpenAlert, useStatusAlert } from 'src/stores/useStatusAlert'
+import { Divider } from '@mui/material'
+import { getMfidSelectAccountUrl } from 'src/@core/hooks/useGoogleAuth'
 
 interface State {
   email: string
@@ -106,8 +113,12 @@ const LoginPage = () => {
       update({ message: 'Something went wrong', severity: AlertColorEnum.ERROR, open: true })
     }
   }
-
-  return (
+  const onLogin = () => {
+    const link = getMfidSelectAccountUrl()
+    location.replace(link)
+  }
+  
+return (
     <Box className='content-center'>
       <Card sx={{ zIndex: 1 }}>
         <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
@@ -175,6 +186,29 @@ const LoginPage = () => {
               Login
             </Button>
           </form>
+          <Divider sx={{ my: 5 }}>or</Divider>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Link href='/' passHref>
+              <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
+                <Facebook sx={{ color: '#497ce2' }} />
+              </IconButton>
+            </Link>
+            <Link href='/' passHref>
+              <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
+                <Twitter sx={{ color: '#1da1f2' }} />
+              </IconButton>
+            </Link>
+            <Link href='/' passHref>
+              <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
+                <Github
+                  sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : theme.palette.grey[300]) }}
+                />
+              </IconButton>
+            </Link>
+            <IconButton component='a' onClick={onLogin}>
+              <Google sx={{ color: '#db4437' }} />
+            </IconButton>
+          </Box>
         </CardContent>
       </Card>
       <FooterIllustrationsV1 />

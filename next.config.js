@@ -1,18 +1,80 @@
 const path = require('path')
+const withLess = require('next-with-less')
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: !!process.env.ANALYZE
+})
 
-module.exports = {
-  trailingSlash: true,
-  reactStrictMode: false,
-  experimental: {
-    esmExternals: false,
-    jsconfigPaths: true // enables it for both jsconfig.json and tsconfig.json
-  },
-  webpack: config => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      apexcharts: path.resolve(__dirname, './node_modules/apexcharts-clevision')
-    }
+const env = {
+  APP_BE: process.env.APP_BE,
+  APP_FE: process.env.APP_FE,
+  APP_GOOGLE_BASE: process.env.APP_GOOGLE_BASE,
+  APP_CLIENT_ID: process.env.APP_CLIENT_ID
+}
 
-    return config
+const sassConfig = {
+  sassOptions: {
+    includePaths: [path.join(__dirname, 'styles/sass')]
   }
 }
+
+const lessConfig = {
+  lessLoaderOptions: {}
+}
+
+const purgeCssConfig = {
+  purgeCssPaths: ['src/**/*', 'public/**/*', 'pages/**/*'],
+  purgeCss: {
+    whitelistPatterns: [/^ant/, /^::-webkit-scrollbar/, /^#nprogress/, /^#__next/, /^body/],
+    whitelistPatternsChildren: [/^ant/, /^::-webkit-scrollbar/, /^#nprogress/, /^#__next/, /^body/]
+  }
+}
+
+const webpack = (config, _options) => {
+  config.module.rules.push({
+    test: /\.html$/i,
+    use: 'raw-loader'
+  })
+  config.module.rules.push({
+    test: /\.svg$/,
+    issuer: /\.[jt]sx?$/,
+    use: [
+      {
+        loader: '@svgr/webpack',
+        options: {
+          removeViewBox: false
+        }
+      }
+    ],
+    exclude: /(\/fonts)/
+  })
+  config.module.rules.push({
+    test: /src\/common\/(antd|components|helpers|hocs|hooks|security)\/index.tsx/i,
+    sideEffects: false
+  })
+
+  return config
+}
+
+const settings = {
+  reactStrictMode: false,
+  swcMinify: true,
+  assetPrefix: ['production', 'staging'].includes(env.ENVIRONMENT) ? `${env.APP_FE}/${env.ENVIRONMENT}` : '',
+  productionBrowserSourceMaps: ['staging'].includes(env.ENVIRONMENT),
+  env,
+  ...sassConfig,
+  ...lessConfig,
+  ...purgeCssConfig,
+  webpack,
+  async rewrites() {
+    return env.APP_BE === env.APP_FE
+      ? []
+      : [
+          {
+            source: '/api/v1/:path*',
+            destination: `${env.APP_BE}/api/v1/:path*` // Proxy to Backend
+          }
+        ]
+  }
+}
+
+module.exports = withBundleAnalyzer(withLess(settings))
