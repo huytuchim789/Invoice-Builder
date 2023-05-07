@@ -57,6 +57,7 @@
     "@types/lodash.debounce": "^4.0.7",
     "apexcharts": "^3.40.0",
     "apexcharts-clevision": "3.28.5",
+    "axios": "^1.4.0",
     "buffer": "^6.0.3",
     "clsx": "^1.1.1",
     "cookie": "^0.5.0",

@@ -1,5 +1,6 @@
 import { ILoginDataResponse } from 'src/@core/models/api/auth.interface'
 import { API_BASE_URL } from '.'
+import axios from 'axios'
 
 export const login = async ({ email, password }: { email: string; password: string }) => {
   try {
@@ -27,4 +28,12 @@ export const login = async ({ email, password }: { email: string; password: stri
   } catch (error) {
     return { success: false, data: null, message: 'Something went wrong' }
   }
+}
+export const loginWithGoogle = async ({ code }: { code: string }) => {
+  if (!code) {
+    return null
+  }
+  const response = await axios.post(`${API_BASE_URL}/auth/google_login`, { code: code })
+
+  return response
 }

@@ -3,16 +3,15 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import Router from 'next/router'
 import { useEffect } from 'react'
-import { useSnackbarWithContext } from 'src/@core/common/snackbar'
+import { useSessionsController } from '../login/controller'
 
 export default function SSOContainer() {
-  const snackbar = useSnackbarWithContext()
-
   const router = useRouter()
+  const sessionController = useSessionsController()
 
   useEffect(() => {
-    snackbar.success('Success message', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
+    sessionController.onLogin()
   }, [])
 
-  return <div />
+  return <CircularProgress />
 }
