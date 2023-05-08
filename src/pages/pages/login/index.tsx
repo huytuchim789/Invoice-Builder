@@ -1,5 +1,5 @@
 // ** React Imports
-import { ChangeEvent, MouseEvent, ReactNode, useState } from 'react'
+import { ChangeEvent, MouseEvent, ReactNode, useEffect, useState } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -44,8 +44,10 @@ import { AlertColorEnum } from 'src/@core/models/common'
 import { setCookie } from 'cookies-next'
 import { USER_INFO } from 'src/@core/models'
 import { IDataOpenAlert, useStatusAlert } from 'src/stores/useStatusAlert'
-import { Divider } from '@mui/material'
+import { CircularProgress, Divider } from '@mui/material'
 import { getMfidSelectAccountUrl } from 'src/@core/hooks/useGoogleAuth'
+import { useLoginStore } from './store'
+import { useLoginController } from './controller'
 
 interface State {
   email: string
@@ -73,8 +75,9 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
 
 const LoginPage = () => {
   const [update] = useStatusAlert((state: IDataOpenAlert) => [state.update])
-
+  
   // ** State
+
   const [values, setValues] = useState<State>({
     email: '',
     password: '',
@@ -117,101 +120,115 @@ const LoginPage = () => {
     const link = getMfidSelectAccountUrl()
     location.replace(link)
   }
-  
-return (
+
+  // useEffect(() => {
+  //   onGetGoogleUrl()
+  // }, [])
+
+  return (
     <Box className='content-center'>
-      <Card sx={{ zIndex: 1 }}>
-        <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
-          <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Typography
-              variant='h6'
-              sx={{
-                ml: 3,
-                lineHeight: 1,
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                fontSize: '1.5rem !important'
-              }}
-            >
-              {themeConfig.templateName}
-            </Typography>
-          </Box>
-          <Box sx={{ mb: 6 }}>
-            <Typography variant='h5' sx={{ fontWeight: 600, marginBottom: 1.5 }}>
-              Welcome to {themeConfig.templateName}! 👋🏻
-            </Typography>
-            <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
-          </Box>
-          <form noValidate autoComplete='off' onSubmit={handleLogin}>
-            <TextField
-              autoFocus
-              fullWidth
-              id='email'
-              label='Email'
-              sx={{ marginBottom: 4 }}
-              value={values.email}
-              onChange={handleChange('email')}
-            />
-            <FormControl fullWidth>
-              <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
-              <OutlinedInput
-                label='Password'
-                value={values.password}
-                id='auth-login-password'
-                onChange={handleChange('password')}
-                type={values.showPassword ? 'text' : 'password'}
-                endAdornment={
-                  <InputAdornment position='end'>
-                    <IconButton
-                      edge='end'
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      aria-label='toggle password visibility'
-                    >
-                      {values.showPassword ? <EyeOutline /> : <EyeOffOutline />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-            <Box
-              sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}
-            >
-              <FormControlLabel control={<Checkbox />} label='Remember Me' />
-              <Link passHref href='/'>
-                <LinkStyled onClick={e => e.preventDefault()}>Forgot Password?</LinkStyled>
-              </Link>
+      (
+      <>
+        {' '}
+        <Card sx={{ zIndex: 1 }}>
+          <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
+            <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Typography
+                variant='h6'
+                sx={{
+                  ml: 3,
+                  lineHeight: 1,
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  fontSize: '1.5rem !important'
+                }}
+              >
+                {themeConfig.templateName}
+              </Typography>
             </Box>
-            <Button fullWidth size='large' variant='contained' sx={{ marginBottom: 7 }} type='submit'>
-              Login
-            </Button>
-          </form>
-          <Divider sx={{ my: 5 }}>or</Divider>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Link href='/' passHref>
-              <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                <Facebook sx={{ color: '#497ce2' }} />
-              </IconButton>
-            </Link>
-            <Link href='/' passHref>
-              <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                <Twitter sx={{ color: '#1da1f2' }} />
-              </IconButton>
-            </Link>
-            <Link href='/' passHref>
-              <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                <Github
-                  sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : theme.palette.grey[300]) }}
+            <Box sx={{ mb: 6 }}>
+              <Typography variant='h5' sx={{ fontWeight: 600, marginBottom: 1.5 }}>
+                Welcome to {themeConfig.templateName}! 👋🏻
+              </Typography>
+              <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
+            </Box>
+            <form noValidate autoComplete='off' onSubmit={handleLogin}>
+              <TextField
+                autoFocus
+                fullWidth
+                id='email'
+                label='Email'
+                sx={{ marginBottom: 4 }}
+                value={values.email}
+                onChange={handleChange('email')}
+              />
+              <FormControl fullWidth>
+                <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
+                <OutlinedInput
+                  label='Password'
+                  value={values.password}
+                  id='auth-login-password'
+                  onChange={handleChange('password')}
+                  type={values.showPassword ? 'text' : 'password'}
+                  endAdornment={
+                    <InputAdornment position='end'>
+                      <IconButton
+                        edge='end'
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        aria-label='toggle password visibility'
+                      >
+                        {values.showPassword ? <EyeOutline /> : <EyeOffOutline />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
                 />
+              </FormControl>
+              <Box
+                sx={{
+                  mb: 4,
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <FormControlLabel control={<Checkbox />} label='Remember Me' />
+                <Link passHref href='/'>
+                  <LinkStyled onClick={e => e.preventDefault()}>Forgot Password?</LinkStyled>
+                </Link>
+              </Box>
+              <Button fullWidth size='large' variant='contained' sx={{ marginBottom: 7 }} type='submit'>
+                Login
+              </Button>
+            </form>
+            <Divider sx={{ my: 5 }}>or</Divider>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Link href='/' passHref>
+                <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
+                  <Facebook sx={{ color: '#497ce2' }} />
+                </IconButton>
+              </Link>
+              <Link href='/' passHref>
+                <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
+                  <Twitter sx={{ color: '#1da1f2' }} />
+                </IconButton>
+              </Link>
+              <Link href='/' passHref>
+                <IconButton component='a' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
+                  <Github
+                    sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : theme.palette.grey[300]) }}
+                  />
+                </IconButton>
+              </Link>
+              <IconButton component='a' onClick={onLogin}>
+                <Google sx={{ color: '#db4437' }} />
               </IconButton>
-            </Link>
-            <IconButton component='a' onClick={onLogin}>
-              <Google sx={{ color: '#db4437' }} />
-            </IconButton>
-          </Box>
-        </CardContent>
-      </Card>
-      <FooterIllustrationsV1 />
+            </Box>
+          </CardContent>
+        </Card>
+        <FooterIllustrationsV1 />
+      </>
     </Box>
   )
 }

@@ -3,11 +3,10 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import Router from 'next/router'
 import { useEffect } from 'react'
-import { useSessionsController } from '../login/controller'
+import { useLoginController } from '../login/controller'
 
 export default function SSOContainer() {
-  const router = useRouter()
-  const sessionController = useSessionsController()
+  const sessionController = useLoginController()
 
   useEffect(() => {
     sessionController.onLogin()

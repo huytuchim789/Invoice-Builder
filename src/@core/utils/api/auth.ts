@@ -1,6 +1,7 @@
 import { ILoginDataResponse } from 'src/@core/models/api/auth.interface'
 import { API_BASE_URL } from '.'
-import axios from 'axios'
+import { ParsedUrlQuery } from 'querystring'
+import axiosInstance from 'src/@core/common/axios'
 
 export const login = async ({ email, password }: { email: string; password: string }) => {
   try {
@@ -29,11 +30,19 @@ export const login = async ({ email, password }: { email: string; password: stri
     return { success: false, data: null, message: 'Something went wrong' }
   }
 }
-export const loginWithGoogle = async ({ code }: { code: string }) => {
-  if (!code) {
-    return null
-  }
-  const response = await axios.post(`${API_BASE_URL}/auth/google_login`, { code: code })
+export const getGoogleUrl = async () => {
+  const response = await axiosInstance.get(`auth/google/url`)
 
-  return response
+  return response?.data
+}
+export const loginWithGoogle = async (params: ParsedUrlQuery | undefined) => {
+  const response = await axiosInstance.get(`auth/google/callback`, { params })
+
+  return response?.data
+}
+
+export const getCurrentUser = async () => {
+  const response = await axiosInstance.get(`auth/me`)
+
+  return response?.data
 }

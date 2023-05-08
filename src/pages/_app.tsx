@@ -45,6 +45,7 @@ import { USER_INFO } from 'src/@core/models'
 
 //Import snackbar
 import { SnackbarProvider } from 'notistack'
+import { withAuth } from 'src/@core/hocs/with-auth'
 
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -71,7 +72,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
 })
 
 // ** Configure JSS & ClassName
-export default function App(props: ExtendedAppProps) {
+export function App(props: ExtendedAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
   const [statusAlert, update] = useStatusAlert((state: IDataOpenAlert) => [state.statusAlert, state.update])
   const [updateUserInfo] = useDataLogin((state: IDataLogin) => [state.updateUserInfo])
@@ -125,3 +126,4 @@ export default function App(props: ExtendedAppProps) {
     </CacheProvider>
   )
 }
+export default withAuth(App)
