@@ -34,6 +34,7 @@ import { IDataOpenAlert, useStatusAlert } from 'src/stores/useStatusAlert'
 // ** React Perfect Scrollbar Style
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import 'react-quill/dist/quill.snow.css'
+import 'react-datepicker/dist/react-datepicker.css'
 
 // ** Global css styles
 import '../../styles/globals.css'
