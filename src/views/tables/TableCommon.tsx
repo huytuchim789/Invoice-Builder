@@ -12,12 +12,12 @@ import TablePagination from '@mui/material/TablePagination'
 
 // ** Interface Imports
 import { ColumnNews } from 'src/pages/pages/news'
-import { NewsListData, NewsListDataResponse } from 'src/@core/models/api/news.interface'
+import { INewsListData, INewsListDataResponse } from 'src/@core/models/api/news.interface'
 
 interface Props {
   title: string
   columns: readonly ColumnNews[]
-  data: NewsListDataResponse
+  data: INewsListDataResponse
   handleChangePage: (event: unknown, newPage: number) => void
   handleChangeRowsPerPage: (event: ChangeEvent<HTMLInputElement>) => void
 }
@@ -37,7 +37,7 @@ const TableCommon = ({ columns, data, title, handleChangePage, handleChangeRowsP
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.data.map((column: NewsListData) => {
+            {data.data.map((column: INewsListData) => {
               return (
                 <TableRow key={column.id} hover role='checkbox' tabIndex={-1}>
                   <TableCell>{column.id}</TableCell>

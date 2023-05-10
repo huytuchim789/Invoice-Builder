@@ -24,7 +24,7 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next()
 }
 
-const getPagePathName = ({ url, page, headers }: NextRequest) => {
+const getPagePathName = ({ url, page }: NextRequest) => {
   try {
     return page?.name ? new URL(url, process.env.APP_FE).pathname : undefined
   } catch (error) {
