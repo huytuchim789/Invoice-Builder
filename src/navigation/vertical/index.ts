@@ -9,6 +9,9 @@ import CreditCardOutline from 'mdi-material-ui/CreditCardOutline'
 import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
+import InvoiceEditOutline from 'mdi-material-ui/DatabaseEditOutline'
+import InvoiceAddOutline from 'mdi-material-ui/PlusBoxOutline'
+import InvoicePreviewOutline from 'mdi-material-ui/ViewListOutline'
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -51,6 +54,27 @@ const navigation = (): VerticalNavItemsType => {
       icon: AlertCircleOutline,
       path: '/pages/news',
       openInNewTab: true
+    },
+    {
+      sectionTitle: 'Invoice'
+    },
+    {
+      title: 'Preview',
+      icon: InvoicePreviewOutline,
+      path: '/invoice/preview',
+      openInNewTab: false
+    },
+    {
+      title: 'Edit',
+      icon: InvoiceEditOutline,
+      path: '/invoice/edit',
+      openInNewTab: false
+    },
+    {
+      title: 'Add',
+      icon: InvoiceAddOutline,
+      path: '/invoice/add',
+      openInNewTab: false
     },
     {
       sectionTitle: 'Create Pages'
