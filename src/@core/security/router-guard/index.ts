@@ -26,7 +26,7 @@ export const isChildPath = (child?: string, parent?: string) => {
 
 export const clientPath = ['pages/sso/auth']
 
-export const publicPath = [...clientPath, 'pages/login', 'pages/404', 'pages/500', 'pages/401']
+export const publicPath = [...clientPath, '/pages/login', 'pages/404', 'pages/500', 'pages/401']
 export const navigateCheck = ({ pathname, cookie }: { pathname: string; cookie: string | any }) => {
   const cookieObject: Types.CookieType = parseCookie(cookie)
 
@@ -36,15 +36,16 @@ export const navigateCheck = ({ pathname, cookie }: { pathname: string; cookie: 
   // const isActiveOffice = cookieObject.has_active_office === 'true'
   const isClientRedirect = !!cookieObject.redirect_client
   // Check middleware for default router '/'
-  if ((pathname === '/' || pathname === 'pages/login') && isLoggedIn) {
+  console.log(pathname)
+  if ((pathname === '/' || pathname === '/pages/login') && isLoggedIn) {
     pathname = '/'
   } else if (pathname === '/' && !isLoggedIn) {
-    pathname = 'pages/login'
+    pathname = '/pages/login'
   }
 
   if (!isLoggedIn) {
     if (isPath(pathname).isPrivatePath()) {
-      pathname = `pages/login`
+      pathname = `/pages/login`
     }
     return pathname
   }

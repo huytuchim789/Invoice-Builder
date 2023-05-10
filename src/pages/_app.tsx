@@ -46,6 +46,7 @@ import { USER_INFO } from 'src/@core/models'
 //Import snackbar
 import { SnackbarProvider } from 'notistack'
 import { withAuth } from 'src/@core/hocs/with-auth'
+import globalStore from 'src/@core/hocs/global-store'
 
 type ExtendedAppProps = AppProps & {
   Component: NextPage
