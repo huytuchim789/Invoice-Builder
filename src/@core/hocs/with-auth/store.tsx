@@ -6,14 +6,11 @@ export interface UserState {
   setUser: (user: User) => unknown
 }
 
-//@ts-ignore
-
-const userStore = set => ({
+const userStore = (set: any) => ({
   user: {},
   setUser: (user: User) => {
     return set(
-      //@ts-ignore
-      produce<{ userStore: UserState }>(state => {
+      produce((state: { user: User }) => {
         state.user = user
       })
     )

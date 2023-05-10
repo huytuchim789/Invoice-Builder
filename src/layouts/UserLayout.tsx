@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -19,6 +19,7 @@ import VerticalAppBarContent from './components/vertical/AppBarContent'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
+import globalStore from 'src/@core/hocs/global-store'
 
 interface Props {
   children: ReactNode
@@ -27,6 +28,10 @@ interface Props {
 const UserLayout = ({ children }: Props) => {
   // ** Hooks
   const { settings, saveSettings } = useSettings()
+  const { user } = globalStore(state => state.userStore)
+  useEffect(() => {
+    console.log(user)
+  }, [user])
 
   /**
    *  The below variable will hide the current layout menu at given screen size.

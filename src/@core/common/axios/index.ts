@@ -28,11 +28,7 @@ axiosInstance.interceptors.response.use(
   error => {
     if (error.response) {
       if (error.response.status === 401) {
-        // Handle 401 Unauthorized errors
-        // Redirect to login page, clear local storage, etc.
       } else if (error.response.status === 500) {
-        // Handle 500 Internal Server Error
-        // Display a generic error message, etc.
       }
     }
 

@@ -4,6 +4,7 @@ import Box, { BoxProps } from '@mui/material/Box'
 
 // ** Types
 import { BlankLayoutProps } from './types'
+import globalStore from '../hocs/global-store'
 
 // Styled component for Blank Layout component
 const BlankLayoutWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -28,6 +29,8 @@ const BlankLayoutWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 }))
 
 const BlankLayout = ({ children }: BlankLayoutProps) => {
+  console.log(globalStore)
+
   return (
     <BlankLayoutWrapper className='layout-wrapper'>
       <Box className='app-content' sx={{ minHeight: '100vh', overflowX: 'hidden', position: 'relative' }}>
