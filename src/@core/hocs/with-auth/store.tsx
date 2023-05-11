@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import { User } from 'src/types/custom-types'
 
 export interface UserState {
@@ -10,8 +10,8 @@ const userStore = (set: any) => ({
   user: {},
   setUser: (user: User) => {
     return set(
-      produce((state: { user: User }) => {
-        state.user = user
+      produce((state: { userStore: { user: User } }) => {
+        state.userStore.user = user
       })
     )
   }

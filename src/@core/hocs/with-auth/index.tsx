@@ -4,7 +4,6 @@ import { isPath } from 'src/@core/security/router-guard'
 import { getCurrentUser, logout } from 'src/@core/utils/api/auth'
 import { useEffect } from 'react'
 import { COOKIE_KEY } from 'src/@core/common/cookies'
-import { useDataLogin } from 'src/stores/useDataLogin'
 
 // const SpinContainer = dynamic<SpinContainerProps>(
 //   () => import('rcs_common/frontend/shared/components/spin-container').then((mod) => mod.SpinContainer),
