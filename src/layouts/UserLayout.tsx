@@ -20,6 +20,7 @@ import VerticalAppBarContent from './components/vertical/AppBarContent'
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
 import globalStore from 'src/@core/hocs/global-store'
+import { useDataLogin } from 'src/stores/useDataLogin'
 
 interface Props {
   children: ReactNode
@@ -28,10 +29,6 @@ interface Props {
 const UserLayout = ({ children }: Props) => {
   // ** Hooks
   const { settings, saveSettings } = useSettings()
-  const { user } = globalStore(state => state.userStore)
-  useEffect(() => {
-    console.log(user)
-  }, [user])
 
   /**
    *  The below variable will hide the current layout menu at given screen size.

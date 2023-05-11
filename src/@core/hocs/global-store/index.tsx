@@ -1,11 +1,9 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import userStore, { UserState } from '../with-auth/store'
+import userStore from '../with-auth/store'
 
-const globalStore = create(
+export const globalStore = create(
   devtools(set => ({
-    userStore: userStore(set)
+    userStore: { ...userStore(set) }
   }))
 )
-
-export default globalStore

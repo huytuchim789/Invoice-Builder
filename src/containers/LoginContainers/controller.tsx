@@ -22,7 +22,7 @@ export function useLoginController() {
       ctx.store?.setGoogleAuthUrl(url)
       ctx.store?.setLoading(false)
     } catch (e) {
-      console.log(e)
+      console.error(e)
       snackbar.error('error', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
     }
   }

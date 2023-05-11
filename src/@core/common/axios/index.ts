@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { API_BASE_URL } from 'src/@core/utils/api'
+import { logout } from 'src/@core/utils/api/auth'
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL
@@ -28,6 +29,7 @@ axiosInstance.interceptors.response.use(
   error => {
     if (error.response) {
       if (error.response.status === 401) {
+        logout(false)
       } else if (error.response.status === 500) {
       }
     }

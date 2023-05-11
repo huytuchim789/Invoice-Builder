@@ -29,7 +29,6 @@ const BlankLayoutWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 }))
 
 const BlankLayout = ({ children }: BlankLayoutProps) => {
-  console.log(globalStore)
 
   return (
     <BlankLayoutWrapper className='layout-wrapper'>
