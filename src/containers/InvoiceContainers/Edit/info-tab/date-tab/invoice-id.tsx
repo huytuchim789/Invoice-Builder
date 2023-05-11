@@ -4,7 +4,7 @@ import Grid3x3Icon from '@mui/icons-material/Grid3x3'
 
 export const InvoiceId = () => {
   return (
-    <Grid container alignItems='center'>
+    <Grid container alignItems='center' justifyContent='space-between'>
       <Grid item lg={4} md={12}>
         <Typography>Invoice</Typography>
       </Grid>

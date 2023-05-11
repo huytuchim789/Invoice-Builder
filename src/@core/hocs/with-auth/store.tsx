@@ -3,7 +3,7 @@ import { User } from 'src/types/custom-types'
 
 export interface UserState {
   user: User
-  setUser: (user: User) => unknown
+  setUser: (user: User) => void
 }
 
 const userStore = (set: any) => ({

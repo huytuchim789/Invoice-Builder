@@ -12,7 +12,7 @@ export const StartDate = () => {
   const [startDate, setStartDate] = useState<Date | null | undefined>(null)
 
   return (
-    <Grid container alignItems='center' marginTop={3}>
+    <Grid container alignItems='center' justifyContent='space-between' marginTop={3}>
       <Grid item lg={4} md={12}>
         <Typography>Date Issued:</Typography>
       </Grid>
