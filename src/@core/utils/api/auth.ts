@@ -2,6 +2,8 @@ import { ILoginDataResponse } from 'src/@core/models/api/auth.interface'
 import { API_BASE_URL } from '.'
 import { ParsedUrlQuery } from 'querystring'
 import axiosInstance from 'src/@core/common/axios'
+import { clearSessionCookie } from 'src/@core/common/cookies'
+import Router from 'next/router'
 
 export const login = async ({ email, password }: { email: string; password: string }) => {
   try {
@@ -47,7 +49,9 @@ export const getCurrentUser = async () => {
   return response?.data
 }
 
-export const logout = async () => {
-  const response = await axiosInstance.post(`auth/logout`)
-  return response?.data
+export const logout = async (callApi = true) => {
+  if (callApi) await axiosInstance.post(`auth/logout`)
+  clearSessionCookie()
+
+  await Router.replace('/pages/login')
 }

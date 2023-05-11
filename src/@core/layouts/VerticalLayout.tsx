@@ -23,6 +23,8 @@ import ScrollToTop from 'src/@core/components/scroll-to-top'
 
 // ** Styled Component
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import { useDataLogin } from 'src/stores/useDataLogin'
+import globalStore from '../hocs/global-store'
 
 const VerticalLayoutWrapper = styled('div')({
   height: '100%',
@@ -51,7 +53,6 @@ const ContentWrapper = styled('main')(({ theme }) => ({
 const VerticalLayout = (props: LayoutProps) => {
   // ** Props
   const { settings, children, scrollToTop } = props
-
   // ** Vars
   const { contentWidth } = settings
   const navWidth = themeConfig.navigationSize
