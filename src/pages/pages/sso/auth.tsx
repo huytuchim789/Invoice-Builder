@@ -1,16 +1,21 @@
-import { CircularProgress } from '@mui/material'
-import Cookies from 'js-cookie'
-import { useRouter } from 'next/router'
-import Router from 'next/router'
-import { useEffect } from 'react'
+import { CircularProgress, Stack } from '@mui/material'
+import { ReactNode, useEffect } from 'react'
+import { globalStore } from 'src/@core/hocs/global-store'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
 import { useLoginController } from 'src/containers/LoginContainers/controller'
 
-export default function SSOContainer() {
+function SSOContainer() {
   const sessionController = useLoginController()
-
+  const { user, setUser } = globalStore(state => state.userStore)
   useEffect(() => {
-    sessionController.onLogin()
+    sessionController.onLogin(setUser)
   }, [])
 
-  return <CircularProgress />
+  return (
+    <Stack width={'100%'} height={'100vh'} direction='row' justifyContent={'center'} alignItems={'center'}>
+      <CircularProgress />
+    </Stack>
+  )
 }
+SSOContainer.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+export default SSOContainer

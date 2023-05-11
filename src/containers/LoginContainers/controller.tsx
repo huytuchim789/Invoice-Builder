@@ -5,6 +5,7 @@ import { getGoogleUrl, loginWithGoogle } from 'src/@core/utils/api/auth'
 import Cookies from 'js-cookie'
 import { COOKIE_KEY } from 'src/@core/hocs/with-auth'
 import { setSessionCookie } from 'src/@core/common/cookies'
+import { User } from 'src/types/custom-types'
 
 const ctx: Types.ControllerContext<Store> = {}
 
@@ -26,7 +27,7 @@ export function useLoginController() {
       snackbar.error('error', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
     }
   }
-  const onLogin = async () => {
+  const onLogin = async (setUser: (user: User) => void) => {
     const queryParams = getQueryParams()
     if (!queryParams?.code) {
       snackbar.error('Missing Parameter', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
@@ -34,6 +35,7 @@ export function useLoginController() {
       try {
         const userInfo = await loginWithGoogle(queryParams)
         setSessionCookie(userInfo)
+        setUser(userInfo?.user)
         snackbar.success('Successfully', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
 
         return ctx.router?.replace('/')
