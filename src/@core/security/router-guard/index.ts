@@ -36,7 +36,7 @@ export const navigateCheck = ({ pathname, cookie }: { pathname: string; cookie: 
   // const isActiveOffice = cookieObject.has_active_office === 'true'
   const isClientRedirect = !!cookieObject.redirect_client
   // Check middleware for default router '/'
-  console.log(pathname)
+
   if ((pathname === '/' || pathname === '/pages/login') && isLoggedIn) {
     pathname = '/'
   } else if (pathname === '/' && !isLoggedIn) {
