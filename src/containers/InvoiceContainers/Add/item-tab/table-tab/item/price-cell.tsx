@@ -1,5 +1,12 @@
+import { useContext } from 'react'
+
 import { Typography } from '@mui/material'
 
+import { ItemContext } from '../table-body'
+import { IItemContent } from '../../store'
+
 export const PriceCell = () => {
-  return <Typography>$ 24.00</Typography>
+  const { data } = useContext(ItemContext) as { data: IItemContent; count: number }
+
+  return <Typography>$ {data.cost * data.hour}</Typography>
 }
