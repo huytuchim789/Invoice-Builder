@@ -1,10 +1,8 @@
 import { NextPage } from 'next'
-import { InvoiceAdd } from 'src/@core/content/invoice/add'
+import { InvoiceAdd } from 'src/containers/InvoiceContainers/Add'
 
 const InvoiceAddPage: NextPage = () => {
-  return (
-    <InvoiceAdd />
-  )
+  return <InvoiceAdd />
 }
 
 export default InvoiceAddPage

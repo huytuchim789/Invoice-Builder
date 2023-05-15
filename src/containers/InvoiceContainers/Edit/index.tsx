@@ -2,9 +2,9 @@ import { Card, Grid } from '@mui/material'
 
 import { InfoTab } from './info-tab'
 import { SendTab } from './send-tab'
-import { ActionTab } from './action-tab'
 import { ItemTab } from './item-tab'
 import { SaleTab } from './sale-tab'
+import { ActionTab } from './action-tab'
 
 export const InvoiceEdit = () => {
   return (

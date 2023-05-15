@@ -31,6 +31,8 @@ import { createEmotionCache } from 'src/@core/utils/create-emotion-cache'
 // ** Store Imports
 import { IDataOpenAlert, useStatusAlert } from 'src/stores/useStatusAlert'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
 // ** React Perfect Scrollbar Style
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import 'react-quill/dist/quill.snow.css'
@@ -47,7 +49,6 @@ import { USER_INFO } from 'src/@core/models'
 //Import snackbar
 import { SnackbarProvider } from 'notistack'
 import { withAuth } from 'src/@core/hocs/with-auth'
-import globalStore from 'src/@core/hocs/global-store'
 
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -55,6 +56,7 @@ type ExtendedAppProps = AppProps & {
 }
 
 const clientSideEmotionCache = createEmotionCache()
+const queryClient = new QueryClient()
 
 // ** Pace Loader
 if (themeConfig.routingLoader) {
@@ -99,37 +101,39 @@ export function App(props: ExtendedAppProps) {
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
 
   return (
-    <CacheProvider value={emotionCache}>
-      <>
-        {/**@ts-ignore */}
-        <SnackbarProvider>
-          <Head>
-            <title>{`${themeConfig.templateName} - Material Design React Admin Template`}</title>
-            <meta
-              name='description'
-              content={`${themeConfig.templateName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}
-            />
-            <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
-            <meta name='viewport' content='initial-scale=1, width=device-width' />
-          </Head>
+    <QueryClientProvider client={queryClient}>
+      <CacheProvider value={emotionCache}>
+        <>
+          {/**@ts-ignore */}
+          <SnackbarProvider>
+            <Head>
+              <title>{`${themeConfig.templateName} - Material Design React Admin Template`}</title>
+              <meta
+                name='description'
+                content={`${themeConfig.templateName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}
+              />
+              <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
+              <meta name='viewport' content='initial-scale=1, width=device-width' />
+            </Head>
 
-          <Snackbar open={statusAlert.open} autoHideDuration={3000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity={statusAlert.severity} sx={{ width: '100%' }}>
-              {statusAlert.message}
-            </Alert>
-          </Snackbar>
+            <Snackbar open={statusAlert.open} autoHideDuration={3000} onClose={handleClose}>
+              <Alert onClose={handleClose} severity={statusAlert.severity} sx={{ width: '100%' }}>
+                {statusAlert.message}
+              </Alert>
+            </Snackbar>
 
-          <SettingsProvider>
-            <SettingsConsumer>
-              {({ settings }) => {
-                //@ts-ignore
-                return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
-              }}
-            </SettingsConsumer>
-          </SettingsProvider>
-        </SnackbarProvider>
-      </>
-    </CacheProvider>
+            <SettingsProvider>
+              <SettingsConsumer>
+                {({ settings }) => {
+                  //@ts-ignore
+                  return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
+                }}
+              </SettingsConsumer>
+            </SettingsProvider>
+          </SnackbarProvider>
+        </>
+      </CacheProvider>
+    </QueryClientProvider>
   )
 }
 export default withAuth(App)
