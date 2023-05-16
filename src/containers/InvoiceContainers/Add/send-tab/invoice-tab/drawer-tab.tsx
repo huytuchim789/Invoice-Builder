@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 
 // ** MUI Library imports
-import { Box, Button, Drawer, TextField, Typography } from '@mui/material'
+import { Box, Button, Drawer, Grid, Stack, TextField, Typography } from '@mui/material'
 
 // ** Interface imports
 import { IUserSelectInvoiceTo } from 'src/@core/models/api/invoice.interface'
@@ -15,6 +15,9 @@ import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 
 // ** Store imports
 import { useInvoiceAddStore } from '../../store'
+
+// ** Icon imports
+import CloseIcon from '@mui/icons-material/Close'
 
 interface IField {
   label: string
@@ -78,6 +81,21 @@ export const DrawerNewCustomer = () => {
 
   return (
     <Drawer anchor='right' open={status} onClose={() => setStatus(false)}>
+      <Stack
+        direction='row'
+        justifyContent='space-between'
+        alignItems='center'
+        paddingX={2}
+        paddingY={4}
+        bgcolor='#808080'
+      >
+        <Typography fontSize={20} style={{ color: '#FFF' }}>
+          Add Custom User
+        </Typography>
+        <Box component='div' onClick={() => setStatus(false)} style={{ cursor: 'pointer' }}>
+          <CloseIcon style={{ color: '#FFF' }} />
+        </Box>
+      </Stack>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={{ width: 300, padding: 2 }} role='presentation' display='flex' flexDirection='column' gap={3}>
           {fields.map((field: IField, index: number) => (
@@ -96,8 +114,19 @@ export const DrawerNewCustomer = () => {
               )}
             </Box>
           ))}
+          <Grid container justifyContent='space-between'>
+            <Grid item lg={5}>
+              <Button type='submit' variant='contained' fullWidth>
+                Save
+              </Button>
+            </Grid>
+            <Grid item lg={5}>
+              <Button type='button' variant='outlined' fullWidth onClick={() => setStatus(false)}>
+                Cancel
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
-        <Button type='submit'>Save</Button>
       </form>
     </Drawer>
   )

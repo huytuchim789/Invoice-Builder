@@ -1,10 +1,22 @@
+import React from 'react'
+
 import { TableBody } from '@mui/material'
 import { ItemContent } from './item'
+import { useInvoiceAddStore } from '../../store'
+import { IItemContent } from '../store'
+
+export const ItemContext = React.createContext({})
 
 export const TableBodyContent = () => {
+  const { itemContent } = useInvoiceAddStore((state: any) => state.itemContentTabStore)
+
   return (
     <TableBody>
-      <ItemContent />
+      {itemContent.map((item: IItemContent, index: number) => (
+        <ItemContext.Provider value={{ data: item, count: index }} key={index}>
+          <ItemContent />
+        </ItemContext.Provider>
+      ))}
     </TableBody>
   )
 }
