@@ -1,17 +1,21 @@
 // ** React imports
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 // ** MUI Library imports
 import { Box, Button, Drawer, Grid, Stack, TextField, Typography } from '@mui/material'
 
 // ** Interface imports
-import { IUserSelectInvoiceTo } from 'src/@core/models/api/invoice.interface'
+import { IAddCustomerUserDataResponseError } from 'src/@core/models/api/invoice/error.interface'
+import {
+  IAddUserSelectInvoiceToDataResponse,
+  IUserSelectInvoiceTo
+} from 'src/@core/models/api/invoice/invoice.interface'
 
 // ** Common imports
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
+import { ICustomerUsers, addCustomerUser } from 'src/@core/utils/api/invoice/addCustomerUser'
 
 // ** Store imports
 import { useInvoiceAddStore } from '../../store'
@@ -55,6 +59,11 @@ const fields: IField[] = [
     label: 'Contact Number',
     value: 'contact_number',
     helpText: 'Contact Number is required'
+  },
+  {
+    label: 'Contact Number',
+    value: 'contact_number_country',
+    helpText: 'Contact Number is required'
   }
 ]
 
@@ -70,13 +79,26 @@ export const DrawerNewCustomer = () => {
   const { status, setStatus } = useInvoiceAddStore((state: any) => state.statusDrawerStore)
   const snackbar = useSnackbarWithContext()
 
-  const onSubmit = async (data: SubmitHandler<IUserSelectInvoiceTo> & any) => {
-    await axios.post('https://62f29501b1098f150815e793.mockapi.io/select', data)
+  const { mutate, isLoading: isAddCustomerLoading } = useMutation({
+    mutationFn: async (data: ICustomerUsers) => await addCustomerUser(data),
+    onSuccess: ({ data }: { data: IAddUserSelectInvoiceToDataResponse }) => {
+      queryClient.setQueryData([QUERY_INVOICE_KEYS.USER_SELECT], (previousUser: IUserSelectInvoiceTo[] | undefined) =>
+        previousUser ? [...previousUser, data.data] : previousUser
+      )
 
-    queryClient.invalidateQueries([QUERY_INVOICE_KEYS.USER_SELECT])
-    reset()
-    setStatus(false)
-    snackbar.success('Create User Successfully')
+      reset()
+      setStatus(false)
+      snackbar.success(data.message)
+    },
+    onError: (err: { response: IAddCustomerUserDataResponseError }) => {
+      const { response } = err
+
+      snackbar.error(response.data.message)
+    }
+  })
+
+  const onSubmit = async (data: SubmitHandler<IUserSelectInvoiceTo> & any) => {
+    mutate(data)
   }
 
   return (
@@ -116,12 +138,12 @@ export const DrawerNewCustomer = () => {
           ))}
           <Grid container justifyContent='space-between'>
             <Grid item lg={5}>
-              <Button type='submit' variant='contained' fullWidth>
+              <Button type='submit' variant='contained' fullWidth disabled={isAddCustomerLoading}>
                 Save
               </Button>
             </Grid>
             <Grid item lg={5}>
-              <Button type='button' variant='outlined' fullWidth onClick={() => setStatus(false)}>
+              <Button type='button' variant='outlined' fullWidth>
                 Cancel
               </Button>
             </Grid>

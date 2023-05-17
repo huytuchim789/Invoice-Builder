@@ -43,5 +43,12 @@ export const itemContentTabStore = (set: any) => ({
         }
       })
     )
+  },
+  deleteItemContent: (index: number) => {
+    return set(
+      produce((state: { itemContentTabStore: { itemContent: IItemContent[] } }) => {
+        state.itemContentTabStore.itemContent.splice(index, 1)
+      })
+    )
   }
 })

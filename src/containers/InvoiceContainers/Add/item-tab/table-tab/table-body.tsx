@@ -13,7 +13,7 @@ export const TableBodyContent = () => {
   return (
     <TableBody>
       {itemContent.map((item: IItemContent, index: number) => (
-        <ItemContext.Provider value={{ data: item, count: index }} key={index}>
+        <ItemContext.Provider value={{ data: item, count: index }} key={`${item.content}-${index}`}>
           <ItemContent />
         </ItemContext.Provider>
       ))}

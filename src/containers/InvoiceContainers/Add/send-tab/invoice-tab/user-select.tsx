@@ -2,7 +2,7 @@
 import { Box, FormControl, Select, MenuItem } from '@mui/material'
 
 // ** Interface imports
-import { IUserSelectInvoiceTo } from 'src/@core/models/api/invoice.interface'
+import { IUserSelectInvoiceTo } from 'src/@core/models/api/invoice/invoice.interface'
 
 // ** Common imports
 import { useSelectUserInvoiceTo } from 'src/@core/hooks/invoice/useSelectUserInvoiceTo'
