@@ -6,7 +6,7 @@ export const AddressTab = () => {
 
   return (
     <Box marginTop={2}>
-      <Typography fontSize={12} color={'#808080'}>
+      <Typography fontSize={12} color='#808080'>
         {user.name}
         <br />
         {user.address}

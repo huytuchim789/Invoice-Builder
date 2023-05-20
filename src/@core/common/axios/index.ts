@@ -31,6 +31,8 @@ axiosInstance.interceptors.response.use(
       if (error.response.status === 401) {
         logout(false)
       } else if (error.response.status === 500) {
+      } else if (error.response.status === 404) {
+        window.location.href = '/404'
       }
     }
 
