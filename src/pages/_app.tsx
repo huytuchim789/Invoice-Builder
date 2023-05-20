@@ -37,6 +37,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import 'react-quill/dist/quill.snow.css'
 import 'react-datepicker/dist/react-datepicker.css'
+import 'react-phone-input-2/lib/style.css'
 
 // ** Global css styles
 import '../../styles/globals.css'

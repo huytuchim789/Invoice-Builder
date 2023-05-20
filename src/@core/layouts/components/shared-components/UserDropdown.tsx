@@ -23,7 +23,6 @@ import AccountOutline from 'mdi-material-ui/AccountOutline'
 import MessageOutline from 'mdi-material-ui/MessageOutline'
 import HelpCircleOutline from 'mdi-material-ui/HelpCircleOutline'
 import { globalStore } from 'src/@core/hocs/global-store'
-import { useDataLogin } from 'src/stores/useDataLogin'
 import { logout } from 'src/@core/utils/api/auth'
 
 // ** Styled Components
@@ -36,7 +35,7 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 }))
 
 const UserDropdown = () => {
-  const { user, setUser } = globalStore(state => state.userStore)
+  const { user } = globalStore((state: any) => state.userStore)
 
   // ** States
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)

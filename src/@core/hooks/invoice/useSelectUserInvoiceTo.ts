@@ -1,18 +1,20 @@
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import { IUserSelectInvoiceTo } from 'src/@core/models/api/invoice.interface'
+import axiosInstance from 'src/@core/common/axios'
+
+import { IUserSelectInvoiceToDataResponse } from 'src/@core/models/api/invoice/invoice.interface'
+
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 
 const getSelectUserData = async () => {
-  const { data } = (await axios.get('https://62f29501b1098f150815e793.mockapi.io/select')) as {
-    data: IUserSelectInvoiceTo[]
-  }
+  const { data } = (await axiosInstance.get('customers')) as { data: IUserSelectInvoiceToDataResponse }
 
-  return data
+  return data.data
 }
 
 export const useSelectUserInvoiceTo = () => {
-  return useQuery([QUERY_INVOICE_KEYS.USER_SELECT], getSelectUserData, {
+  return useQuery({
+    queryKey: [QUERY_INVOICE_KEYS.USER_SELECT],
+    queryFn: getSelectUserData,
     refetchOnWindowFocus: false,
     refetchInterval: false
   })
