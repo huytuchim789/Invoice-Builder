@@ -6,8 +6,14 @@ export interface UserState {
   setUser: (user: User) => unknown
 }
 
+const initialUser = {
+  username: '',
+  email: '',
+  avatar_url: ''
+}
+
 const userStore = (set: any) => ({
-  user: {},
+  user: initialUser,
   setUser: (user: User) => {
     return set(
       produce((state: { userStore: { user: User } }) => {
