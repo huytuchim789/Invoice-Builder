@@ -1,15 +1,16 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 
 import { Box, Card, Grid } from '@mui/material'
 
-import { ActionTab } from './action-tab'
-import { InfoTab } from './info-tab'
-import { SendTab } from './send-tab'
-import { ItemTab } from './item-tab'
-import { SaleTab } from './sale-tab'
-import { NoteTab } from './note-tab'
-import { useRouter } from 'next/router'
 import { useInvoiceDetailData } from 'src/@core/hooks/invoice/useInvoiceDetailData'
+
+import { ActionTab } from './action-tab'
+import { NoteTab } from './note-tab'
+import { InfoTab } from './info-tab'
+import { ItemTab } from './item-tab'
+import { SendTab } from './send-tab'
+import { SaleTab } from './sale-tab'
 
 export const InvoiceDetailContext = React.createContext({})
 

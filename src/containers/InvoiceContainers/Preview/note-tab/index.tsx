@@ -1,21 +1,17 @@
-import { ChangeEvent } from 'react'
-import { Box, TextField, Typography } from '@mui/material'
-import { useInvoiceAddStore } from '../store'
+import { useContext } from 'react'
+
+import { Box, Typography } from '@mui/material'
+
+import { InvoiceDetailContext } from '..'
+import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interface'
 
 export const NoteTab = () => {
-  const { setNote } = useInvoiceAddStore((state: any) => state.noteTabStore)
+  const { invoice_detail } = useContext(InvoiceDetailContext) as { invoice_detail: IInvoiceDetailData }
 
   return (
     <Box padding={3} borderTop={1} borderColor={'#808080'}>
       <Typography color='gray'>Note:</Typography>
-      <TextField
-        style={{ marginTop: 3 }}
-        fullWidth
-        multiline
-        minRows={3}
-        maxRows={3}
-        onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setNote(e.target.value)}
-      />
+      <Typography>{invoice_detail.note}</Typography>
     </Box>
   )
 }

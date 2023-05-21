@@ -1,16 +1,17 @@
-import { Box, Typography, TextField } from '@mui/material'
-import { globalStore } from 'src/@core/hocs/global-store'
+import { useContext } from 'react'
+
+import { Box, Typography } from '@mui/material'
+
+import { InvoiceDetailContext } from '..'
+import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interface'
 
 export const SalePerson = () => {
-  const { user } = globalStore((state: any) => state.userStore)
+  const { invoice_detail } = useContext(InvoiceDetailContext) as { invoice_detail: IInvoiceDetailData }
 
   return (
-    <>
-      <Box display='flex' gap={2} alignItems='center'>
-        <Typography>Saleperson:</Typography>
-        <TextField size='small' value={user.name} />
-      </Box>
-      <TextField size='small' value='Thanks for your business' style={{ marginTop: '10px' }} disabled />
-    </>
+    <Box display='flex' gap={2} alignItems='center'>
+      <Typography>Saleperson:</Typography>
+      <Typography>{invoice_detail.sale_person}</Typography>
+    </Box>
   )
 }
