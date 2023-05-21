@@ -19,11 +19,11 @@ export const EndDate = () => {
 
   return (
     <Grid container alignItems='center' marginTop={3} justifyContent='space-between'>
-      <Grid item lg={4} md={12}>
+      <Grid item lg={4} md={4} sm={4}>
         <Typography>Date Due:</Typography>
       </Grid>
 
-      <Grid item lg={8} md={12}>
+      <Grid item lg={8} md={8} sm={8}>
         <DatePicker
           selected={dayjs(date.end).toDate()}
           minDate={dayjs(date.start).toDate()}

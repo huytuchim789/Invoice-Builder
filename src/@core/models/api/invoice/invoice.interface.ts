@@ -36,5 +36,37 @@ export interface IAddCustomerUsersData {
 
 export interface IAddCustomerUsersDataResponse {
   data: IAddCustomerUsersData
-  message: 'Create Successfully'
+  message: string
+}
+
+export interface IItemsData {
+  id: string
+  name: string
+  description: string
+  cost: number
+  hours: number
+  price: number
+  invoice_id: string
+  created_at: string | null
+  updated_at: string | null
+}
+
+export interface IInvoiceDetailData {
+  id: string
+  issued_date: string
+  created_date: string
+  note: string
+  tax: number
+  sale_person: string
+  customer_id: string
+  total: number
+  created_at: string
+  updated_at: string
+  items: IItemsData[]
+  customer: IAddCustomerUsersData
+}
+
+export interface IInvoiceDetailDataResponse {
+  data: IInvoiceDetailData
+  message: string
 }

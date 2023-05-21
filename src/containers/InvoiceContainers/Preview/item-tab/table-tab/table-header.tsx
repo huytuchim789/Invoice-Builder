@@ -12,17 +12,18 @@ export interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'item', label: 'item', minWidth: 300 },
-  { id: 'cost', label: 'cost', minWidth: 100 },
+  { id: 'item', label: 'item', minWidth: 200 },
+  { id: 'description', label: 'description', minWidth: 300 },
+  { id: 'cost', label: 'cost', minWidth: 50 },
   {
     id: 'hours',
     label: 'Hours',
-    minWidth: 100
+    minWidth: 50
   },
   {
     id: 'price',
     label: 'Price',
-    minWidth: 100
+    minWidth: 50
   },
   {
     id: 'action',

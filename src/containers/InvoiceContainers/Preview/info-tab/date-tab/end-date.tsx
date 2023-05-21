@@ -1,39 +1,25 @@
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import { useContext } from 'react'
 
-import { forwardRef } from 'react'
-import DatePicker from 'react-datepicker'
+import { Grid, Typography } from '@mui/material'
 
-import { Grid, Typography, TextField } from '@mui/material'
-
-import { useInvoiceAddStore } from '../../store'
+import { InvoiceDetailContext } from '../..'
+import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interface'
 
 dayjs.extend(utc)
 
-const CustomInput = forwardRef((props, ref) => {
-  return <TextField size='small' variant='outlined' fullWidth {...props} inputRef={ref} autoComplete='off' />
-})
-
 export const EndDate = () => {
-  const { date, setDate } = useInvoiceAddStore((state: any) => state.dateSelectStore)
+  const { invoice_detail } = useContext(InvoiceDetailContext) as { invoice_detail: IInvoiceDetailData }
 
   return (
     <Grid container alignItems='center' marginTop={3} justifyContent='space-between'>
-      <Grid item lg={4} md={12}>
+      <Grid item lg={4}>
         <Typography>Date Due:</Typography>
       </Grid>
 
-      <Grid item lg={8} md={12}>
-        <DatePicker
-          selected={dayjs(date.end).toDate()}
-          minDate={dayjs(date.start).toDate()}
-          showYearDropdown
-          showMonthDropdown
-          placeholderText='MM-DD-YYYY'
-          customInput={<CustomInput />}
-          id='form-layouts-separator-date'
-          onChange={(date: Date) => setDate('end', dayjs(date).utc().local().startOf('day').format('YYYY-MM-DD'))}
-        />
+      <Grid item lg={8}>
+        <Typography>{invoice_detail.issued_date}</Typography>
       </Grid>
     </Grid>
   )

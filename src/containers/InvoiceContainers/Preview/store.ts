@@ -1,17 +1,5 @@
-import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
+// import { create } from 'zustand'
+// import { devtools } from 'zustand/middleware'
 
-import { statusDrawerStore, userSelectTabStore } from './send-tab/store'
-import { itemContentTabStore } from './item-tab/store'
-import { noteTabStore } from './note-tab/store'
-import { dateSelectStore } from './info-tab/store'
-
-export const useInvoiceAddStore = create(
-  devtools(set => ({
-    noteTabStore: { ...noteTabStore(set) },
-    dateSelectStore: { ...dateSelectStore(set) },
-    itemContentTabStore: { ...itemContentTabStore(set) },
-    userSelectTabStore: { ...userSelectTabStore(set) },
-    statusDrawerStore: { ...statusDrawerStore(set) }
-  }))
-)
+// export const useInvoiceAddStore = create(devtools(set => ({})))
+export {}

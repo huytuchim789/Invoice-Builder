@@ -1,18 +1,20 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { TableBody } from '@mui/material'
+
 import { ItemContent } from './item'
-import { useInvoiceAddStore } from '../../store'
-import { IItemContent } from '../store'
+import { InvoiceDetailContext } from '../..'
+
+import { IInvoiceDetailData, IItemsData } from 'src/@core/models/api/invoice/invoice.interface'
 
 export const ItemContext = React.createContext({})
 
 export const TableBodyContent = () => {
-  const { itemContent } = useInvoiceAddStore((state: any) => state.itemContentTabStore)
+  const { invoice_detail } = useContext(InvoiceDetailContext) as { invoice_detail: IInvoiceDetailData }
 
   return (
     <TableBody>
-      {itemContent.map((item: IItemContent, index: number) => (
+      {invoice_detail.items.map((item: IItemsData, index: number) => (
         <ItemContext.Provider value={{ data: item, count: index }} key={`${item.name}-${index}`}>
           <ItemContent />
         </ItemContext.Provider>
