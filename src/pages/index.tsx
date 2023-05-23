@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from 'react'
+
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 
@@ -21,9 +23,19 @@ import StatisticsCard from 'src/views/dashboard/StatisticsCard'
 import WeeklyOverview from 'src/views/dashboard/WeeklyOverview'
 import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
 import SalesByCountries from 'src/views/dashboard/SalesByCountries'
+import { pusher } from 'src/@core/common/pusher'
 
 const Dashboard = () => {
+  const [emailTransactions, setEmailTransactions] = useState([])
 
+  useEffect(() => {
+    const channel = pusher.subscribe('email-transactions')
+    channel.bind('list-updated', function (data) {
+      console.log(data)
+    })
+
+    // Cleanup the event listener when the component unmounts
+  }, [])
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>

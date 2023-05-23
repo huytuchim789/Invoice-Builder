@@ -1,7 +1,7 @@
 import { NextRouter, useRouter } from 'next/router'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { Store, useLoginStore } from './store'
-import { getGoogleUrl, loginWithGoogle } from 'src/@core/utils/api/auth'
+import { getGoogleUrl, loginWithGoogle, logout } from 'src/@core/utils/api/auth'
 import Cookies from 'js-cookie'
 import { COOKIE_KEY } from 'src/@core/hocs/with-auth'
 import { setSessionCookie } from 'src/@core/common/cookies'
@@ -40,11 +40,8 @@ export function useLoginController() {
 
         return ctx.router?.replace('/')
       } catch (e) {
-        console.log(e)
-
         snackbar.error('error', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
-
-        return
+        logout()
       }
     }
     // await ctx.router?.replace('/sign-up')
