@@ -1,47 +1,51 @@
-import { ReactElement } from 'react'
+import { Typography, Box, Link } from '@mui/material'
+import { GridColDef } from '@mui/x-data-grid'
+import { ActionTab } from './action-tab'
 
-import { TableHead, TableRow, TableCell } from '@mui/material'
-
-export interface Column {
-  id: string
-  label: string
-  minWidth?: number
-  align?: 'right'
-  formatString?: (value: string) => ReactElement
-  formatNumber?: (value: number) => ReactElement
-}
-
-const columns: readonly Column[] = [
-  { id: 'invoice_id', label: '#', minWidth: 300 },
-  { id: 'status', label: 'Status', minWidth: 50 },
-  { id: 'client', label: 'Client', minWidth: 100 },
+export const columns: GridColDef[] = [
   {
-    id: 'total',
-    label: 'Total',
-    minWidth: 100
+    field: 'id',
+    headerName: '#',
+    width: 350,
+    renderCell(params) {
+      return <Link href={`/invoice/preview/${params.row.id}`}>{params.row.id}</Link>
+    }
   },
   {
-    id: 'issue_date',
-    label: 'Issue Date',
-    minWidth: 100
+    field: 'customer',
+    headerName: 'Client',
+    description: 'This column has a value getter and is not sortable.',
+    sortable: false,
+    width: 300,
+    renderCell(params) {
+      return (
+        <Box>
+          <Typography fontSize={12}>{params.row.customer.name}</Typography>
+          <Typography fontSize={12}>{params.row.customer.email}</Typography>
+        </Box>
+      )
+    }
+  },
+  { field: 'issued_date', headerName: 'Issued Date', width: 230 },
+  {
+    field: 'total',
+    headerName: 'Total Amount',
+    type: 'number',
+    headerAlign: 'center',
+    align: 'center',
+    width: 250,
+    renderCell(params) {
+      return <Typography textAlign='center'>${params.row.total}</Typography>
+    }
   },
   {
-    id: 'action',
-    label: 'Action',
-    minWidth: 100
+    field: '',
+    headerName: 'Actions',
+    headerAlign: 'center',
+    align: 'center',
+    width: 200,
+    renderCell(params) {
+      return <ActionTab id={params.row.id} />
+    }
   }
 ]
-
-export const TableHeader = () => {
-  return (
-    <TableHead>
-      <TableRow>
-        {columns.map(column => (
-          <TableCell key={column.id} align={column.align} sx={{ minWidth: column.minWidth }}>
-            {column.label}
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  )
-}

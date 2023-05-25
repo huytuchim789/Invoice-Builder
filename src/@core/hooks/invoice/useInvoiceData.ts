@@ -5,15 +5,23 @@ import { IInvoiceDataResponse } from 'src/@core/models/api/invoice/invoice.inter
 
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 
-const getInvoiceData = async () => {
-  const { data } = (await axiosInstance.get(`invoices`)) as { data: IInvoiceDataResponse }
+interface Params {
+  page: number
+  limit: number
+}
+
+const getInvoiceData = async ({ page, limit }: Params) => {
+  const { data } = (await axiosInstance.get(`invoices?page=${page + 1}&limit=${limit}`)) as {
+    data: IInvoiceDataResponse
+  }
 
   return data.data
 }
 
-export const useInvoiceData = () => {
+export const useInvoiceData = ({ page, limit }: Params) => {
   return useQuery({
-    queryKey: [QUERY_INVOICE_KEYS.INVOICE_LIST],
-    queryFn: getInvoiceData
+    queryKey: [QUERY_INVOICE_KEYS.INVOICE_LIST, page, limit],
+    queryFn: () => getInvoiceData({ page, limit }),
+    retry: 0
   })
 }

@@ -1,5 +1,9 @@
-// import { create } from 'zustand'
-// import { devtools } from 'zustand/middleware'
+import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
+import { statusDrawerSendInvoiceStore } from './store/status-drawer'
 
-// export const useInvoiceAddStore = create(devtools(set => ({})))
-export {}
+export const useInvoicePreviewStore = create(
+  devtools((set: any) => ({
+    statusDrawerSendInvoiceStore: { ...statusDrawerSendInvoiceStore(set) }
+  }))
+)

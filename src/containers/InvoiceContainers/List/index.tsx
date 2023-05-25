@@ -1,20 +1,15 @@
 import { Box } from '@mui/material'
-import { FilterTab } from './filter-tab'
-import { useInvoiceData } from 'src/@core/hooks/invoice/useInvoiceData'
-import { createContext } from 'react'
-import { ContentTab } from './table-tab/content-tab'
 
-export const InvoiceListContext = createContext({})
+import { FilterTab } from './filter-tab'
+import { TableTab } from './table-tab'
 
 export const InvoiceList = () => {
-  const { data: invoice_list, isLoading: isInvoiceListLoading } = useInvoiceData()
-
   return (
-    <InvoiceListContext.Provider value={{ data: invoice_list, loading: isInvoiceListLoading }}>
+    <Box>
       <FilterTab />
-      <Box>
-        <ContentTab />
+      <Box mt={4}>
+        <TableTab />
       </Box>
-    </InvoiceListContext.Provider>
+    </Box>
   )
 }

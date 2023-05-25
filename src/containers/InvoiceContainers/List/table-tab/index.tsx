@@ -1,5 +1,15 @@
-import { Box } from '@mui/material'
+import { Card, CardContent } from '@mui/material'
+
+import { ContentTab } from './content-tab'
+import { ParamsTab } from './params-tab'
 
 export const TableTab = () => {
-  return <Box></Box>
+  return (
+    <Card>
+      <CardContent>
+        <ParamsTab />
+      </CardContent>
+      <ContentTab />
+    </Card>
+  )
 }

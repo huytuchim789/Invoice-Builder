@@ -11,6 +11,7 @@ import { InfoTab } from './info-tab'
 import { ItemTab } from './item-tab'
 import { SendTab } from './send-tab'
 import { SaleTab } from './sale-tab'
+import { DrawerSendInvoice } from './drawer-tab/drawer-invoice'
 
 export const InvoiceDetailContext = React.createContext({})
 
@@ -35,6 +36,7 @@ export const InvoicePreview = () => {
             <Grid item xs={12} md={12} lg={3}>
               <ActionTab />
             </Grid>
+            <DrawerSendInvoice />
           </InvoiceDetailContext.Provider>
         </Grid>
       )}

@@ -1,9 +1,12 @@
-import { Link } from '@mui/material'
+import { Button } from '@mui/material'
+import { useRouter } from 'next/router'
 
 export const CreateInvoice = () => {
+  const router = useRouter()
+
   return (
-    <Link variant='button' href='/invoice/create'>
+    <Button variant='contained' onClick={() => router.push('/invoice/add')}>
       Create Invoice
-    </Link>
+    </Button>
   )
 }
