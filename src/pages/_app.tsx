@@ -57,7 +57,14 @@ type ExtendedAppProps = AppProps & {
 }
 
 const clientSideEmotionCache = createEmotionCache()
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchInterval: false
+    }
+  }
+})
 
 // ** Pace Loader
 if (themeConfig.routingLoader) {

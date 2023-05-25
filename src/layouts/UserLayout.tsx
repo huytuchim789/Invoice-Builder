@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode, useEffect } from 'react'
+import { ReactNode } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -19,8 +19,6 @@ import VerticalAppBarContent from './components/vertical/AppBarContent'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
-import globalStore from 'src/@core/hocs/global-store'
-import { useDataLogin } from 'src/stores/useDataLogin'
 
 interface Props {
   children: ReactNode

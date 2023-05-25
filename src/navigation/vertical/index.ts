@@ -59,6 +59,12 @@ const navigation = (): VerticalNavItemsType => {
       sectionTitle: 'Invoice'
     },
     {
+      title: 'List',
+      icon: InvoicePreviewOutline,
+      path: '/invoice/list',
+      openInNewTab: false
+    },
+    {
       title: 'Preview',
       icon: InvoicePreviewOutline,
       path: '/invoice/preview',

@@ -12,7 +12,8 @@ export interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'item', label: '#', minWidth: 300 },
+  { id: 'invoice_id', label: '#', minWidth: 300 },
+  { id: 'status', label: 'Status', minWidth: 50 },
   { id: 'client', label: 'Client', minWidth: 100 },
   {
     id: 'total',
@@ -23,11 +24,6 @@ const columns: readonly Column[] = [
     id: 'issue_date',
     label: 'Issue Date',
     minWidth: 100
-  },
-  {
-    id: 'balance',
-    label: 'Balance',
-    minWidth: 50
   },
   {
     id: 'action',
