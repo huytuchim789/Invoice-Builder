@@ -70,3 +70,28 @@ export interface IInvoiceDetailDataResponse {
   data: IInvoiceDetailData
   message: string
 }
+
+export interface IInvoiceData {
+  current_page: number
+  data: IInvoiceDetailData[]
+  first_page_url: string
+  from: number
+  last_page: number
+  last_page_url: string
+  links: {
+    url: string | null
+    label: string
+    active: boolean
+  }[]
+  next_page_url: null
+  path: string
+  per_page: number
+  prev_page_url: null
+  to: number
+  total: number
+}
+
+export interface IInvoiceDataResponse {
+  data: IInvoiceData
+  message: string
+}

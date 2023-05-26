@@ -32,7 +32,7 @@ axiosInstance.interceptors.response.use(
         logout(false)
       } else if (error.response.status === 500) {
       } else if (error.response.status === 404) {
-        window.location.href = '/404'
+        // window.location.href = '/404'
       }
     }
 
