@@ -6,7 +6,7 @@ import { StartDatePdf } from './start-date'
 
 export const DateTabPdf = () => {
   return (
-    <View>
+    <View style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <InvoiceIdPdf />
       <StartDatePdf />
       <EndDatePdf />

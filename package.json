@@ -87,6 +87,7 @@
     "react-phone-input-2": "^2.15.1",
     "react-popper": "^2.2.5",
     "react-quill": "^2.0.0",
+    "react-to-pdf": "^0.0.14",
     "zustand": "^4.3.7"
   },
   "devDependencies": {

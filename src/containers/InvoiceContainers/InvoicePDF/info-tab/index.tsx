@@ -6,8 +6,7 @@ const infoTabstyle = StyleSheet.create({
   content: {
     display: 'flex',
     padding: '10px',
-    justifyContent: 'space-between',
-    flexWrap: 'nowrap'
+    flexDirection: 'row'
   }
 })
 

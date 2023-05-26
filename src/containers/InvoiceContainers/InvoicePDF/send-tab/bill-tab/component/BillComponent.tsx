@@ -8,21 +8,16 @@ interface Props {
 const style = StyleSheet.create({
   content: {
     display: 'flex',
-    padding: '10px',
-    justifyContent: 'space-between',
-    gap: '20px'
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 })
 
 export const BillComponent = ({ title, content }: Props) => {
   return (
     <View style={style.content}>
-      <View>
-        <Text style={{ fontSize: 16 }}>{title}:</Text>
-      </View>
-      <View>
-        <Text style={{ fontSize: 14 }}>{content}</Text>
-      </View>
+      <Text style={{ fontSize: 13, flex: 1 }}>{title}</Text>
+      <Text style={{ fontSize: 11, flex: 1 }}>{content}</Text>
     </View>
   )
 }

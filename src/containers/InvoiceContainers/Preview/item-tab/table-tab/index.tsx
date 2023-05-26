@@ -15,7 +15,7 @@ export interface Column {
 
 export const TableItem = () => {
   return (
-    <TableContainer sx={{ maxHeight: 440 }}>
+    <TableContainer>
       <Table sx={{ minWidth: 650 }} stickyHeader aria-label={'Okok'}>
         <TableHeader />
         <TableBodyContent />

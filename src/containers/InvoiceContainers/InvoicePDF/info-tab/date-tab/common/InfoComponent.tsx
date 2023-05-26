@@ -8,19 +8,17 @@ interface Props {
 const style = StyleSheet.create({
   content: {
     display: 'flex',
-    padding: '10px'
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: '20px'
   }
 })
 
-export const InfoComponent = ({ title, content }: Props) => {
+export const InfoPdfComponent = ({ title, content }: Props) => {
   return (
     <View style={style.content}>
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 16 }}>{title}</Text>
-      </View>
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 14 }}>{content}</Text>
-      </View>
+      <Text style={{ fontSize: 13 }}>{title}</Text>
+      <Text style={{ fontSize: 11 }}>{content}</Text>
     </View>
   )
 }

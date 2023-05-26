@@ -1,8 +1,9 @@
 import { View, StyleSheet } from '@react-pdf/renderer'
-import { BillTabPdf } from './bill-tab'
-import { InvoiceInfoTabPdf } from './invoice-tab'
 
-const sendTabstyle = StyleSheet.create({
+import { SalePersonPdf } from './sale-person'
+import { AccumulatePdfTab } from './accumulate-tab'
+
+const saleTabstyle = StyleSheet.create({
   content: {
     display: 'flex',
     padding: '10px',
@@ -11,14 +12,14 @@ const sendTabstyle = StyleSheet.create({
   }
 })
 
-export const SendTabPdf = () => {
+export const SalePdfTab = () => {
   return (
-    <View style={sendTabstyle.content}>
+    <View style={saleTabstyle.content}>
       <View style={{ flex: 1 }}>
-        <InvoiceInfoTabPdf />
+        <SalePersonPdf />
       </View>
       <View style={{ flex: 1 }}>
-        <BillTabPdf />
+        <AccumulatePdfTab />
       </View>
     </View>
   )

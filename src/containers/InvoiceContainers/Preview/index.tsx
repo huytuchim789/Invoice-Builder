@@ -26,11 +26,13 @@ export const InvoicePreview = () => {
           <InvoiceDetailContext.Provider value={{ invoice_detail: invoice_detail }}>
             <Grid item xs={12} md={12} lg={9}>
               <Card style={{ width: '100%' }}>
-                <InfoTab />
-                <SendTab />
-                <ItemTab />
-                <SaleTab />
-                <NoteTab />
+                <Box>
+                  <InfoTab />
+                  <SendTab />
+                  <ItemTab />
+                  <SaleTab />
+                  <NoteTab />
+                </Box>
               </Card>
             </Grid>
             <Grid item xs={12} md={12} lg={3}>
