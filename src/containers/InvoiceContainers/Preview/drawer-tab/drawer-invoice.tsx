@@ -1,27 +1,27 @@
 // ** React imports
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useContext } from 'react'
+import { useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { usePDF } from '@react-pdf/renderer'
 
 // ** MUI Library imports
 import { Box, Button, Drawer, Stack, TextField, Typography } from '@mui/material'
 
 // ** Interface imports
-import { IAddCustomerUserDataResponseError } from 'src/@core/models/api/invoice/error.interface'
-import {
-  IAddUserSelectInvoiceToDataResponse,
-  IUserSelectInvoiceTo
-} from 'src/@core/models/api/invoice/invoice.interface'
+import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interface'
 
 // ** Common imports
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
-import { ICustomerUsers, addCustomerUser } from 'src/@core/utils/api/invoice/addCustomerUser'
 
 // ** Store imports
 import { useInvoicePreviewStore } from '../store'
 
 // ** Icon imports
 import CloseIcon from '@mui/icons-material/Close'
+import InvoicePDF from '../../InvoicePDF'
+import { InvoiceDetailContext } from '..'
+import { sendInvoiceByMail } from 'src/@core/utils/api/invoice/sendInvoiceByMail'
 
 interface IField {
   label: string
@@ -58,37 +58,50 @@ const fields: IField[] = [
 ]
 
 export const DrawerSendInvoice = () => {
+  const queryClient = useQueryClient()
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset
   } = useForm()
-  const queryClient = useQueryClient()
+  const { invoice_detail } = useContext(InvoiceDetailContext) as { invoice_detail: IInvoiceDetailData }
+  const MyDoc = <InvoicePDF invoice_detail={invoice_detail} />
+
+  const [instance] = usePDF({ document: MyDoc })
 
   const { status, setStatus } = useInvoicePreviewStore((state: any) => state.statusDrawerSendInvoiceStore)
   const snackbar = useSnackbarWithContext()
 
+  const handleUploadPdf = async (): Promise<any> => {
+    if (instance.blob) {
+      const formData = new FormData()
+
+      formData.append('invoice_id', invoice_detail.id)
+      formData.append('file', instance.blob, 'file.pdf')
+
+      return await sendInvoiceByMail(formData)
+    }
+  }
+
   const { mutate, isLoading: isAddCustomerLoading } = useMutation({
-    mutationFn: async (data: ICustomerUsers) => await addCustomerUser(data),
-    onSuccess: ({ data }: { data: IAddUserSelectInvoiceToDataResponse }) => {
-      queryClient.setQueryData([QUERY_INVOICE_KEYS.USER_SELECT], (previousUser: IUserSelectInvoiceTo[] | undefined) =>
-        previousUser ? [...previousUser, data.data] : previousUser
-      )
+    mutationFn: (): Promise<any> => handleUploadPdf(),
+    onSuccess: (data: { data: { message: string } }) => {
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.INVOICE_LIST])
 
       reset()
       setStatus(false)
-      snackbar.success(data.message)
+      snackbar.success(data.data.message)
     },
-    onError: (err: { response: IAddCustomerUserDataResponseError }) => {
+    onError: (err: { response: { data: { message: string } } }) => {
       const { response } = err
 
       snackbar.error(response.data.message)
     }
   })
 
-  const onSubmit = async (data: SubmitHandler<IUserSelectInvoiceTo> & any) => {
-    mutate(data)
+  const onSubmit = () => {
+    mutate()
   }
 
   return (

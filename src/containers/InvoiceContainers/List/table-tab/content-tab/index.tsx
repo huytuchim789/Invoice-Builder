@@ -3,37 +3,43 @@ import React, { useCallback, useState } from 'react'
 import { Box } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 
-import { useInvoiceData } from 'src/@core/hooks/invoice/useInvoiceData'
 import { columns } from './table-header'
+import { useListInvoiceStore } from '../../store'
+import { useEmailTransactionData } from 'src/@core/hooks/invoice/useEmailTransactionList'
 
 export const ContentTab = () => {
-  const [page, setPage] = useState<number>(0)
+  const { keyword } = useListInvoiceStore((state: any) => state.searchTabStore)
+  const [page, setPage] = useState<number>(1)
   const [limit] = useState<number>(10)
 
-  const { data: invoice_list, isLoading: isInvoiceListLoading } = useInvoiceData({ page: page, limit })
+  const { data: email_transactions, isLoading: isEmailTransactionsLoading } = useEmailTransactionData({
+    page: page,
+    limit,
+    keyword
+  })
 
   const onChangePagination = useCallback((pagination: { page: number; pageSize: number }) => {
-    setPage(pagination.page)
+    setPage(pagination.page + 1)
   }, [])
 
   return (
     <Box mt={3}>
-      {invoice_list && (
+      {email_transactions && (
         <DataGrid
-          rows={invoice_list.data}
+          rows={email_transactions.data}
           columns={columns}
-          loading={isInvoiceListLoading}
+          loading={isEmailTransactionsLoading}
           onPaginationModelChange={onChangePagination}
           pageSizeOptions={[5, 10, 15, 20]}
           paginationModel={{
-            page: page,
+            page: page - 1,
             pageSize: limit
           }}
-          paginationMode='server'
           style={{
             border: 'none'
           }}
           checkboxSelection
+          paginationMode='server'
         />
       )}
     </Box>
