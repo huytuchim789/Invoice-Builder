@@ -9,9 +9,12 @@ import { useEmailTransactionData } from 'src/@core/hooks/invoice/useEmailTransac
 import { pusher } from 'src/@core/common/pusher'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 import { useQueryClient } from '@tanstack/react-query'
+import { updateData } from 'src/@core/utils/update-data'
+import { globalStore } from 'src/@core/hocs/global-store'
 
 export const ContentTab = () => {
   const queryClient = useQueryClient()
+  const { user } = globalStore((state: any) => state.userStore)
   const { keyword } = useListInvoiceStore((state: any) => state.searchTabStore)
   const [page, setPage] = useState<number>(0)
   const [limit] = useState<number>(10)
@@ -23,14 +26,31 @@ export const ContentTab = () => {
   })
 
   useEffect(() => {
-    const channel = pusher.subscribe('email-transactions')
-    const oldTransaction = queryClient.getQueryData([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION, page, limit, keyword])
+    if (email_transactions && user.id) {
+      const channel = pusher.subscribe(`private-sender=${user.id}_email-transactions_page=1`)
+      const { data: transactions } = queryClient.getQueryData([
+        QUERY_INVOICE_KEYS.EMAIL_TRANSACTION,
+        page,
+        limit,
+        keyword
+      ]) as { data: any[] }
 
-    console.log(oldTransaction)
-    channel.bind('list-updated', function (data: any) {
-      console.log(data)
-    })
-  }, [email_transactions])
+      channel.bind('list-updated', function (data: any) {
+        console.log(data)
+
+        // const newData = updateData(
+        //   transactions,
+        //   data.emailTransactions.data[0].id,
+        //   'status',
+        //   data.emailTransactions.data[0].status
+        // )
+
+        // console.log(newData)
+
+        // queryClient.setQueryData([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION, page, limit, keyword], newData)
+      })
+    }
+  }, [email_transactions, user])
 
   const onChangePagination = useCallback((pagination: { page: number; pageSize: number }) => {
     setPage(pagination.page)
