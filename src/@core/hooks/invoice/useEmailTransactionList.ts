@@ -23,6 +23,7 @@ export const useEmailTransactionData = ({ page, limit, keyword }: Params) => {
   return useQuery({
     queryKey: [QUERY_INVOICE_KEYS.EMAIL_TRANSACTION, page, limit, keyword],
     queryFn: () => getEmailTransactionData({ page, limit, keyword }),
+    staleTime: 2 * 60 * 1000,
     retry: 0
   })
 }

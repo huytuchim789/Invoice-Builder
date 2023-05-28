@@ -1,6 +1,7 @@
 // ** React imports
 import { useContext } from 'react'
-import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/router'
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { usePDF } from '@react-pdf/renderer'
 
@@ -32,18 +33,6 @@ interface IField {
 
 const fields: IField[] = [
   {
-    label: 'From',
-    value: 'from',
-    multiple: false,
-    helpText: 'Name is required'
-  },
-  {
-    label: 'To',
-    value: 'to',
-    multiple: false,
-    helpText: 'Company is required'
-  },
-  {
     label: 'Subject',
     value: 'subject',
     multiple: false,
@@ -59,6 +48,7 @@ const fields: IField[] = [
 
 export const DrawerSendInvoice = () => {
   const queryClient = useQueryClient()
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -73,11 +63,13 @@ export const DrawerSendInvoice = () => {
   const { status, setStatus } = useInvoicePreviewStore((state: any) => state.statusDrawerSendInvoiceStore)
   const snackbar = useSnackbarWithContext()
 
-  const handleUploadPdf = async (): Promise<any> => {
+  const handleUploadPdf = async (data: FieldValues): Promise<any> => {
     if (instance.blob) {
       const formData = new FormData()
 
       formData.append('invoice_id', invoice_detail.id)
+      formData.append('message', data.message)
+      formData.append('subject', data.subject)
       formData.append('file', instance.blob, 'file.pdf')
 
       return await sendInvoiceByMail(formData)
@@ -85,12 +77,13 @@ export const DrawerSendInvoice = () => {
   }
 
   const { mutate, isLoading: isAddCustomerLoading } = useMutation({
-    mutationFn: (): Promise<any> => handleUploadPdf(),
+    mutationFn: (data: FieldValues): Promise<any> => handleUploadPdf(data),
     onSuccess: (data: { data: { message: string } }) => {
-      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.INVOICE_LIST])
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION])
 
       reset()
       setStatus(false)
+      router.push('/invoice/list')
       snackbar.success(data.data.message)
     },
     onError: (err: { response: { data: { message: string } } }) => {
@@ -100,8 +93,8 @@ export const DrawerSendInvoice = () => {
     }
   })
 
-  const onSubmit = () => {
-    mutate()
+  const onSubmit: SubmitHandler<FieldValues> = data => {
+    mutate(data)
   }
 
   return (

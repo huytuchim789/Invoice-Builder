@@ -1,50 +1,39 @@
-import { Typography, Box, Link } from '@mui/material'
-import { GridColDef } from '@mui/x-data-grid'
+import { Typography, Box } from '@mui/material'
 import { ActionTab } from './action-tab'
 
-export const columns: GridColDef[] = [
+export const columns = [
   {
     field: 'id',
     headerName: '#',
     width: 350,
-    renderCell(params) {
-      return <Link href={`/invoice/preview/${params.row.id}`}>{params.row.id}</Link>
+    renderCell(params: any) {
+      return <Typography fontSize={12}>{params.row.id}</Typography>
     }
   },
+  { field: 'status', headerName: 'Status', width: 100 },
   {
     field: 'customer',
     headerName: 'Client',
     description: 'This column has a value getter and is not sortable.',
     sortable: false,
     width: 300,
-    renderCell(params) {
+    renderCell(params: any) {
       return (
         <Box>
-          <Typography fontSize={12}>{params.row.customer.name}</Typography>
-          <Typography fontSize={12}>{params.row.customer.email}</Typography>
+          <Typography fontSize={12}>{params.row.invoice.customer.name}</Typography>
+          <Typography fontSize={12}>{params.row.invoice.customer.email}</Typography>
         </Box>
       )
     }
   },
-  { field: 'issued_date', headerName: 'Issued Date', width: 230 },
-  {
-    field: 'total',
-    headerName: 'Total Amount',
-    type: 'number',
-    headerAlign: 'center',
-    align: 'center',
-    width: 250,
-    renderCell(params) {
-      return <Typography textAlign='center'>${params.row.total}</Typography>
-    }
-  },
+  { field: 'created_at', headerName: 'Issued Date', width: 230 },
   {
     field: '',
     headerName: 'Actions',
     headerAlign: 'center',
     align: 'center',
     width: 200,
-    renderCell(params) {
+    renderCell(params: any) {
       return <ActionTab id={params.row.id} />
     }
   }
