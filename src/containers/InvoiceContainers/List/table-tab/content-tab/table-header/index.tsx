@@ -1,13 +1,14 @@
 import { Typography, Box } from '@mui/material'
 import { ActionTab } from './action-tab'
+import { InvoiceIdTab } from './invoice-id'
 
-export const columns = [
+export const columns: any[] = [
   {
     field: 'id',
     headerName: '#',
     width: 350,
     renderCell(params: any) {
-      return <Typography fontSize={12}>{params.row.id}</Typography>
+      return <InvoiceIdTab params={params} />
     }
   },
   { field: 'status', headerName: 'Status', width: 100 },

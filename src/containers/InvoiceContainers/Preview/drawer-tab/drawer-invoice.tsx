@@ -72,7 +72,7 @@ export const DrawerSendInvoice = () => {
       formData.append('subject', data.subject)
       formData.append('file', instance.blob, 'file.pdf')
 
-      return await sendInvoiceByMail(formData)
+      return await sendInvoiceByMail(formData, Number(router.query.page))
     }
   }
 

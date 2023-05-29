@@ -27,27 +27,15 @@ export const ContentTab = () => {
 
   useEffect(() => {
     if (email_transactions && user.id) {
-      const channel = pusher.subscribe(`private-sender=${user.id}_email-transactions_page=1`)
-      const { data: transactions } = queryClient.getQueryData([
-        QUERY_INVOICE_KEYS.EMAIL_TRANSACTION,
-        page,
-        limit,
-        keyword
-      ]) as { data: any[] }
+      const channel = pusher.subscribe(`sender=${user.id}_email-transactions_page=${page + 1}`)
 
       channel.bind('list-updated', function (data: any) {
-        console.log(data)
+        const newData = updateData(email_transactions.data, data.emailTransaction.id, data.emailTransaction)
 
-        // const newData = updateData(
-        //   transactions,
-        //   data.emailTransactions.data[0].id,
-        //   'status',
-        //   data.emailTransactions.data[0].status
-        // )
-
-        // console.log(newData)
-
-        // queryClient.setQueryData([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION, page, limit, keyword], newData)
+        queryClient.setQueryData([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION, page, limit, keyword], {
+          ...email_transactions,
+          data: newData
+        })
       })
     }
   }, [email_transactions, user])
