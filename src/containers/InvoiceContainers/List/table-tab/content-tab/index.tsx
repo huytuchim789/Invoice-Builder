@@ -6,11 +6,11 @@ import { DataGrid } from '@mui/x-data-grid'
 import { columns } from './table-header'
 import { useListInvoiceStore } from '../../store'
 import { useEmailTransactionData } from 'src/@core/hooks/invoice/useEmailTransactionList'
-import { pusher } from 'src/@core/common/pusher'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateData } from 'src/@core/utils/update-data'
 import { globalStore } from 'src/@core/hocs/global-store'
+import { pusher } from 'src/@core/common/pusher'
 
 export const ContentTab = () => {
   const queryClient = useQueryClient()
@@ -27,7 +27,7 @@ export const ContentTab = () => {
 
   useEffect(() => {
     if (email_transactions && user.id) {
-      const channel = pusher.subscribe(`sender=${user.id}_email-transactions_page=${page + 1}`)
+      const channel = pusher.subscribe(`private-sender=${user.id}_email-transactions_page=${page + 1}`)
 
       channel.bind('list-updated', function (data: any) {
         const newData = updateData(email_transactions.data, data.emailTransaction.id, data.emailTransaction)
