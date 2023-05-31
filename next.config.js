@@ -1,5 +1,7 @@
 const path = require('path')
 const withLess = require('next-with-less')
+const withImages = require('next-images')
+
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: !!process.env.ANALYZE
 })
@@ -54,7 +56,9 @@ const webpack = (config, _options) => {
 
   return config
 }
-
+const images = {
+  disableStaticImages: true
+}
 const settings = {
   reactStrictMode: false,
   swcMinify: true,
@@ -64,7 +68,9 @@ const settings = {
   ...sassConfig,
   ...lessConfig,
   ...purgeCssConfig,
-  webpack,
+  ...images,
+  ...webpack,
+
   async rewrites() {
     return env.APP_BE === env.APP_FE
       ? []
@@ -77,4 +83,4 @@ const settings = {
   }
 }
 
-module.exports = withBundleAnalyzer(withLess(settings))
+module.exports = withBundleAnalyzer(withLess(withImages(settings)))
