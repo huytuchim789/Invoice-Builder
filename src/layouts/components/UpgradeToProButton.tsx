@@ -36,7 +36,7 @@ const BuyNowButton = () => {
       className='upgrade-to-pro-button mui-fixed'
       sx={{ right: theme => theme.spacing(20), bottom: theme => theme.spacing(10), zIndex: 11, position: 'fixed' }}
     >
-      <Button
+      {/* <Button
         component='a'
         target='_blank'
         variant='contained'
@@ -103,7 +103,7 @@ const BuyNowButton = () => {
             </CardContent>
           </Paper>
         </Box>
-      </Fade>
+      </Fade> */}
     </Box>
   )
 }

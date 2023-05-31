@@ -36,8 +36,6 @@ export const ContentTab = () => {
           ...email_transactions,
           data: newData
         })
-
-        queryClient.invalidateQueries([QUERY_INVOICE_KEYS.NOTIFICATION_LIST])
       })
     }
   }, [email_transactions, user])
