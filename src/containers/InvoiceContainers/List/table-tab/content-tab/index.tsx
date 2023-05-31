@@ -31,7 +31,6 @@ export const ContentTab = () => {
 
       channel.bind('list-updated', function (data: any) {
         const newData = updateData(email_transactions.data, data.emailTransaction.id, data.emailTransaction)
-
         queryClient.setQueryData([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION, page, limit, keyword], {
           ...email_transactions,
           data: newData
