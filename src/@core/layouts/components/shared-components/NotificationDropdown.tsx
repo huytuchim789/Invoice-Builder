@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
 // ** React Imports
-import { useState, SyntheticEvent, Fragment, ReactNode, useMemo } from 'react'
+import { useState, SyntheticEvent, useEffect, Fragment, ReactNode, useMemo } from 'react'
 
 // ** MUI Imports
 import { Badge, Box, Chip, Button, IconButton } from '@mui/material'
@@ -19,12 +19,14 @@ import BellOutline from 'mdi-material-ui/BellOutline'
 // ** Third Party Components
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 import { useNotificationListData } from 'src/@core/hooks/useNotificationData'
-import { INotificationListData } from 'src/@core/models/api/notification.interface'
+import { INotificationListData, INotificationListDataResponse } from 'src/@core/models/api/notification.interface'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { markNotiRead } from 'src/@core/utils/api/markNotiRead'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { markAllNotiRead } from 'src/@core/utils/api/markAllNotiRead'
+import { globalStore } from 'src/@core/hocs/global-store'
+import { pusher } from 'src/@core/common/pusher'
 
 dayjs.extend(utc)
 
@@ -93,6 +95,8 @@ const NotificationDropdown = () => {
   const queryClient = useQueryClient()
   const snackbar = useSnackbarWithContext()
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
+  const { user } = globalStore((state: any) => state.userStore)
+
   // ** States
   const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null)
   const [page] = useState(0)
@@ -114,6 +118,27 @@ const NotificationDropdown = () => {
 
     return 0
   }, [noti_list])
+
+  useEffect(() => {
+    if (user.id) {
+      const channel = pusher.subscribe(`private-App.Models.User.${user.id}`)
+
+      channel.bind(`Illuminate\\Notifications\\Events\\BroadcastNotificationCreated`, function (data: any) {
+        const oldData = queryClient.getQueryData([
+          QUERY_INVOICE_KEYS.NOTIFICATION_LIST,
+          page,
+          limit,
+          keyword
+        ]) as INotificationListDataResponse
+
+        oldData.data.unshift(data)
+
+        queryClient.setQueryData([QUERY_INVOICE_KEYS.NOTIFICATION_LIST], {
+          ...oldData
+        })
+      })
+    }
+  }, [user])
 
   const markReadNoti = useMutation({
     mutationFn: async (id: string) => await markNotiRead(id),

@@ -1,3 +1,5 @@
+import dynamic from 'next/dynamic'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
@@ -16,7 +18,13 @@ import { Settings } from 'src/@core/context/settingsContext'
 // ** Components
 import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
-import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
+
+const NotificationDropdown = dynamic<any>(
+  () => import('src/@core/layouts/components/shared-components/NotificationDropdown').then(mod => mod.default),
+  {
+    ssr: false
+  }
+)
 
 interface Props {
   hidden: boolean
