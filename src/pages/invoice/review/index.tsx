@@ -1,7 +1,14 @@
 import { NextPage } from 'next'
+import dynamic from 'next/dynamic'
 import { ReactNode } from 'react'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import { InvoiceReview } from 'src/containers/InvoiceContainers/Review'
+
+const InvoiceReview = dynamic<any>(
+  () => import('src/containers/InvoiceContainers/Review').then(mod => mod.InvoiceReview),
+  {
+    ssr: false
+  }
+)
 
 const InvoiceReviewPage: NextPage = () => {
   return <InvoiceReview />

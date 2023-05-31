@@ -101,7 +101,7 @@ const Chat = ({
           <ChatItem key={`${c.pin.xRatio} ${c.pin.yRatio}`} ref={activeChatIndex === i ? activeItemRef : undefined}>
             <div className='pin'>
               {/* <img className='img' src={Pin} alt='' width='20px' /> */}
-              <Image src='/images/pin.svg' fill />
+              <Image src='/images/pin.svg' alt='pin' layout='fill' />
               <span className='number'>{i + 1}</span>
             </div>
             <div className='content'>

@@ -1,13 +1,9 @@
 /* eslint-disable */
-
 import React, { useEffect, useRef, useState } from 'react'
 import { Stage, Sprite, Container, Text, useApp } from '@pixi/react'
 import * as PIXI from 'pixi.js'
-import Pin from 'src/images/pin.png'
-import BackGroundImg from 'src/images/sample.jpg'
-// import useWindowSize from 'src/@core/hooks/useWindowResize'
-import Image from 'next/dist/client/image'
 import useWindowSize from 'src/@core/hooks/useWindowResize'
+
 interface Props {
   pins: {
     xRatio: number
@@ -92,12 +88,16 @@ const Pixi = (props: Props) => {
   const [originalImageSize, setOriginalImageSize] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    // const img = new Image()
-    // img.src = BackGroundImg
-    // img.onload = function () {
-    //   const _this = this as unknown as { width: number; height: number }
-    //   setOriginalImageSize({ x: _this.width, y: _this.height })
-    // }
+    const img = new Image()
+
+    img.src = '/images/sample.jpg'
+
+    img.onload = function () {
+      console.log('here')
+
+      const _this = this as unknown as { width: number; height: number }
+      setOriginalImageSize({ x: _this.width, y: _this.height })
+    }
   }, [])
 
   useEffect(() => {
@@ -112,68 +112,58 @@ const Pixi = (props: Props) => {
   }, [originalImageSize])
 
   return (
-    <>
-      <Stage width={canvasWidth} height={canvasHeight} id='canvas'>
-        <Container>
-          <Sprite
-            image={BackGroundImg}
-            anchor={anchor}
-            x={position.x + canvasWidth * anchor}
-            y={position.y + canvasHeight * anchor}
-            scale={scale}
-            eventMode='dynamic'
-            pointerdown={(e: any) => {
-              const imageSize = {
-                x: originalImageSize.x * scale,
-                y: originalImageSize.y * scale
-              }
-              const xRatio = (e.data.global.x - ((canvasWidth - imageSize.x) / 2 + position.x)) / imageSize.x
-              const yRatio = (e.data.global.y - ((canvasHeight - imageSize.y) / 2 + position.y)) / imageSize.y
-              props.addPin({
-                xRatio,
-                yRatio
-              })
-            }}
-          />
-          {props.pins.map((p, i) => {
-            const positionX =
-              originalImageSize.x * scale * p.xRatio + (canvasWidth - originalImageSize.x * scale) / 2 + position.x
-            const positionY =
-              originalImageSize.y * scale * p.yRatio + (canvasHeight - originalImageSize.y * scale) / 2 + position.y
-            return (
-              <React.Fragment key={`${p.xRatio} ${p.yRatio}`}>
-                <Sprite
-                  image={Pin}
-                  anchor={anchor}
-                  x={positionX}
-                  y={positionY - 10}
-                  scale={0.23}
-                  click={() => props.clickPinHandler(i)}
-                  eventMode='dynamic'
-                  cursor='pointer'
-                />
-                <Text
-                  text={String(i + 1)}
-                  x={i < 9 ? positionX - 2 : positionX - 5}
-                  y={positionY - 18}
-                  scale={0.3}
-                  style={numberStyle}
-                />
-              </React.Fragment>
-            )
-          })}
-          {/* <MouseFollow /> */}
-          <Image
-            layout='fill'
-            src='/images/sample.jpg'
-            onLoad={function (e) {
-              // const _this = this as unknown as { width: number; height: number }
-              setOriginalImageSize({ x: e.target.naturalWidth, y: e.target.naturalHeight })
-            }}
-          />
-        </Container>
-      </Stage>
-    </>
+    <Stage width={canvasWidth} height={canvasHeight} id='canvas'>
+      <Container>
+        <Sprite
+          image={'/images/sample.jpg'}
+          anchor={anchor}
+          x={position.x + canvasWidth * anchor}
+          y={position.y + canvasHeight * anchor}
+          scale={scale}
+          eventMode='dynamic'
+          pointerdown={(e: any) => {
+            const imageSize = {
+              x: originalImageSize.x * scale,
+              y: originalImageSize.y * scale
+            }
+            const xRatio = (e.data.global.x - ((canvasWidth - imageSize.x) / 2 + position.x)) / imageSize.x
+            const yRatio = (e.data.global.y - ((canvasHeight - imageSize.y) / 2 + position.y)) / imageSize.y
+            props.addPin({
+              xRatio,
+              yRatio
+            })
+          }}
+        />
+        {props.pins.map((p, i) => {
+          const positionX =
+            originalImageSize.x * scale * p.xRatio + (canvasWidth - originalImageSize.x * scale) / 2 + position.x
+          const positionY =
+            originalImageSize.y * scale * p.yRatio + (canvasHeight - originalImageSize.y * scale) / 2 + position.y
+          return (
+            <React.Fragment key={`${p.xRatio} ${p.yRatio}`}>
+              <Sprite
+                image={'/images/pin.svg'}
+                anchor={anchor}
+                x={positionX}
+                y={positionY - 10}
+                scale={0.23}
+                click={() => props.clickPinHandler(i)}
+                eventMode='dynamic'
+                cursor='pointer'
+              />
+              <Text
+                text={String(i + 1)}
+                x={i < 9 ? positionX - 2 : positionX - 5}
+                y={positionY - 18}
+                scale={0.3}
+                style={numberStyle}
+              />
+            </React.Fragment>
+          )
+        })}
+        {/* <MouseFollow /> */}
+      </Container>
+    </Stage>
   )
 }
 

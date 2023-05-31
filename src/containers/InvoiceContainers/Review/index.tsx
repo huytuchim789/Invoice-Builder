@@ -1,9 +1,12 @@
 import dynamic from 'next/dynamic'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { Chat } from './Chat'
 
 const Pixi = dynamic<any>(() => import('./Pixi').then(mod => mod.Pixi), {
+  ssr: false
+})
+
+const Chat = dynamic<any>(() => import('./Chat').then(mod => mod.Chat), {
   ssr: false
 })
 
