@@ -4,8 +4,10 @@ import { IInvoiceInfo, saveInvoice } from 'src/@core/utils/api/invoice/saveInvoi
 import { globalStore } from 'src/@core/hocs/global-store'
 import { useMutation } from '@tanstack/react-query'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
+import { useRouter } from 'next/router'
 
 export const SaveButton = () => {
+  const router = useRouter()
   const snackbar = useSnackbarWithContext()
 
   const [userSelect, items, dateSelect, noteSelect] = useInvoiceAddStore((state: any) => [
@@ -19,6 +21,8 @@ export const SaveButton = () => {
   const { mutate, isLoading: isSaveInvoiceLoading } = useMutation({
     mutationFn: async (data: IInvoiceInfo) => await saveInvoice(data),
     onSuccess: ({ data }: { data: { message: string } }) => {
+      router.push('/invoice/list')
+
       snackbar.success(data.message)
     },
     onError: (err: { response: any }) => {

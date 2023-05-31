@@ -1,11 +1,11 @@
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+
 // ** React Imports
-import { useState, SyntheticEvent, Fragment, ReactNode } from 'react'
+import { useState, SyntheticEvent, Fragment, ReactNode, useMemo } from 'react'
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
+import { Badge, Box, Chip, Button, IconButton } from '@mui/material'
 import { styled, Theme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import MuiMenu, { MenuProps } from '@mui/material/Menu'
@@ -18,6 +18,15 @@ import BellOutline from 'mdi-material-ui/BellOutline'
 
 // ** Third Party Components
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'
+import { useNotificationListData } from 'src/@core/hooks/useNotificationData'
+import { INotificationListData } from 'src/@core/models/api/notification.interface'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { markNotiRead } from 'src/@core/utils/api/markNotiRead'
+import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
+import { useSnackbarWithContext } from 'src/@core/common/snackbar'
+import { markAllNotiRead } from 'src/@core/utils/api/markAllNotiRead'
+
+dayjs.extend(utc)
 
 // ** Styled Menu component
 const Menu = styled(MuiMenu)<MenuProps>(({ theme }) => ({
@@ -80,12 +89,53 @@ const MenuItemSubtitle = styled(Typography)<TypographyProps>({
 })
 
 const NotificationDropdown = () => {
+  // ** Hook
+  const queryClient = useQueryClient()
+  const snackbar = useSnackbarWithContext()
+  const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
   // ** States
   const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null)
+  const [page] = useState(0)
+  const [limit] = useState(10)
+  const [keyword] = useState('')
 
-  // ** Hook
-  const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
+  // ** Call Data
+  const { data: noti_list } = useNotificationListData({ page, limit, keyword })
 
+  const countUnRead = useMemo(() => {
+    if (noti_list) {
+      return noti_list.data.reduce((accumulate, currentData) => {
+        if (currentData.read_at === null) {
+          return accumulate + 1
+        }
+        return accumulate
+      }, 0)
+    }
+
+    return 0
+  }, [noti_list])
+
+  const markReadNoti = useMutation({
+    mutationFn: async (id: string) => await markNotiRead(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.NOTIFICATION_LIST])
+    },
+    onError: (err: any) => {
+      snackbar.error(err.message)
+    }
+  })
+
+  const markReadAllNoti = useMutation({
+    mutationFn: async () => await markAllNotiRead(),
+    onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.NOTIFICATION_LIST])
+    },
+    onError: (err: any) => {
+      snackbar.error(err.message)
+    }
+  })
+
+  // ** Function
   const handleDropdownOpen = (event: SyntheticEvent) => {
     setAnchorEl(event.currentTarget)
   }
@@ -104,11 +154,19 @@ const NotificationDropdown = () => {
     }
   }
 
+  const handleMarkReadNoti = (id: string, read_at: string | null) => {
+    if (read_at === null && !markReadNoti.isLoading) {
+      markReadNoti.mutate(id)
+    }
+  }
+
   return (
     <Fragment>
-      <IconButton color='inherit' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
-        <BellOutline />
-      </IconButton>
+      <Badge badgeContent={countUnRead} color='primary'>
+        <IconButton color='inherit' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
+          <BellOutline />
+        </IconButton>
+      </Badge>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -121,91 +179,38 @@ const NotificationDropdown = () => {
             <Typography sx={{ fontWeight: 600 }}>Notifications</Typography>
             <Chip
               size='small'
-              label='8 New'
+              label={`${countUnRead} news`}
               color='primary'
               sx={{ height: 20, fontSize: '0.75rem', fontWeight: 500, borderRadius: '10px' }}
             />
           </Box>
         </MenuItem>
         <ScrollWrapper>
-          <MenuItem onClick={handleDropdownClose}>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <Avatar alt='Flora' src='/images/avatars/4.png' />
-              <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>Congratulation Flora! 🎉</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>Won the monthly best seller badge</MenuItemSubtitle>
-              </Box>
-              <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                Today
-              </Typography>
-            </Box>
-          </MenuItem>
-          <MenuItem onClick={handleDropdownClose}>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <Avatar sx={{ color: 'common.white', backgroundColor: 'primary.main' }}>VU</Avatar>
-              <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>New user registered.</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>5 hours ago</MenuItemSubtitle>
-              </Box>
-              <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                Yesterday
-              </Typography>
-            </Box>
-          </MenuItem>
-          <MenuItem onClick={handleDropdownClose}>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <Avatar alt='message' src='/images/avatars/5.png' />
-              <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>New message received 👋🏻</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>You have 10 unread messages</MenuItemSubtitle>
-              </Box>
-              <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                11 Aug
-              </Typography>
-            </Box>
-          </MenuItem>
-          <MenuItem onClick={handleDropdownClose}>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <img width={38} height={38} alt='paypal' src='/images/misc/paypal.png' />
-              <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>Paypal</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>Received Payment</MenuItemSubtitle>
-              </Box>
-              <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                25 May
-              </Typography>
-            </Box>
-          </MenuItem>
-          <MenuItem onClick={handleDropdownClose}>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <Avatar alt='order' src='/images/avatars/3.png' />
-              <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>Revised Order 📦</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>New order revised from john</MenuItemSubtitle>
-              </Box>
-              <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                19 Mar
-              </Typography>
-            </Box>
-          </MenuItem>
-          <MenuItem onClick={handleDropdownClose}>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <img width={38} height={38} alt='chart' src='/images/misc/chart.png' />
-              <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                <MenuItemTitle>Finance report has been generated</MenuItemTitle>
-                <MenuItemSubtitle variant='body2'>25 hrs ago</MenuItemSubtitle>
-              </Box>
-              <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                27 Dec
-              </Typography>
-            </Box>
-          </MenuItem>
+          {noti_list &&
+            noti_list.data.map((noti: INotificationListData) => (
+              <MenuItem
+                onClick={() => handleMarkReadNoti(noti.id, noti.read_at)}
+                key={noti.id}
+                style={{ backgroundColor: noti.read_at === null ? '#808080' : '#FFFFFF' }}
+              >
+                <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                  <Avatar alt='Flora' src={noti.data.sender.avatar_url} />
+                  <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
+                    <MenuItemTitle>{noti.data.sender.name}</MenuItemTitle>
+                    <MenuItemSubtitle variant='body2'>{noti.data.message}</MenuItemSubtitle>
+                  </Box>
+                  <Typography variant='caption' sx={{ color: 'text.disabled' }}>
+                    {dayjs(noti.created_at).utc().local().format('YYYY-MM-DD HH:mm:ss')}
+                  </Typography>
+                </Box>
+              </MenuItem>
+            ))}
         </ScrollWrapper>
         <MenuItem
           disableRipple
           sx={{ py: 3.5, borderBottom: 0, borderTop: theme => `1px solid ${theme.palette.divider}` }}
         >
-          <Button fullWidth variant='contained' onClick={handleDropdownClose}>
+          <Button fullWidth variant='contained' onClick={() => markReadAllNoti.mutate()}>
             Read All Notifications
           </Button>
         </MenuItem>
