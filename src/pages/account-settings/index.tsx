@@ -1,7 +1,6 @@
 // ** React Imports
 import { NextPage } from 'next'
 import { SyntheticEvent, useState } from 'react'
-import { getServerSideProps } from '../../@core/common/checkAuth'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -103,5 +102,3 @@ const AccountSettings: NextPage = () => {
 }
 
 export default AccountSettings
-
-export { getServerSideProps }

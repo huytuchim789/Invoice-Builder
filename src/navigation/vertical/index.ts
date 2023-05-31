@@ -64,12 +64,12 @@ const navigation = (): VerticalNavItemsType => {
       path: '/invoice/list',
       openInNewTab: false
     },
-    {
-      title: 'Preview',
-      icon: InvoicePreviewOutline,
-      path: '/invoice/preview',
-      openInNewTab: false
-    },
+    // {
+    //   title: 'Preview',
+    //   icon: InvoicePreviewOutline,
+    //   path: '/invoice/preview',
+    //   openInNewTab: false
+    // },
     {
       title: 'Edit',
       icon: InvoiceEditOutline,
