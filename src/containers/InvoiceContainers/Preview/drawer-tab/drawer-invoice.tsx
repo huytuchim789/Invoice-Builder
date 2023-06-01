@@ -108,7 +108,7 @@ export const DrawerSendInvoice = () => {
         bgcolor='#808080'
       >
         <Typography fontSize={20} style={{ color: '#FFF' }}>
-          Add Custom User
+          Send Invoice
         </Typography>
         <Box component='div' onClick={() => setStatus(false)} style={{ cursor: 'pointer' }}>
           <CloseIcon style={{ color: '#FFF' }} />
@@ -127,12 +127,8 @@ export const DrawerSendInvoice = () => {
                 maxRows={5}
                 {...register(field.value, { required: true })}
                 fullWidth
+                helperText={errors[field.value] && field.helpText}
               />
-              {errors[field.value] && (
-                <Typography color={'red'} fontSize={12}>
-                  {field.helpText}
-                </Typography>
-              )}
             </Box>
           ))}
           <Stack direction='row' gap={3}>

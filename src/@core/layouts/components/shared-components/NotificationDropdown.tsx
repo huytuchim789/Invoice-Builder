@@ -99,9 +99,10 @@ const NotificationDropdown = () => {
 
   // ** States
   const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null)
-  const [page] = useState(0)
-  const [limit] = useState(10)
-  const [keyword] = useState('')
+  const [page] = useState<number>(0)
+  const [limit] = useState<number>(10)
+  const [updateStatus, setUpdateStatus] = useState<boolean>(false)
+  const [keyword] = useState<string>('')
 
   // ** Call Data
   const { data: noti_list } = useNotificationListData({ page, limit, keyword })
@@ -117,7 +118,7 @@ const NotificationDropdown = () => {
     }
 
     return 0
-  }, [noti_list])
+  }, [noti_list, updateStatus])
 
   useEffect(() => {
     if (user.id) {
@@ -136,6 +137,8 @@ const NotificationDropdown = () => {
         queryClient.setQueryData([QUERY_INVOICE_KEYS.NOTIFICATION_LIST], {
           ...oldData
         })
+
+        setUpdateStatus(!updateStatus)
       })
     }
   }, [user])
