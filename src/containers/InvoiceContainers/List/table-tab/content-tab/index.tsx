@@ -59,6 +59,7 @@ export const ContentTab = () => {
           style={{
             border: 'none'
           }}
+          disableRowSelectionOnClick
           checkboxSelection
           paginationMode='server'
         />

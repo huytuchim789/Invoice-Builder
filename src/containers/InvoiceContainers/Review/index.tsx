@@ -1,20 +1,12 @@
-import dynamic from 'next/dynamic'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import styled from 'styled-components'
+import dynamic from 'next/dynamic'
+
+import { Box } from '@mui/material'
+import { Chat } from './Chat'
 
 const Pixi = dynamic<any>(() => import('./Pixi').then(mod => mod.Pixi), {
   ssr: false
 })
-
-const Chat = dynamic<any>(() => import('./Chat').then(mod => mod.Chat), {
-  ssr: false
-})
-
-const Wrapper = styled.div`
-  display: flex;
-  width: 100vw;
-  min-width: 760px;
-`
 
 const InvoiceReview = () => {
   const [chatList, setChatList] = useState<
@@ -102,7 +94,7 @@ const InvoiceReview = () => {
   }
 
   return (
-    <Wrapper>
+    <Box display='flex' width={'100vw'} minWidth={760}>
       <Pixi pins={pinList} addPin={createNewChat} clickPinHandler={clickPinHandler} />
       <Chat
         chatList={chatList}
@@ -113,7 +105,7 @@ const InvoiceReview = () => {
         activeItemRef={activeItemRef}
         textAreaRef={textAreaRef}
       />
-    </Wrapper>
+    </Box>
   )
 }
 

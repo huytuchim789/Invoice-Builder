@@ -6,6 +6,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { useRouter } from 'next/router'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
+import InvoicePDF from '../../InvoicePDF'
+import { usePDF } from '@react-pdf/renderer'
 
 export const SaveButton = () => {
   const router = useRouter()
@@ -18,7 +20,29 @@ export const SaveButton = () => {
     state.dateSelectStore,
     state.noteTabStore
   ])
+
   const { user } = globalStore((state: any) => state.userStore)
+
+  const MyDoc = (
+    <InvoicePDF
+      invoice_detail={{
+        id: '',
+        updated_at: dateSelect.date.end,
+        created_at: dateSelect.date.start,
+        issued_date: dateSelect.date.end,
+        created_date: dateSelect.date.start,
+        note: noteSelect.note,
+        tax: 21,
+        sale_person: user?.name,
+        customer_id: userSelect.user.id,
+        items: items.itemContent,
+        total: items.subTotal + (items.subTotal * 21) / 100,
+        customer: userSelect.user
+      }}
+    />
+  )
+
+  const [instance] = usePDF({ document: MyDoc })
 
   const { mutate, isLoading: isSaveInvoiceLoading } = useMutation({
     mutationFn: async (data: IInvoiceInfo) => await saveInvoice(data),
@@ -36,18 +60,23 @@ export const SaveButton = () => {
   })
 
   const handleSendInvoice = () => {
-    const data: IInvoiceInfo = {
-      issued_date: dateSelect.date.end,
-      created_date: dateSelect.date.start,
-      note: noteSelect.note,
-      tax: 21,
-      sale_person: user?.name,
-      customer_id: userSelect.user.id,
-      items: items.itemContent,
-      total: items.subTotal + (items.subTotal * 21) / 100
-    }
+    if (instance.blob !== null) {
+      const data: IInvoiceInfo = {
+        issued_date: dateSelect.date.end,
+        created_date: dateSelect.date.start,
+        note: noteSelect.note,
+        tax: 21,
+        sale_person: user?.name,
+        customer_id: userSelect.user.id,
+        items: items.itemContent,
+        total: items.subTotal + (items.subTotal * 21) / 100,
+        file: instance.blob
+      }
 
-    mutate(data)
+      mutate(data)
+    } else {
+      snackbar.error('What the fuck')
+    }
   }
 
   return (
