@@ -59,7 +59,7 @@ const Pixi = (props: Props) => {
   })
   const windowSize = useWindowSize()
 
-  const canvasWidth = windowSize.width - 300
+  const canvasWidth = windowSize.width * (9 / 12)
   const canvasHeight = windowSize.height
   const anchor = 0.5
 
@@ -93,8 +93,6 @@ const Pixi = (props: Props) => {
     img.src = '/images/sample.jpg'
 
     img.onload = function () {
-      console.log('here')
-
       const _this = this as unknown as { width: number; height: number }
       setOriginalImageSize({ x: _this.width, y: _this.height })
     }
@@ -131,6 +129,7 @@ const Pixi = (props: Props) => {
             xRatio,
             yRatio
           })
+          console.log(xRatio, yRatio)
         }}
       />
       {props.pins.map((p, i) => {

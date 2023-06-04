@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 
-import { Box } from '@mui/material'
+import { Grid } from '@mui/material'
 import { Chat } from './Chat'
+import { globalStore } from 'src/@core/hocs/global-store'
 
 const Pixi = dynamic<any>(() => import('./Pixi').then(mod => mod.Pixi), {
   ssr: false
@@ -12,10 +13,10 @@ const InvoiceReview = () => {
   const [chatList, setChatList] = useState<
     {
       messages: {
-        id: string
         author: string
         createdAt: string
         message: string
+        avatar_url: string
       }[]
       inputValue: string
       pin: { xRatio: number; yRatio: number } // 0 ~ 1
@@ -25,6 +26,8 @@ const InvoiceReview = () => {
   const chatListRef = useRef(null)
   const activeItemRef = useRef(null)
   const textAreaRef = useRef(null)
+  const { user } = globalStore((state: any) => state.userStore)
+  console.log(chatList)
 
   const createNewChat = (position: { xRatio: number; yRatio: number }) => {
     const filteredState = chatList.filter(c => c.messages.length > 0)
@@ -54,10 +57,10 @@ const InvoiceReview = () => {
     const date = new Date()
     const tmp = [...chatList]
     tmp[index].messages.push({
-      id: String(tmp[index].messages.length + 1),
-      author: 'Sota Ohara',
+      author: user?.name,
       createdAt: `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`,
-      message: tmp[index].inputValue
+      message: tmp[index].inputValue,
+      avatar_url: user?.avatar_url
     })
     tmp[index].inputValue = ''
     setChatList(tmp)
@@ -94,18 +97,22 @@ const InvoiceReview = () => {
   }
 
   return (
-    <Box display='flex' width={'100vw'} minWidth={760}>
-      <Pixi pins={pinList} addPin={createNewChat} clickPinHandler={clickPinHandler} />
-      <Chat
-        chatList={chatList}
-        activeChatIndex={activeChatIndex}
-        updateMessageHandler={updateMessageHandler}
-        submitMessageHandler={submitMessageHandler}
-        chatListRef={chatListRef}
-        activeItemRef={activeItemRef}
-        textAreaRef={textAreaRef}
-      />
-    </Box>
+    <Grid container spacing={6}>
+      <Grid item lg={9}>
+        <Pixi pins={pinList} addPin={createNewChat} clickPinHandler={clickPinHandler} />
+      </Grid>
+      <Grid item lg={3}>
+        <Chat
+          chatList={chatList}
+          activeChatIndex={activeChatIndex}
+          updateMessageHandler={updateMessageHandler}
+          submitMessageHandler={submitMessageHandler}
+          chatListRef={chatListRef}
+          activeItemRef={activeItemRef}
+          textAreaRef={textAreaRef}
+        />
+      </Grid>
+    </Grid>
   )
 }
 
