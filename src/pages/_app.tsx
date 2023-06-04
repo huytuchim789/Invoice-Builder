@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { Router } from 'next/router'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
@@ -30,8 +31,6 @@ import { createEmotionCache } from 'src/@core/utils/create-emotion-cache'
 
 // ** Store Imports
 import { IDataOpenAlert, useStatusAlert } from 'src/stores/useStatusAlert'
-
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 // ** React Perfect Scrollbar Style
 import 'react-perfect-scrollbar/dist/css/styles.css'
