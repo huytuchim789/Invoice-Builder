@@ -29,7 +29,7 @@ export const InvoiceEdit = () => {
   useEffect(() => {
     if (invoice_detail) {
       userSelect.setUser(invoice_detail.customer)
-      items.setItemContent(invoice_detail.items)
+      items.setAllItemContent(invoice_detail.items)
       dateSelect.setDate('start', invoice_detail.created_date)
       dateSelect.setDate('end', invoice_detail.issued_date)
       noteSelect.setNote(invoice_detail.note)

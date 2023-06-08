@@ -2,7 +2,7 @@ import { produce } from 'immer'
 
 export interface IStatusDrawerState {
   status: boolean
-  setUser: (value: boolean) => unknown
+  setStatus: (value: boolean) => unknown
 }
 
 export const statusDrawerSendInvoiceStore = (set: any) => ({

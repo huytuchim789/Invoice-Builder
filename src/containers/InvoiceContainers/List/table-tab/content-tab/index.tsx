@@ -15,14 +15,23 @@ import { pusher } from 'src/@core/common/pusher'
 export const ContentTab = () => {
   const queryClient = useQueryClient()
   const { user } = globalStore((state: any) => state.userStore)
-  const { keyword } = useListInvoiceStore((state: any) => state.searchTabStore)
+
+  const [status, rangeDate, searchTab] = useListInvoiceStore(state => [
+    state.invoiceStatusStore,
+    state.rangeDateStore,
+    state.searchTabStore
+  ])
+
   const [page, setPage] = useState<number>(0)
   const [limit] = useState<number>(10)
 
   const { data: email_transactions, isLoading: isEmailTransactionsLoading } = useEmailTransactionData({
     page: page,
     limit,
-    keyword
+    keyword: searchTab.keyword,
+    status: status.invoiceStatus,
+    startDate: rangeDate.rangeDate[0],
+    endDate: rangeDate.rangeDate[1]
   })
 
   useEffect(() => {
@@ -31,10 +40,21 @@ export const ContentTab = () => {
 
       channel.bind('list-updated', function (data: any) {
         const newData = updateData(email_transactions.data, data.emailTransaction.id, data.emailTransaction)
-        queryClient.setQueryData([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION, page, limit, keyword], {
-          ...email_transactions,
-          data: newData
-        })
+        queryClient.setQueryData(
+          [
+            QUERY_INVOICE_KEYS.EMAIL_TRANSACTION,
+            page,
+            limit,
+            searchTab.keyword,
+            status.invoiceStatus,
+            rangeDate.rangeDate[0],
+            rangeDate.rangeDate[1]
+          ],
+          {
+            ...email_transactions,
+            data: newData
+          }
+        )
       })
     }
   }, [email_transactions, user])

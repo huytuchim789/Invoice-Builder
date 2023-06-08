@@ -1,16 +1,19 @@
 import { Box, Typography } from '@mui/material'
+import { useInvoiceEditStore } from '../../store'
 
 export const AddressTab = () => {
+  const { user } = useInvoiceEditStore((state: any) => state.userSelectTabStore)
+
   return (
     <Box marginTop={2}>
       <Typography fontSize={12} color={'#808080'}>
-        Hall-Robbins PLC
+        {user.name}
         <br />
-        7777 Mendez Plains
+        {user.address}
         <br />
-        (616) 865-4180
+        {user.contact_number}
         <br />
-        don85@johnson.com
+        {user.email}
       </Typography>
     </Box>
   )

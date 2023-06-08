@@ -76,5 +76,17 @@ export const itemContentTabStore = (set: any) => ({
         state.itemContentTabStore.itemContent = itemContentArr
       })
     )
+  },
+  setAllItemContent: (value: IItemContent[]) => {
+    return set(
+      produce((state: { itemContentTabStore: { itemContent: IItemContent[]; subTotal: number } }) => {
+        state.itemContentTabStore.itemContent = value
+
+        state.itemContentTabStore.subTotal = value.reduce(
+          (accumulateValue: number, nextValue: IItemContent) => accumulateValue + nextValue.price,
+          0
+        )
+      })
+    )
   }
 })

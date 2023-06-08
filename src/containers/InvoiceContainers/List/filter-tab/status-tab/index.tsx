@@ -1,8 +1,10 @@
-import { FormControl, Select, MenuItem } from '@mui/material'
+import { FormControl, Select, MenuItem, InputLabel } from '@mui/material'
+import { IInvoiceStatus } from 'src/@core/models/status.interface'
+import { useListInvoiceStore } from '../../store'
 
 interface IItemSelect {
   name: string
-  value: string
+  value: IInvoiceStatus
 }
 
 const ItemSelects: IItemSelect[] = [
@@ -11,43 +13,36 @@ const ItemSelects: IItemSelect[] = [
     value: ''
   },
   {
-    name: 'Downloaded',
-    value: 'dowloaded'
-  },
-  {
     name: 'Draft',
     value: 'draft'
   },
   {
-    name: 'Paid',
-    value: 'paid'
-  },
-  {
-    name: 'Partial Payment',
-    value: 'partial payment'
-  },
-  {
-    name: 'Past Due',
-    value: 'past due'
-  },
-  {
     name: 'Sent',
     value: 'sent'
+  },
+  {
+    name: 'Failed',
+    value: 'failed'
   }
 ]
 
 export const InvoiceStatusFilter = () => {
+  const { invoiceStatus, setInvoiceStatus } = useListInvoiceStore((state: any) => state.invoiceStatusStore)
+
+  const handleChangeInvoiceStatus = (status: string) => {
+    setInvoiceStatus(status)
+  }
+
   return (
     <FormControl variant='outlined' fullWidth>
-      <Select
-        label='Invoice Status'
-        fullWidth
-        labelId='demo-simple-select-outlined-label'
-        id='demo-simple-select-outlined'
-        size='small'
-      >
+      <InputLabel id='demo-simple-select-label'>{invoiceStatus ? invoiceStatus : 'Invoice Status'}</InputLabel>
+      <Select label='Invoice Status' fullWidth labelId='demo-simple-select-label' id='demo-simple-select'>
         {ItemSelects.map((item: IItemSelect, index: number) => (
-          <MenuItem value={item.value} key={`${item.name}-${index}`}>
+          <MenuItem
+            value={item.value}
+            key={`${item.name}-${index}`}
+            onClick={() => handleChangeInvoiceStatus(item.value)}
+          >
             {item.name}
           </MenuItem>
         ))}

@@ -1,17 +1,33 @@
-import { TextField, Box, Typography } from '@mui/material'
+import { useContext, ChangeEventHandler } from 'react'
+import { TextField } from '@mui/material'
+
+import { ItemEditContext } from '../table-body'
+
+import { IItemContent } from '../../store'
+import { useInvoiceEditStore } from '../../../store'
 
 export const CostCell = () => {
+  const { data, count } = useContext(ItemEditContext) as { data: IItemContent; count: number }
+
+  const { setItemContent } = useInvoiceEditStore((state: any) => state.itemContentTabStore)
+
+  const handleChangeDescription =
+    (props: string) =>
+    (event: { target: { value: string } }): ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> => {
+      return setItemContent(Number(event.target.value), props, count)
+    }
+
   return (
     <>
-      <TextField sx={{ width: '150px' }} type='number' size='small' variant='outlined' />
-      <Box mt={2}>
-        <Typography fontSize={12} color={'#808080'}>
-          Discount:
-        </Typography>
-        <Typography fontSize={12} color={'#808080'}>
-          0% 0% 0%
-        </Typography>
-      </Box>
+      <TextField
+        sx={{ width: '150px' }}
+        defaultValue={data.cost}
+        type='number'
+        size='small'
+        variant='outlined'
+        value={data.cost}
+        onChange={handleChangeDescription('cost')}
+      />
     </>
   )
 }
