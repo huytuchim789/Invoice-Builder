@@ -11,99 +11,36 @@ import ListItemAvatar from '@mui/material/ListItemAvatar'
 import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import css from 'styled-jsx/css'
-
-const Wrapper = styled.div`
-  // width: 300px;
-  box-sizing: border-box;
-  border-left: 1px solid #dfe3e9;
-  flex-shrink: 0;
-`
-const Head = styled.p`
-  font-weight: bold;
-  padding: 20px 10px 10px;
-  box-shadow: 0px 2px 2px rgba(64, 80, 119, 0.1);
-`
-const ChatList = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-  height: calc(100vh - 54px);
-  overflow: scroll;
-  scroll-behavior: smooth;
-`
-const ChatItem = styled.li`
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 10px 20px;
-  border-bottom: 1px solid #dfe3e9;
-  .pin {
-    position: sticky;
-    top: 10px;
-    height: 30px;
-    width: 30px;
-    flex-shrink: 0;
-    .number {
-      position: absolute;
-      left: 12px;
-      top: 4px;
-      font-size: 12px;
-      color: #fff;
-    }
-  }
-  .content {
-    width: 100%;
-  }
-  .author {
-    font-size: 12px;
-    font-weight: bold;
-  }
-  .createdAt {
-    margin-left: 16px;
-    font-size: 12px;
-    color: #888;
-  }
-  .message {
-    margin: 0 4px 10px;
-    white-space: pre-wrap;
-    font-size: 14px;
-    line-height: 20px;
-  }
-  .input {
-    padding-bottom: 8px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-`
+import { IChat, useReviewStore } from './store'
+import { Controller, useForm, useFormContext } from 'react-hook-form'
+import { makeStyles } from '@mui/styles'
+import { useReviewController } from './controller'
 
 interface Props {
-  chatList: {
-    messages: {
-      id: string
-      author: string
-      createdAt: string
-      message: string
-      avatar_url: string
-    }[]
-    inputValue: string
-    pin: { xRatio: number; yRatio: number } // 0 ~ 1
-  }[]
-  activeChatIndex: number
-  updateMessageHandler: (value: string, index: number) => void
   submitMessageHandler: (index: number) => void
   chatListRef: React.MutableRefObject<null>
   activeItemRef: React.MutableRefObject<null>
   textAreaRef: React.MutableRefObject<null>
 }
+const useHelperTextStyles = makeStyles(() => ({
+  root: {
+    marginLeft: 0
+  }
+}))
+const Chat = ({ submitMessageHandler, chatListRef, activeItemRef, textAreaRef }: Props) => {
+  const helperTextStyles = useHelperTextStyles()
+  const { chatList, activeChatIndex } = useReviewStore()
 
-const Chat = ({
-  chatList,
-  activeChatIndex,
-  updateMessageHandler,
-  submitMessageHandler,
-  chatListRef,
-  activeItemRef,
-  textAreaRef
-}: Props) => {
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+    getValues
+  } = useFormContext()
+  const onSubmit = (data: any, callback: any) => {
+    callback()
+  }
+
   return (
     <Card className={`wrapper ${styles.className}`}>
       {/* <Divider /> */}
@@ -120,29 +57,29 @@ const Chat = ({
             </Grid>
             <Grid item lg={9}>
               <List sx={{ width: '100%' }} className={`no-pt ${styles.className}`}>
-                {c.messages.map((m, k) => (
+                {c.comments.map((m, k) => (
                   <ListItem
                     alignItems='flex-start'
-                    key={`${c.pin.xRatio} ${c.pin.yRatio}`}
+                    key={`${c.coordinate_X} ${c.coordinate_Y}`}
                     ref={activeChatIndex === i ? activeItemRef : undefined}
                     className={`no-pt no-pl ${styles.className}`} // disablePadding
                   >
                     <ListItemAvatar>
-                      <Avatar src={m?.avatar_url} sizes='small' />
+                      <Avatar src={m?.user?.avatar_url} sx={{ height: '35px', width: '35px' }} />
                     </ListItemAvatar>
                     <Stack>
                       <ListItemText
-                        key={c.pin.xRatio + c.pin.yRatio + m.id}
+                        key={c.coordinate_X + c.coordinate_Y + m.id}
                         primary={
                           <Stack direction='row' alignItems='center' spacing={'40px'}>
                             <Typography variant='body2'>
                               <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>
-                                {m?.author}
+                                {m?.user?.name}
                               </Box>
                             </Typography>
                             <Typography variant='subtitle2'>
                               <Box component='span' sx={{ fontWeight: 400, color: 'text.disabled' }}>
-                                {m?.createdAt}
+                                {m?.created_at}
                               </Box>
                             </Typography>
                           </Stack>
@@ -155,7 +92,7 @@ const Chat = ({
                               variant='body2'
                               color='text.primary'
                             >
-                              {m.message}
+                              {m?.content}
                             </Typography>
                           </Stack>
                         }
@@ -164,32 +101,53 @@ const Chat = ({
                   </ListItem>
                 ))}
                 {i === activeChatIndex && (
-                  <Stack spacing={2}>
-                    <TextField
-                      className='input'
-                      ref={textAreaRef}
-                      fullWidth
-                      multiline
-                      value={c.inputValue}
-                      minRows={3}
-                      onChange={e => updateMessageHandler(e.currentTarget.value, i)}
-                      label=''
-                      placeholder='Comment'
-                      sx={{ '& .MuiOutlinedInput-root': { alignItems: 'baseline' } }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>
-                            <MessageOutline />
-                          </InputAdornment>
-                        )
-                      }}
+                  <Stack
+                    spacing={2}
+                    component={'form'}
+                    onSubmit={handleSubmit(data => onSubmit(data, () => submitMessageHandler(i)))}
+                  >
+                    <Controller
+                      name='comment'
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          className='input'
+                          ref={textAreaRef}
+                          fullWidth
+                          multiline
+                          minRows={3}
+                          // onChange={e => {
+                          //   field.onChange(e.currentTarget.value)
+                          // }}
+                          label=''
+                          placeholder='Comment'
+                          sx={{ '& .MuiOutlinedInput-root': { alignItems: 'baseline' } }}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position='start'>
+                                <MessageOutline />
+                              </InputAdornment>
+                            )
+                          }}
+                          error={!!errors.comment}
+                          helperText={errors.comment ? 'Comment is required' : null}
+                          FormHelperTextProps={{
+                            classes: {
+                              root: helperTextStyles.root
+                            }
+                          }}
+                        />
+                      )}
                     />
                     {/* <button onClick={() => submitMessageHandler(i)}>post</button> */}
                     <Button
                       className={`submit-btn ${styles.className}`}
                       size='medium'
+                      type='submit'
                       variant='contained'
-                      onClick={() => submitMessageHandler(i)}
+                      // onClick={() => }
                     >
                       Post
                     </Button>
