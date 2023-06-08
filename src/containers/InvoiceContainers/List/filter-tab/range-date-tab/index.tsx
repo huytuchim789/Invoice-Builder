@@ -1,11 +1,10 @@
-import extendedDayJs from 'src/@core/utils/api/dayjs'
-
 import { LocalizationProvider } from '@mui/x-date-pickers-pro'
 import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs'
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 
 import { useListInvoiceStore } from '../../store'
+import extendedDayJs from 'src/@core/utils/dayjs'
 
 export const RangeDateTab = () => {
   const { setRangeDate } = useListInvoiceStore((state: any) => state.rangeDateStore)

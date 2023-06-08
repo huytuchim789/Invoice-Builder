@@ -1,6 +1,10 @@
-import { Typography, Box } from '@mui/material'
+import { Typography } from '@mui/material'
+
 import { ActionTab } from './action-tab'
 import { InvoiceIdTab } from './invoice-id'
+
+import extendedDayJs from 'src/@core/utils/dayjs'
+import { ClientCell } from './client'
 
 export const columns: any[] = [
   {
@@ -17,25 +21,34 @@ export const columns: any[] = [
     headerName: 'Client',
     description: 'This column has a value getter and is not sortable.',
     sortable: false,
-    width: 300,
+    width: 250,
     renderCell(params: any) {
-      return (
-        <Box>
-          <Typography fontSize={12}>{params.row.invoice.customer.name}</Typography>
-          <Typography fontSize={12}>{params.row.invoice.customer.email}</Typography>
-        </Box>
-      )
+      return <ClientCell params={params} />
     }
   },
-  { field: 'created_at', headerName: 'Issued Date', width: 230 },
+  {
+    field: 'created_at',
+    headerName: 'Created At',
+    width: 120,
+    renderCell(params: any) {
+      return <Typography>{extendedDayJs(params.row.invoice.created_at).format('YYYY-MM-DD')}</Typography>
+    }
+  },
+  {
+    field: 'issued_date',
+    headerName: 'Issued Date',
+    width: 120,
+    renderCell(params: any) {
+      return <Typography>{extendedDayJs(params.row.invoice.issued_date).format('YYYY-MM-DD')}</Typography>
+    }
+  },
   {
     field: '',
     headerName: 'Actions',
     headerAlign: 'center',
     align: 'center',
-    width: 200,
     renderCell(params: any) {
-      return <ActionTab id={params.row.id} />
+      return <ActionTab params={params} />
     }
   }
 ]

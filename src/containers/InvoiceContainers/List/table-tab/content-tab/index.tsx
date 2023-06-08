@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react'
 
-import { Box } from '@mui/material'
+import { Box, styled } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 
 import { columns } from './table-header'
@@ -11,6 +11,15 @@ import { useQueryClient } from '@tanstack/react-query'
 import { updateData } from 'src/@core/utils/update-data'
 import { globalStore } from 'src/@core/hocs/global-store'
 import { pusher } from 'src/@core/common/pusher'
+
+const EmailTransactionTable = styled(DataGrid)({
+  '& .MuiDataGrid-columnHeader:focus, .MuiDataGrid-cell:focus': {
+    border: 'none'
+  },
+  '& .MuiDataGrid-cell:focus-within': {
+    outline: 'none'
+  }
+})
 
 export const ContentTab = () => {
   const queryClient = useQueryClient()
@@ -66,7 +75,7 @@ export const ContentTab = () => {
   return (
     <Box mt={3}>
       {email_transactions && (
-        <DataGrid
+        <EmailTransactionTable
           rows={email_transactions.data}
           columns={columns}
           loading={isEmailTransactionsLoading}
