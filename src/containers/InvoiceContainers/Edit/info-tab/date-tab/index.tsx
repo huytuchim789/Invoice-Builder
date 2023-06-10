@@ -1,15 +1,17 @@
 import React from 'react'
 
-import { EndDate } from './end-date'
-import { InvoiceId } from './invoice-id'
-import { StartDate } from './start-date'
+import InvoiceID from './invoice-id'
+import GridComponent from '../atoms/GridComponent'
+import DatePickerComponent from '../atoms/DatePickerComponent'
 
-export const DateTab = () => {
+const DateTab = () => {
   return (
     <React.Fragment>
-      <InvoiceId />
-      <StartDate />
-      <EndDate />
+      <GridComponent content='Invoice ID' component={<InvoiceID />} />
+      <GridComponent content='Date Issued' component={<DatePickerComponent status='start' />} />
+      <GridComponent content='Date Due' component={<DatePickerComponent status='end' />} />
     </React.Fragment>
   )
 }
+
+export default DateTab

@@ -1,9 +1,6 @@
-import { FormControl, Select, MenuItem, Box, TextField, SelectChangeEvent } from '@mui/material'
-import { useContext, ChangeEventHandler } from 'react'
+import { FormControl, Select, MenuItem, Box, TextField } from '@mui/material'
 
-import { IItemContent } from '../../store'
-import { useInvoiceEditStore } from '../../../store'
-import { ItemEditContext } from '../table-body'
+import { useEditItemInvoice } from '../component'
 
 interface IItemSelect {
   name: string
@@ -30,19 +27,7 @@ const ItemSelects: IItemSelect[] = [
 ]
 
 export const ItemCell = () => {
-  const { data, count } = useContext(ItemEditContext) as { data: IItemContent; count: number }
-
-  const { setItemContent } = useInvoiceEditStore((state: any) => state.itemContentTabStore)
-
-  const handleChangeContent = (props: string) => (e: SelectChangeEvent<string>) => {
-    setItemContent(e.target.value, props, count)
-  }
-
-  const handleChangeDescription =
-    (props: string) =>
-    (event: { target: { value: string } }): ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> => {
-      return setItemContent(event.target.value, props, count)
-    }
+  const { data, handleEditItem } = useEditItemInvoice()
 
   return (
     <>
@@ -52,7 +37,7 @@ export const ItemCell = () => {
           labelId='demo-simple-select-outlined-label'
           id='demo-simple-select-outlined'
           defaultValue={data.name}
-          onChange={handleChangeContent('name')}
+          onChange={handleEditItem('name')}
           size='small'
         >
           {ItemSelects.map((item: IItemSelect, index: number) => (
@@ -66,7 +51,7 @@ export const ItemCell = () => {
         <TextField
           value={data.description}
           id='outlined-multiline-static'
-          onChange={handleChangeDescription('description')}
+          onChange={handleEditItem('description')}
           multiline
           rows={2}
           variant='outlined'

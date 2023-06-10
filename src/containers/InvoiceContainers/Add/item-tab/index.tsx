@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 
 import { TableItem } from './table-tab'
-import { AddItemButton } from './add-item-btn'
+import { AddItemButton } from './button-tab/add-item-btn'
 
 export const ItemTab = () => {
   return (

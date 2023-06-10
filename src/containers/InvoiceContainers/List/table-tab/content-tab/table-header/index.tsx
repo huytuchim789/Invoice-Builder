@@ -5,6 +5,7 @@ import { InvoiceIdTab } from './invoice-id'
 
 import extendedDayJs from 'src/@core/utils/dayjs'
 import { ClientCell } from './client'
+import { StatusCell } from './status'
 
 export const columns: any[] = [
   {
@@ -15,7 +16,14 @@ export const columns: any[] = [
       return <InvoiceIdTab params={params} />
     }
   },
-  { field: 'status', headerName: 'Status', width: 100 },
+  {
+    field: 'status',
+    headerName: 'Status',
+    width: 100,
+    renderCell(params: any) {
+      return <StatusCell params={params} />
+    }
+  },
   {
     field: 'customer',
     headerName: 'Client',

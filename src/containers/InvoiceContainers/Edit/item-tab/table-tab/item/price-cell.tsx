@@ -1,12 +1,9 @@
-import { useContext } from 'react'
-
 import { Typography } from '@mui/material'
 
-import { IItemContent } from '../../store'
-import { ItemEditContext } from '../table-body'
+import { useEditItemInvoice } from '../component'
 
 export const PriceCell = () => {
-  const { data } = useContext(ItemEditContext) as { data: IItemContent; count: number }
+  const { data } = useEditItemInvoice()
 
   return <Typography>$ {data.price}</Typography>
 }

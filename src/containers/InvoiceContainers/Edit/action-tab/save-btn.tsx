@@ -19,11 +19,12 @@ export const SaveButton = () => {
 
   const { user } = globalStore((state: any) => state.userStore)
 
-  const [userSelect, items, dateSelect, noteSelect] = useInvoiceEditStore((state: any) => [
+  const [userSelect, items, dateSelect, noteSelect, invoice] = useInvoiceEditStore((state: any) => [
     state.userSelectTabStore,
     state.itemContentTabStore,
     state.dateSelectStore,
-    state.noteTabStore
+    state.noteTabStore,
+    state.invoiceIdStore
   ])
 
   const MyDoc = useMemo(() => {
@@ -31,7 +32,7 @@ export const SaveButton = () => {
       return (
         <InvoicePDF
           invoice_detail={{
-            id: '',
+            id: invoice.invoiceId,
             updated_at: dateSelect.date.end,
             created_at: dateSelect.date.start,
             issued_date: dateSelect.date.end,
