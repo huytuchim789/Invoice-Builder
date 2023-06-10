@@ -50,12 +50,6 @@ const navigation = (): VerticalNavItemsType => {
       openInNewTab: true
     },
     {
-      title: 'News',
-      icon: AlertCircleOutline,
-      path: '/pages/news',
-      openInNewTab: true
-    },
-    {
       sectionTitle: 'Invoice'
     },
     {
@@ -70,12 +64,12 @@ const navigation = (): VerticalNavItemsType => {
     //   path: '/invoice/preview',
     //   openInNewTab: false
     // },
-    {
-      title: 'Edit',
-      icon: InvoiceEditOutline,
-      path: '/invoice/edit',
-      openInNewTab: false
-    },
+    // {
+    //   title: 'Edit',
+    //   icon: InvoiceEditOutline,
+    //   path: '/invoice/edit',
+    //   openInNewTab: false
+    // },
     {
       title: 'Add',
       icon: InvoiceAddOutline,

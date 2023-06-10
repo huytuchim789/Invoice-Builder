@@ -1,7 +1,7 @@
 import { Box, Button, InputAdornment } from '@mui/material'
 
 import AddIcon from '@mui/icons-material/Add'
-import { useInvoiceAddStore } from '../store'
+import { useInvoiceAddStore } from '../../store'
 
 export const AddItemButton = () => {
   const { addItemContent } = useInvoiceAddStore((state: any) => state.itemContentTabStore)

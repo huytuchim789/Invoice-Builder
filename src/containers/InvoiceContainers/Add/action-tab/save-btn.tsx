@@ -1,13 +1,17 @@
-import { Button } from '@mui/material'
-import { useInvoiceAddStore } from '../store'
-import { IInvoiceInfo, saveInvoice } from 'src/@core/utils/api/invoice/saveInvoice'
-import { globalStore } from 'src/@core/hocs/global-store'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useSnackbarWithContext } from 'src/@core/common/snackbar'
+import { useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
-import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
-import InvoicePDF from '../../InvoicePDF'
 import { usePDF } from '@react-pdf/renderer'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+import { Button } from '@mui/material'
+import InvoicePDF from '../../InvoicePDF'
+
+import { globalStore } from 'src/@core/hocs/global-store'
+import { useSnackbarWithContext } from 'src/@core/common/snackbar'
+import { IInvoiceInfo, saveInvoice } from 'src/@core/utils/api/invoice/saveInvoice'
+import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
+
+import { useInvoiceAddStore } from '../store'
 
 export const SaveButton = () => {
   const router = useRouter()
@@ -23,26 +27,36 @@ export const SaveButton = () => {
 
   const { user } = globalStore((state: any) => state.userStore)
 
-  const MyDoc = (
-    <InvoicePDF
-      invoice_detail={{
-        id: '',
-        updated_at: dateSelect.date.end,
-        created_at: dateSelect.date.start,
-        issued_date: dateSelect.date.end,
-        created_date: dateSelect.date.start,
-        note: noteSelect.note,
-        tax: 21,
-        sale_person: user?.name,
-        customer_id: userSelect.user.id,
-        items: items.itemContent,
-        total: items.subTotal + (items.subTotal * 21) / 100,
-        customer: userSelect.user
-      }}
-    />
-  )
+  const MyDoc: any = useMemo(() => {
+    if (userSelect.user.id !== '' && noteSelect.note !== '') {
+      return (
+        <InvoicePDF
+          invoice_detail={{
+            id: '',
+            updated_at: dateSelect.date.end,
+            created_at: dateSelect.date.start,
+            issued_date: dateSelect.date.end,
+            created_date: dateSelect.date.start,
+            note: noteSelect.note,
+            tax: 21,
+            sale_person: user?.name,
+            customer_id: userSelect.user.id,
+            items: items.itemContent,
+            total: items.subTotal + (items.subTotal * 21) / 100,
+            customer: userSelect.user
+          }}
+        />
+      )
+    }
+  }, [user, userSelect, items, dateSelect, noteSelect])
 
-  const [instance] = usePDF({ document: MyDoc })
+  const [instance, updateInstance] = usePDF({ document: MyDoc || <></> })
+
+  useEffect(() => {
+    if (MyDoc) {
+      updateInstance()
+    }
+  }, [user, userSelect, items, dateSelect, noteSelect])
 
   const { mutate, isLoading: isSaveInvoiceLoading } = useMutation({
     mutationFn: async (data: IInvoiceInfo) => await saveInvoice(data),
@@ -75,7 +89,7 @@ export const SaveButton = () => {
 
       mutate(data)
     } else {
-      snackbar.error('What the fuck')
+      snackbar.error('Invalid PDF')
     }
   }
 

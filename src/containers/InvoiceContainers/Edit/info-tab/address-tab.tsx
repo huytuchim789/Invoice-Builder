@@ -1,6 +1,6 @@
 import { Typography, Box } from '@mui/material'
 
-export const AddressTab = () => {
+const AddressTab = () => {
   return (
     <>
       <Typography variant='h6'>Invoice</Typography>
@@ -16,3 +16,5 @@ export const AddressTab = () => {
     </>
   )
 }
+
+export default AddressTab

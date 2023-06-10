@@ -1,17 +1,18 @@
-import { TextField, Box, Typography } from '@mui/material'
+import { TextField } from '@mui/material'
+import { useEditItemInvoice } from '../component'
 
 export const CostCell = () => {
+  const { data, handleEditItem } = useEditItemInvoice()
+
   return (
-    <>
-      <TextField sx={{ width: '150px' }} type='number' size='small' variant='outlined' />
-      <Box mt={2}>
-        <Typography fontSize={12} color={'#808080'}>
-          Discount:
-        </Typography>
-        <Typography fontSize={12} color={'#808080'}>
-          0% 0% 0%
-        </Typography>
-      </Box>
-    </>
+    <TextField
+      sx={{ width: '150px' }}
+      defaultValue={data.cost}
+      type='number'
+      size='small'
+      variant='outlined'
+      value={data.cost}
+      onChange={handleEditItem('cost')}
+    />
   )
 }

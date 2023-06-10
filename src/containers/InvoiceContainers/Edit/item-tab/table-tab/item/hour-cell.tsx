@@ -1,5 +1,17 @@
 import { TextField } from '@mui/material'
+import { useEditItemInvoice } from '../component'
 
 export const HourCell = () => {
-  return <TextField type='number' sx={{ width: '150px' }} size='small' variant='outlined' />
+  const { data, handleEditItem } = useEditItemInvoice()
+
+  return (
+    <TextField
+      type='number'
+      onChange={handleEditItem('hours')}
+      value={data.hours}
+      sx={{ width: '150px' }}
+      size='small'
+      variant='outlined'
+    />
+  )
 }

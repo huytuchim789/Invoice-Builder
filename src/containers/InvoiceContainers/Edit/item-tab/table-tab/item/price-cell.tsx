@@ -1,5 +1,9 @@
 import { Typography } from '@mui/material'
 
+import { useEditItemInvoice } from '../component'
+
 export const PriceCell = () => {
-  return <Typography>$ 24.00</Typography>
+  const { data } = useEditItemInvoice()
+
+  return <Typography>$ {data.price}</Typography>
 }

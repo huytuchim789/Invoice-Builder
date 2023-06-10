@@ -17,11 +17,12 @@ export const InvoiceEditContext = React.createContext({})
 
 export const InvoiceEdit = () => {
   const { query } = useRouter()
-  const [userSelect, items, dateSelect, noteSelect] = useInvoiceEditStore((state: any) => [
+  const [userSelect, items, dateSelect, noteSelect, invoice] = useInvoiceEditStore((state: any) => [
     state.userSelectTabStore,
     state.itemContentTabStore,
     state.dateSelectStore,
-    state.noteTabStore
+    state.noteTabStore,
+    state.invoiceIdStore
   ])
 
   const { data: invoice_detail } = useInvoiceDetailData(query?.id ? query.id : '')
@@ -29,10 +30,11 @@ export const InvoiceEdit = () => {
   useEffect(() => {
     if (invoice_detail) {
       userSelect.setUser(invoice_detail.customer)
-      items.setItemContent(invoice_detail.items)
+      items.setAllItemContent(invoice_detail.items)
       dateSelect.setDate('start', invoice_detail.created_date)
       dateSelect.setDate('end', invoice_detail.issued_date)
       noteSelect.setNote(invoice_detail.note)
+      invoice.setInvoiceId(invoice_detail.id)
     }
   }, [invoice_detail])
 
