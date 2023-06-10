@@ -57,8 +57,14 @@ const webpack = (config, _options) => {
   return config
 }
 const images = {
-  disableStaticImages: true
+  disableStaticImages: true,
+  domains: ['https://lh3.googleusercontent.com']
 }
+const removeImports = require('next-remove-imports')({
+  test: /node_modules([\s\S]*?)\.(tsx|ts|js|mjs|jsx)$/,
+  matchImports: '\\.(less|css|scss|sass|styl)$'
+})
+
 const settings = {
   reactStrictMode: false,
   swcMinify: true,
@@ -83,4 +89,4 @@ const settings = {
   }
 }
 
-module.exports = withBundleAnalyzer(withLess(withImages(settings)))
+module.exports = removeImports(withBundleAnalyzer(withImages(withLess(settings))))
