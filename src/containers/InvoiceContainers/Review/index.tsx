@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import dynamic from 'next/dynamic'
 
-import { Grid } from '@mui/material'
+import { CircularProgress, Grid, Stack } from '@mui/material'
 import { Chat } from './Chat'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useReviewStore } from './store'
@@ -14,7 +14,7 @@ const Pixi = dynamic<any>(() => import('./Pixi').then(mod => mod.Pixi), {
 
 const InvoiceReview = () => {
   const router = useRouter()
-  const { chatList, setChatList, activeChatIndex, setActiveChatIndex } = useReviewStore()
+  const { chatList, setChatList, activeChatIndex, setActiveChatIndex, loading } = useReviewStore()
   const { onAddComment, getListPins } = useReviewController()
   const chatListRef = useRef(null)
   const activeItemRef = useRef(null)
@@ -92,19 +92,25 @@ const InvoiceReview = () => {
 
   return (
     <FormProvider {...form}>
-      <Grid container spacing={6}>
-        <Grid item lg={9}>
-          <Pixi pins={pinList} addPin={createNewChat} clickPinHandler={clickPinHandler} />
+      {loading ? (
+        <Stack width={'100%'} height={'100vh'} direction='row' justifyContent={'center'} alignItems={'center'}>
+          <CircularProgress />
+        </Stack>
+      ) : (
+        <Grid container spacing={6}>
+          <Grid item lg={9}>
+            <Pixi pins={pinList} addPin={createNewChat} clickPinHandler={clickPinHandler} />
+          </Grid>
+          <Grid item lg={3}>
+            <Chat
+              submitMessageHandler={submitMessageHandler}
+              chatListRef={chatListRef}
+              activeItemRef={activeItemRef}
+              textAreaRef={textAreaRef}
+            />
+          </Grid>
         </Grid>
-        <Grid item lg={3}>
-          <Chat
-            submitMessageHandler={submitMessageHandler}
-            chatListRef={chatListRef}
-            activeItemRef={activeItemRef}
-            textAreaRef={textAreaRef}
-          />
-        </Grid>
-      </Grid>
+      )}
     </FormProvider>
   )
 }
