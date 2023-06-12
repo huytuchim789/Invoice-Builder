@@ -15,20 +15,27 @@ export function useReviewController() {
   const onAddComment = async (data: ICommentRequest) => {
     try {
       const res = await addComment(data)
-      ctx.store?.setChatList(res?.data?.data)
+      ctx.store?.setChatList(res?.data?.pins)
       snackbar.success('Successfully', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
     } catch (error) {
-      console.log(error)
+      snackbar.error('Error', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
+
+      console.error(error)
     }
   }
 
   const getListPins = async (invoiceId: string) => {
+    ctx.store?.setLoading(true)
     try {
       const res = await getPins(invoiceId)
-      ctx.store?.setChatList(res?.data?.data)
-      snackbar.success('Successfully', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
+      ctx.store?.setChatList(res?.data?.data?.pins)
+      ctx.store?.setFileUrl(res?.data?.data?.file_url)
+      ctx.store?.setLoading(false)
     } catch (error) {
-      console.log(error)
+      ctx.store?.setLoading(false)
+      snackbar.error('Error', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
+
+      console.error(error)
     }
   }
   return { onAddComment, getListPins }

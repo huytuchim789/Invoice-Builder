@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Stage, Sprite, Container, Text, useApp } from '@pixi/react'
 import * as PIXI from 'pixi.js'
 import useWindowSize from 'src/@core/hooks/useWindowResize'
+import { useReviewStore } from './store'
+import CircularProgress from '@mui/material/CircularProgress'
 
 interface Props {
   pins: {
@@ -53,6 +55,7 @@ const MouseFollow = () => {
 }
 const Pixi = (props: Props) => {
   const [scale, setScale] = useState(0)
+  const { fileUrl } = useReviewStore()
   const [position, setPosition] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0
@@ -90,7 +93,7 @@ const Pixi = (props: Props) => {
   useEffect(() => {
     const img = new Image()
 
-    img.src = '/images/sample.jpg'
+    img.src = fileUrl || '/images/no-image.png'
 
     img.onload = function () {
       const _this = this as unknown as { width: number; height: number }
@@ -112,7 +115,7 @@ const Pixi = (props: Props) => {
   return (
     <Stage width={canvasWidth} height={canvasHeight} id='canvas'>
       <Sprite
-        image={'/images/sample.jpg'}
+        image={fileUrl || '/images/no-image.png'}
         anchor={anchor}
         x={position.x + canvasWidth * anchor}
         y={position.y + canvasHeight * anchor}
