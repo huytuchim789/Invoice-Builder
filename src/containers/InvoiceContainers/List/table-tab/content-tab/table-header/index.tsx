@@ -11,7 +11,7 @@ export const columns: any[] = [
   {
     field: 'id',
     headerName: '#',
-    width: 350,
+    width: 300,
     renderCell(params: any) {
       return <InvoiceIdTab params={params} />
     }
@@ -29,9 +29,19 @@ export const columns: any[] = [
     headerName: 'Client',
     description: 'This column has a value getter and is not sortable.',
     sortable: false,
-    width: 250,
+    flex: 1,
     renderCell(params: any) {
       return <ClientCell params={params} />
+    }
+  },
+  {
+    field: 'total',
+    headerName: 'Total',
+    description: 'This column has a value getter and is not sortable.',
+    sortable: false,
+    width: 150,
+    renderCell(params: any) {
+      return <Typography>$ {params.row.invoice.total}</Typography>
     }
   },
   {
