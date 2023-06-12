@@ -22,7 +22,6 @@ const getInvoiceData = async ({ page, limit, keyword }: Params) => {
 export const useInvoiceData = ({ page, limit, keyword }: Params) => {
   return useQuery({
     queryKey: [QUERY_INVOICE_KEYS.INVOICE_LIST, page, limit, keyword],
-    queryFn: () => getInvoiceData({ page, limit, keyword }),
-    retry: 0
+    queryFn: () => getInvoiceData({ page, limit, keyword })
   })
 }

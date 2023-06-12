@@ -1,20 +1,10 @@
-import { View, Text, StyleSheet, Font } from '@react-pdf/renderer'
+import { View, Text, StyleSheet } from '@react-pdf/renderer'
 import { useContext } from 'react'
 import { InvoiceDetailPdfContext } from '..'
 import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interface'
 
-Font.register({
-  family: 'Poppins',
-  fonts: [
-    {
-      src: '/fonts/Poppins-ExtraLight.ttf'
-    }
-  ]
-})
-
 const saleTabstyle = StyleSheet.create({
   content: {
-    fontFamily: 'Poppins',
     display: 'flex',
     padding: '10px',
     flexDirection: 'column',
@@ -28,7 +18,7 @@ export const NotePdfTab = () => {
 
   return (
     <View style={saleTabstyle.content}>
-      <Text>Note:</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Note:</Text>
       <Text style={{ fontSize: 14 }}>{invoice_detail.note}</Text>
     </View>
   )

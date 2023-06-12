@@ -16,8 +16,8 @@ const style = StyleSheet.create({
 export const BillComponent = ({ title, content }: Props) => {
   return (
     <View style={style.content}>
-      <Text style={{ fontSize: 13, flex: 1 }}>{title}</Text>
-      <Text style={{ fontSize: 11, flex: 1 }}>{content}</Text>
+      <Text style={{ fontSize: 15, flex: 1 }}>{title}</Text>
+      <Text style={{ fontSize: 13, flex: 1 }}>{content}</Text>
     </View>
   )
 }

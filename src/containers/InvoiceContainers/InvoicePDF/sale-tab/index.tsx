@@ -1,20 +1,10 @@
-import { View, StyleSheet, Font } from '@react-pdf/renderer'
+import { View, StyleSheet } from '@react-pdf/renderer'
 
 import { SalePersonPdf } from './sale-person'
 import { AccumulatePdfTab } from './accumulate-tab'
 
-Font.register({
-  family: 'Poppins',
-  fonts: [
-    {
-      src: '/fonts/Poppins-ExtraLight.ttf'
-    }
-  ]
-})
-
 const saleTabstyle = StyleSheet.create({
   content: {
-    fontFamily: 'Poppins',
     display: 'flex',
     padding: '10px',
     flexDirection: 'row',

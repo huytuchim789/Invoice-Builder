@@ -12,10 +12,14 @@ import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interfa
 export const InvoiceDetailPdfContext = React.createContext({})
 
 Font.register({
-  family: 'Poppins',
+  family: 'AlegreyaSans',
   fonts: [
     {
-      src: '/fonts/Poppins-ExtraLight.ttf'
+      src: '/fonts/AlegreyaSans-Light.ttf'
+    },
+    {
+      src: '/fonts/AlegreyaSans-Bold.ttf',
+      fontWeight: 'bold'
     }
   ]
 })
@@ -24,7 +28,7 @@ const InvoicePDF = ({ invoice_detail }: { invoice_detail: IInvoiceDetailData }) 
   return (
     <InvoiceDetailPdfContext.Provider value={{ invoice_detail: invoice_detail }}>
       <Document>
-        <Page style={{ padding: '10px' }}>
+        <Page style={{ padding: '10px', fontFamily: 'AlegreyaSans' }}>
           <InfoTabPdf />
           <SendTabPdf />
           <ItemsTabPdf />

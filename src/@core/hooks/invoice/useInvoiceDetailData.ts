@@ -13,10 +13,8 @@ const getInvoiceDetailData = async (id: string | string[]) => {
 
 export const useInvoiceDetailData = (id: string | string[]) => {
   return useQuery({
-    queryKey: [QUERY_INVOICE_KEYS.INVOICE_DETAIL],
+    queryKey: [QUERY_INVOICE_KEYS.INVOICE_DETAIL, id],
     queryFn: () => getInvoiceDetailData(id),
-    refetchOnWindowFocus: false,
-    refetchInterval: false,
     enabled: id !== ''
   })
 }

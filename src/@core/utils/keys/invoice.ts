@@ -5,5 +5,6 @@ export enum QUERY_INVOICE_KEYS {
 
   EMAIL_TRANSACTION = 'email_transaction',
 
-  NOTIFICATION_LIST = 'notification_list'
+  NOTIFICATION_LIST = 'notification_list',
+  PIN_LIST = 'pin_list'
 }

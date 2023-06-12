@@ -6,6 +6,12 @@ export interface NewsList {
   value: string
 }
 
+export interface IIconsTypes {
+  width: number
+  height: number
+  color?: string
+}
+
 export enum AlertColorEnum {
   SUCCESS = 'success',
   ERROR = 'error',

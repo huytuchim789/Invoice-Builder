@@ -6,49 +6,23 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@mui/material'
 import InvoicePDF from '../../InvoicePDF'
 
-import { globalStore } from 'src/@core/hocs/global-store'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { IInvoiceInfo, saveInvoice } from 'src/@core/utils/api/invoice/saveInvoice'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
-
-import { useInvoiceAddStore } from '../store'
+import { useInvoiceDetailStoreData } from './component/data'
 
 export const SaveButton = () => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const snackbar = useSnackbarWithContext()
 
-  const [userSelect, items, dateSelect, noteSelect] = useInvoiceAddStore((state: any) => [
-    state.userSelectTabStore,
-    state.itemContentTabStore,
-    state.dateSelectStore,
-    state.noteTabStore
-  ])
-
-  const { user } = globalStore((state: any) => state.userStore)
+  const { invoice_detail } = useInvoiceDetailStoreData()
 
   const MyDoc: any = useMemo(() => {
-    if (userSelect.user.id !== '' && noteSelect.note !== '') {
-      return (
-        <InvoicePDF
-          invoice_detail={{
-            id: '',
-            updated_at: dateSelect.date.end,
-            created_at: dateSelect.date.start,
-            issued_date: dateSelect.date.end,
-            created_date: dateSelect.date.start,
-            note: noteSelect.note,
-            tax: 21,
-            sale_person: user?.name,
-            customer_id: userSelect.user.id,
-            items: items.itemContent,
-            total: items.subTotal + (items.subTotal * 21) / 100,
-            customer: userSelect.user
-          }}
-        />
-      )
+    if (invoice_detail.sale_person !== '' && invoice_detail.note !== '') {
+      return <InvoicePDF invoice_detail={invoice_detail} />
     }
-  }, [user, userSelect, items, dateSelect, noteSelect])
+  }, [invoice_detail])
 
   const [instance, updateInstance] = usePDF({ document: MyDoc || <></> })
 
@@ -56,7 +30,7 @@ export const SaveButton = () => {
     if (MyDoc) {
       updateInstance()
     }
-  }, [user, userSelect, items, dateSelect, noteSelect])
+  }, [invoice_detail])
 
   const { mutate, isLoading: isSaveInvoiceLoading } = useMutation({
     mutationFn: async (data: IInvoiceInfo) => await saveInvoice(data),
@@ -76,14 +50,14 @@ export const SaveButton = () => {
   const handleSendInvoice = () => {
     if (instance.blob !== null) {
       const data: IInvoiceInfo = {
-        issued_date: dateSelect.date.end,
-        created_date: dateSelect.date.start,
-        note: noteSelect.note,
+        issued_date: invoice_detail.issued_date,
+        created_date: invoice_detail.created_date,
+        note: invoice_detail.note,
         tax: 21,
-        sale_person: user?.name,
-        customer_id: userSelect.user.id,
-        items: items.itemContent,
-        total: items.subTotal + (items.subTotal * 21) / 100,
+        sale_person: invoice_detail.sale_person,
+        customer_id: invoice_detail.customer_id,
+        items: invoice_detail.items,
+        total: invoice_detail.total,
         file: instance.blob
       }
 

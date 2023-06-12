@@ -7,7 +7,7 @@ import { dateSelectStore } from './info-tab/store'
 import { noteTabStore } from './note-tab/store'
 
 export const useInvoiceAddStore = create(
-  devtools(set => ({
+  devtools((set: any) => ({
     noteTabStore: { ...noteTabStore(set) },
     dateSelectStore: { ...dateSelectStore(set) },
     itemContentTabStore: { ...itemContentTabStore(set) },
