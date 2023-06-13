@@ -1,14 +1,13 @@
 import { View, Text, StyleSheet } from '@react-pdf/renderer'
 import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interface'
-import { InvoiceDetailPdfContext } from '..'
 import { useContext } from 'react'
+import { InvoiceDetailPdfContext } from '..'
 
 const style = StyleSheet.create({
   content: {
     display: 'flex',
-    alignItems: 'center',
     gap: '10px',
-    flexDirection: 'row'
+    flexDirection: 'column'
   }
 })
 
@@ -17,8 +16,8 @@ export const SalePersonPdf = () => {
 
   return (
     <View style={style.content}>
-      <Text style={{ fontSize: 14 }}>Saleperson:</Text>
-      <Text style={{ fontSize: 12 }}>{invoice_detail.sale_person}</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Saleperson:</Text>
+      <Text style={{ fontSize: 14 }}>{invoice_detail.sale_person}</Text>
     </View>
   )
 }

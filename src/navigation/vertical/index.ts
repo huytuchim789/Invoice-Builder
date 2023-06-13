@@ -29,27 +29,6 @@ const navigation = (): VerticalNavItemsType => {
       path: '/account-settings'
     },
     {
-      sectionTitle: 'Pages'
-    },
-    {
-      title: 'Login',
-      icon: Login,
-      path: '/pages/login',
-      openInNewTab: true
-    },
-    {
-      title: 'Register',
-      icon: AccountPlusOutline,
-      path: '/pages/register',
-      openInNewTab: true
-    },
-    {
-      title: 'Error',
-      icon: AlertCircleOutline,
-      path: '/pages/error',
-      openInNewTab: true
-    },
-    {
       sectionTitle: 'Invoice'
     },
     {
@@ -77,13 +56,13 @@ const navigation = (): VerticalNavItemsType => {
       openInNewTab: false
     },
     {
-      sectionTitle: 'Create Pages'
+      sectionTitle: 'Customers'
     },
     {
-      title: 'News',
-      icon: AlertCircleOutline,
-      path: '/create/news',
-      openInNewTab: true
+      title: 'List',
+      icon: InvoicePreviewOutline,
+      path: '/customer/list',
+      openInNewTab: false
     },
     {
       sectionTitle: 'User Interface'

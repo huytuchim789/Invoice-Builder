@@ -17,8 +17,8 @@ const style = StyleSheet.create({
 export const InfoPdfComponent = ({ title, content }: Props) => {
   return (
     <View style={style.content}>
-      <Text style={{ fontSize: 13 }}>{title}</Text>
-      <Text style={{ fontSize: 11 }}>{content}</Text>
+      <Text style={{ fontSize: 15 }}>{title}</Text>
+      <Text style={{ fontSize: 13 }}>{content}</Text>
     </View>
   )
 }

@@ -1,9 +1,19 @@
-import { View, StyleSheet } from '@react-pdf/renderer'
+import { View, StyleSheet, Font } from '@react-pdf/renderer'
 import { BillTabPdf } from './bill-tab'
 import { InvoiceInfoTabPdf } from './invoice-tab'
 
+Font.register({
+  family: 'AlegreyaSans',
+  fonts: [
+    {
+      src: '/fonts/AlegreyaSans-Light.ttf'
+    }
+  ]
+})
+
 const sendTabstyle = StyleSheet.create({
   content: {
+    fontFamily: 'AlegreyaSans',
     display: 'flex',
     padding: '10px',
     flexDirection: 'row',

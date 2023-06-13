@@ -9,7 +9,7 @@ export const InvoiceInfoTabPdf = () => {
   return (
     <View>
       <View>
-        <Text style={{ fontSize: 20 }}>Invoice To</Text>
+        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Invoice To</Text>
         <br />
       </View>
       <View style={{ marginTop: 10 }}>

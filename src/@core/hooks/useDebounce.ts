@@ -8,10 +8,6 @@ const useDebounce = (value: string | number, delay: number) => {
   useEffect(() => {
     const handle = setTimeout(() => {
       setDebounceValue(value)
-      router.push({
-        pathname: '/invoice/list',
-        search: `?keyword=${value}`
-      })
     }, delay)
 
     return () => {
