@@ -14,7 +14,7 @@ export function useReviewController() {
   const onAddComment = async (data: ICommentRequest) => {
     try {
       const res = await addComment(data)
-      ctx.store?.setChatList(res?.data?.pins)
+      ctx.store?.setChatList(res?.data?.data)
       snackbar.success('Successfully', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
     } catch (error) {
       snackbar.error('Error', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
