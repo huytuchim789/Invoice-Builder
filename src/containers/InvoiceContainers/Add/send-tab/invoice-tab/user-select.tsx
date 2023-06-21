@@ -25,24 +25,23 @@ export const UserSelect = () => {
   return (
     <Box mt={2}>
       <FormControl variant='outlined' sx={{ minWidth: 120 }}>
-        {user_select && (
-          <Select
-            labelId='demo-simple-select-standard-label'
-            id='demo-simple-select-standard'
-            defaultValue=''
-            onChange={(e: any) => handleChangeUserSelect(e)}
-            size='small'
-          >
-            <MenuItem value='' onClick={() => setStatus(true)}>
-              Add new customer
-            </MenuItem>
-            {user_select?.map((user: IUserSelectInvoiceTo) => (
+        <Select
+          labelId='demo-simple-select-standard-label'
+          id='demo-simple-select-standard'
+          defaultValue=''
+          onChange={(e: any) => handleChangeUserSelect(e)}
+          size='small'
+        >
+          <MenuItem value='' onClick={() => setStatus(true)}>
+            Add new customer
+          </MenuItem>
+          {user_select &&
+            user_select.data?.map((user: IUserSelectInvoiceTo) => (
               <MenuItem value={JSON.stringify(user)} key={user.id}>
                 {user.name}
               </MenuItem>
             ))}
-          </Select>
-        )}
+        </Select>
       </FormControl>
     </Box>
   )

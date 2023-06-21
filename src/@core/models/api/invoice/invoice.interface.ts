@@ -12,7 +12,17 @@ export interface IUserSelectInvoiceTo {
 }
 
 export interface IUserSelectInvoiceToDataResponse {
-  data: IUserSelectInvoiceTo[]
+  data: {
+    current_page: 1
+    data: IUserSelectInvoiceTo[]
+    first_page_url: ''
+    from: null
+    next_page_url: null
+    path: ''
+    per_page: 10
+    prev_page_url: null
+    to: null
+  }
   message: string
 }
 

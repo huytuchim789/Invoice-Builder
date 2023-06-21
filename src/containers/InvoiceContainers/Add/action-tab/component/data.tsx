@@ -5,11 +5,12 @@ import { globalStore } from 'src/@core/hocs/global-store'
 export function useInvoiceDetailStoreData() {
   const { user } = globalStore((state: any) => state.userStore)
 
-  const [userSelect, items, dateSelect, noteSelect] = useInvoiceAddStore((state: any) => [
+  const [userSelect, items, dateSelect, noteSelect, paymentMethod] = useInvoiceAddStore((state: any) => [
     state.userSelectTabStore,
     state.itemContentTabStore,
     state.dateSelectStore,
-    state.noteTabStore
+    state.noteTabStore,
+    state.paymentMethodStore
   ])
 
   const invoice_detail = useMemo(() => {
@@ -25,7 +26,8 @@ export function useInvoiceDetailStoreData() {
       customer_id: userSelect.user.id,
       items: items.itemContent,
       total: items.subTotal + (items.subTotal * 21) / 100,
-      customer: userSelect.user
+      customer: userSelect.user,
+      send_method: paymentMethod.method
     }
   }, [user, userSelect, items, dateSelect, noteSelect])
 
