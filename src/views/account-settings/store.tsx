@@ -18,7 +18,13 @@ export type Store = {
 }
 
 export const useSettingStore = create<Store>(set => ({
-  info: { name: '', email: '', address: '', logo_url: '', phone: '' },
+  info: {
+    name: '',
+    email: '',
+    address: '',
+    logo_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyLm9MqY3S8QTzFZmZffBYbWdLc802a6tUTA&usqp=CAU',
+    phone: ''
+  },
   setInfo(info) {
     set({ info })
   },

@@ -12,20 +12,33 @@ export function useSettingController() {
   ctx.router = useRouter()
 
   const changSettings = async data => {
+    ctx.store?.setLoading(true)
     try {
       const response = await onChangeSettings(data)
-      console.log(response)
+      ctx.store?.setLoading(false)
+      snackbar.success(response?.data?.message)
+      ctx.store?.setLoading(false)
     } catch (error) {
+      ctx.store?.setLoading(false)
+
       console.error(error)
-      snackbar.error(error.message)
+      snackbar.error('error')
     }
   }
   const getSettings = async () => {
+    ctx.store?.setLoading(true)
+
     try {
       const response = await onGetgetSettings()
       ctx.store?.setInfo(response?.data?.data)
-      ctx.store?.setImgSrc(response?.data?.data?.logo_url || '/images/avatars/1.png')
-    } catch (error) {}
+      response?.data?.data?.logo_url && ctx.store?.setImgSrc(response?.data?.data?.logo_url)
+      ctx.store?.setLoading(false)
+      snackbar.success(response?.data?.message)
+    } catch (error) {
+      console.error(error)
+      ctx.store?.setLoading(false)
+      snackbar.error('error')
+    }
   }
   return {
     changSettings,

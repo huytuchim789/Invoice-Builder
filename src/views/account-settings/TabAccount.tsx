@@ -22,6 +22,9 @@ import { useForm } from 'react-hook-form'
 import Close from 'mdi-material-ui/Close'
 import { useSettingController } from './controller'
 import { useSettingStore } from './store'
+import { CircularProgress } from '@mui/material'
+import { LoadingComponent } from 'src/@core/components/loading'
+import { LoadingButton } from '@mui/lab'
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
@@ -52,7 +55,7 @@ const TabAccount = () => {
   const [openAlert, setOpenAlert] = useState<boolean>(true)
   const [img, setImg] = useState<any>(null)
   const settingController = useSettingController()
-  const { info, imgSrc, setImgSrc } = useSettingStore()
+  const { info, imgSrc, setImgSrc, loading } = useSettingStore()
 
   const {
     handleSubmit,
@@ -74,11 +77,10 @@ const TabAccount = () => {
       setImg(files[0])
     }
   }
-  console.log(errors)
 
   const onSubmit = data => {
     const formData = new FormData()
-    formData.append('logo', img)
+    formData.append('logo', img || '')
     formData.append('logo_url', img ? '' : imgSrc)
     formData.append('name', data.name)
     formData.append('email', data.email)
@@ -109,7 +111,15 @@ const TabAccount = () => {
                     id='account-settings-upload-image'
                   />
                 </ButtonStyled>
-                <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('')}>
+                <ResetButtonStyled
+                  color='error'
+                  variant='outlined'
+                  onClick={() =>
+                    setImgSrc(
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyLm9MqY3S8QTzFZmZffBYbWdLc802a6tUTA&usqp=CAU'
+                    )
+                  }
+                >
                   Reset
                 </ResetButtonStyled>
                 <Typography variant='body2' sx={{ marginTop: 5 }}>
@@ -210,9 +220,9 @@ const TabAccount = () => {
           ) : null} */}
 
           <Grid item xs={12}>
-            <Button variant='contained' sx={{ marginRight: 3.5 }} type='submit'>
+            <LoadingButton loading={loading} variant='contained' sx={{ marginRight: 3.5 }} type='submit'>
               Save Changes
-            </Button>
+            </LoadingButton>
             <Button onClick={() => reset()} variant='outlined' color='secondary'>
               Reset
             </Button>

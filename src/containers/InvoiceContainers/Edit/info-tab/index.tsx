@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mui/material'
 
 import DateTab from './date-tab'
-import AddressTab from './address-tab'
+import AddressTab from 'src/@core/components/AddressTab'
 
 export const InfoTab = () => {
   return (
