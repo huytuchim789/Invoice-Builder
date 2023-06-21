@@ -8,7 +8,7 @@ import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 const getSelectUserData = async () => {
   const { data } = (await axiosInstance.get('customers')) as { data: IUserSelectInvoiceToDataResponse }
 
-  return data.data
+  return data.data?.data
 }
 
 export const useSelectUserInvoiceTo = () => {

@@ -21,6 +21,7 @@ export interface IEmailTransationDataResponse {
     per_page: number
     prev_page_url: number | null
     to: number
+    code:string
   }
   message: string
 }

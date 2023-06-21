@@ -61,9 +61,9 @@ const fields: IField[] = [
     helpText: 'Contact Number is required'
   },
   {
-    label: 'Contact Number',
+    label: 'Country Code',
     value: 'contact_number_country',
-    helpText: 'Contact Number is required'
+    helpText: 'Country Code is required'
   }
 ]
 

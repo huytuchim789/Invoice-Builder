@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, ElementType, ChangeEvent, SyntheticEvent } from 'react'
+import { useState, ElementType, ChangeEvent, SyntheticEvent, useEffect, useMemo } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -17,9 +17,14 @@ import IconButton from '@mui/material/IconButton'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import Button, { ButtonProps } from '@mui/material/Button'
-
+import { useForm } from 'react-hook-form'
 // ** Icons Imports
 import Close from 'mdi-material-ui/Close'
+import { useSettingController } from './controller'
+import { useSettingStore } from './store'
+import { CircularProgress } from '@mui/material'
+import { LoadingComponent } from 'src/@core/components/loading'
+import { LoadingButton } from '@mui/lab'
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
@@ -48,29 +53,57 @@ const ResetButtonStyled = styled(Button)<ButtonProps>(({ theme }) => ({
 const TabAccount = () => {
   // ** State
   const [openAlert, setOpenAlert] = useState<boolean>(true)
-  const [imgSrc, setImgSrc] = useState<string>('/images/avatars/1.png')
+  const [img, setImg] = useState<any>(null)
+  const settingController = useSettingController()
+  const { info, imgSrc, setImgSrc, loading } = useSettingStore()
 
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+    reset,
+    setValue,
+    getValues,
+    register
+  } = useForm({
+    values: { ...info, logo: info?.logo_url }
+  })
   const onChange = (file: ChangeEvent) => {
     const reader = new FileReader()
     const { files } = file.target as HTMLInputElement
     if (files && files.length !== 0) {
       reader.onload = () => setImgSrc(reader.result as string)
-
       reader.readAsDataURL(files[0])
+      setImg(files[0])
     }
   }
 
+  const onSubmit = data => {
+    const formData = new FormData()
+    formData.append('logo', img || '')
+    formData.append('logo_url', img ? '' : imgSrc)
+    formData.append('name', data.name)
+    formData.append('email', data.email)
+    formData.append('address', data.address)
+    formData.append('phone', data.phone)
+    settingController.changSettings(formData)
+  }
+  useEffect(() => {
+    settingController.getSettings()
+  }, [])
+
   return (
     <CardContent>
-      <form>
+      <form onSubmit={handleSubmit(data => onSubmit(data))}>
         <Grid container spacing={7}>
           <Grid item xs={12} sx={{ marginTop: 4.8, marginBottom: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <ImgStyled src={imgSrc} alt='Profile Pic' />
               <Box>
                 <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
-                  Upload New Photo
+                  Upload Your Logo
                   <input
+                    {...register('logo')}
                     hidden
                     type='file'
                     onChange={onChange}
@@ -78,7 +111,15 @@ const TabAccount = () => {
                     id='account-settings-upload-image'
                   />
                 </ButtonStyled>
-                <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('/images/avatars/1.png')}>
+                <ResetButtonStyled
+                  color='error'
+                  variant='outlined'
+                  onClick={() =>
+                    setImgSrc(
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyLm9MqY3S8QTzFZmZffBYbWdLc802a6tUTA&usqp=CAU'
+                    )
+                  }
+                >
                   Reset
                 </ResetButtonStyled>
                 <Typography variant='body2' sx={{ marginTop: 5 }}>
@@ -88,22 +129,33 @@ const TabAccount = () => {
             </Box>
           </Grid>
 
+          {/* <Grid item xs={12} sm={6}>
+            <TextField fullWidth label='Address' placeholder='USA' />
+          </Grid> */}
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Username' placeholder='johnDoe' defaultValue='johnDoe' />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Name' placeholder='John Doe' defaultValue='John Doe' />
+            <TextField
+              {...register('name', { required: true })}
+              fullWidth
+              label='Name'
+              placeholder='Facebook Org'
+              error={!!errors?.name}
+              helperText={errors?.name ? 'Name is required' : null}
+              InputLabelProps={{ shrink: true }}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
+              {...register('email', { required: true })}
               fullWidth
               type='email'
               label='Email'
               placeholder='johnDoe@example.com'
-              defaultValue='johnDoe@example.com'
+              error={!!errors?.email}
+              helperText={errors?.email ? 'Email is required' : null}
+              InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel>Role</InputLabel>
               <Select label='Role' defaultValue='admin'>
@@ -114,8 +166,8 @@ const TabAccount = () => {
                 <MenuItem value='subscriber'>Subscriber</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Grid> */}
+          {/* <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel>Status</InputLabel>
               <Select label='Status' defaultValue='active'>
@@ -124,12 +176,31 @@ const TabAccount = () => {
                 <MenuItem value='pending'>Pending</MenuItem>
               </Select>
             </FormControl>
+          </Grid> */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              {...register('address', { required: true })}
+              fullWidth
+              label='Address'
+              placeholder='ABC Pvt. Ltd.'
+              error={!!errors?.address}
+              helperText={errors?.address ? 'Address is required' : null}
+              InputLabelProps={{ shrink: true }}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Company' placeholder='ABC Pvt. Ltd.' defaultValue='ABC Pvt. Ltd.' />
+            <TextField
+              {...register('phone', { required: true })}
+              fullWidth
+              label='Phone'
+              placeholder='0382038678'
+              error={!!errors?.phone}
+              helperText={errors?.phone ? 'Phone is required' : null}
+              InputLabelProps={{ shrink: true }}
+            />
           </Grid>
 
-          {openAlert ? (
+          {/* {openAlert ? (
             <Grid item xs={12} sx={{ mb: 3 }}>
               <Alert
                 severity='warning'
@@ -146,13 +217,13 @@ const TabAccount = () => {
                 </Link>
               </Alert>
             </Grid>
-          ) : null}
+          ) : null} */}
 
           <Grid item xs={12}>
-            <Button variant='contained' sx={{ marginRight: 3.5 }}>
+            <LoadingButton loading={loading} variant='contained' sx={{ marginRight: 3.5 }} type='submit'>
               Save Changes
-            </Button>
-            <Button type='reset' variant='outlined' color='secondary'>
+            </LoadingButton>
+            <Button onClick={() => reset()} variant='outlined' color='secondary'>
               Reset
             </Button>
           </Grid>

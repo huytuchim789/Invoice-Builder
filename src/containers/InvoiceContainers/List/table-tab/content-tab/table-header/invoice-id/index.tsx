@@ -6,7 +6,7 @@ export const InvoiceIdTab = ({ params }: any) => {
 
   return (
     <Link href={`/invoice/preview/${params.row.invoice_id}?page=${router.query.page ?? 0}`}>
-      {params.row.invoice_id}
+      {params.row.invoice?.code}
     </Link>
   )
 }

@@ -15,7 +15,7 @@ export const InvoiceId = () => {
       </Grid>
 
       <Grid item lg={8} md={12}>
-        <Typography fontSize={12}>{invoice_detail.id}</Typography>
+        <Typography fontSize={12}>{invoice_detail.code}</Typography>
       </Grid>
     </Grid>
   )

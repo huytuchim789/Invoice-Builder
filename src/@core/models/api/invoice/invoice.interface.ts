@@ -53,6 +53,7 @@ export interface IItemsData {
 
 export interface IInvoiceDetailData {
   id: string
+  code: string
   issued_date: string
   created_date: string
   note: string
