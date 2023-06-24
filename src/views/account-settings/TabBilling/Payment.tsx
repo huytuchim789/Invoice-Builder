@@ -20,11 +20,13 @@ import Button, { ButtonProps } from '@mui/material/Button'
 import { useForm } from 'react-hook-form'
 // ** Icons Imports
 import Close from 'mdi-material-ui/Close'
+import { useSettingController } from './../controller'
+import { useSettingStore } from './../store'
 import { CircularProgress } from '@mui/material'
 import { LoadingComponent } from 'src/@core/components/loading'
 import { LoadingButton } from '@mui/lab'
-import { useSettingController } from './controller'
-import { useSettingStore } from './store'
+import Cards from 'react-credit-cards-2'
+import 'react-credit-cards-2/dist/es/styles-compiled.css'
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
@@ -50,13 +52,29 @@ const ResetButtonStyled = styled(Button)<ButtonProps>(({ theme }) => ({
   }
 }))
 
-const TabAccount = () => {
+const Payment = () => {
   // ** State
   const [openAlert, setOpenAlert] = useState<boolean>(true)
   const [img, setImg] = useState<any>(null)
   const settingController = useSettingController()
-  const { info, imgSrc, setImgSrc, loading } = useSettingStore()
+  const { info, loading } = useSettingStore()
+  const [state, setState] = useState({
+    number: '',
+    expiry: '',
+    cvc: '',
+    name: '',
+    focus: false
+  })
 
+  const handleInputChange = evt => {
+    const { name, value } = evt.target
+
+    setState(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleInputFocus = evt => {
+    setState(prev => ({ ...prev, focus: evt.target.name }))
+  }
   const {
     handleSubmit,
     formState: { errors },
@@ -66,78 +84,31 @@ const TabAccount = () => {
     getValues,
     register
   } = useForm({
-    values: { ...info, logo: info?.logo_url }
+    values: { number: '', expiry: '', cvc: '', name: '', focus: undefined }
   })
-  const onChange = (file: ChangeEvent) => {
-    const reader = new FileReader()
-    const { files } = file.target as HTMLInputElement
-    if (files && files.length !== 0) {
-      reader.onload = () => setImgSrc(reader.result as string)
-      reader.readAsDataURL(files[0])
-      setImg(files[0])
-    }
-  }
-
-  const onSubmit = data => {
-    const formData = new FormData()
-    formData.append('logo', img || '')
-    formData.append('logo_url', img ? '' : imgSrc)
-    formData.append('name', data.name)
-    formData.append('email', data.email)
-    formData.append('address', data.address)
-    formData.append('phone', data.phone)
-    settingController.changSettings(formData)
-  }
-  useEffect(() => {
-    settingController.getSettings()
-  }, [])
+  const { number, expiry, cvc, name, focus } = getValues()
+  const onSubmit = data => {}
 
   return (
     <CardContent>
       <form onSubmit={handleSubmit(data => onSubmit(data))}>
         <Grid container spacing={7}>
           <Grid item xs={12} sx={{ marginTop: 4.8, marginBottom: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ImgStyled src={imgSrc} alt='Profile Pic' />
-              <Box>
-                <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
-                  Upload Your Logo
-                  <input
-                    {...register('logo')}
-                    hidden
-                    type='file'
-                    onChange={onChange}
-                    accept='image/png, image/jpeg'
-                    id='account-settings-upload-image'
-                  />
-                </ButtonStyled>
-                <ResetButtonStyled
-                  color='error'
-                  variant='outlined'
-                  onClick={() =>
-                    setImgSrc(
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyLm9MqY3S8QTzFZmZffBYbWdLc802a6tUTA&usqp=CAU'
-                    )
-                  }
-                >
-                  Reset
-                </ResetButtonStyled>
-                <Typography variant='body2' sx={{ marginTop: 5 }}>
-                  Allowed PNG or JPEG. Max size of 800K.
-                </Typography>
-              </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}>
+              <Typography variant='h6'>Payment Method</Typography>
             </Box>
           </Grid>
 
-          {/* <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Address' placeholder='USA' />
-          </Grid> */}
+          <Grid item xs={24} sm={6}>
+            <Cards number={number} expiry={expiry} cvc={cvc} name={name} focused={focus} />
+          </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               {...register('name', { required: true })}
               fullWidth
               label='Name'
-              placeholder='Facebook Org'
+              placeholder='Cristiano Ronaldo'
               error={!!errors?.name}
               helperText={errors?.name ? 'Name is required' : null}
               InputLabelProps={{ shrink: true }}
@@ -145,38 +116,17 @@ const TabAccount = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              {...register('email', { required: true })}
+              {...register('expiry', { required: true })}
               fullWidth
-              type='email'
-              label='Email'
-              placeholder='johnDoe@example.com'
-              error={!!errors?.email}
-              helperText={errors?.email ? 'Email is required' : null}
+              label='Expiry'
+              placeholder='MM/DD'
+              inputProps={{ pattern: '[0-9]{2}/[0-9]{2}' }}
+              error={!!errors?.expiry}
+              helperText={errors?.expiry ? 'Expiry is required' : null}
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          {/* <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Role</InputLabel>
-              <Select label='Role' defaultValue='admin'>
-                <MenuItem value='admin'>Admin</MenuItem>
-                <MenuItem value='author'>Author</MenuItem>
-                <MenuItem value='editor'>Editor</MenuItem>
-                <MenuItem value='maintainer'>Maintainer</MenuItem>
-                <MenuItem value='subscriber'>Subscriber</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid> */}
-          {/* <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
-              <Select label='Status' defaultValue='active'>
-                <MenuItem value='active'>Active</MenuItem>
-                <MenuItem value='inactive'>Inactive</MenuItem>
-                <MenuItem value='pending'>Pending</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid> */}
+
           <Grid item xs={12} sm={6}>
             <TextField
               {...register('address', { required: true })}
@@ -233,4 +183,4 @@ const TabAccount = () => {
   )
 }
 
-export default TabAccount
+export default Payment

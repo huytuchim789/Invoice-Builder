@@ -23,6 +23,7 @@ import TabSecurity from 'src/views/account-settings/TabSecurity'
 
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
+import TabBilling from 'src/views/account-settings/TabBilling'
 
 const Tab = styled(MuiTab)<TabProps>(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
@@ -44,7 +45,7 @@ const TabName = styled('span')(({ theme }) => ({
 
 const AccountSettings: NextPage = () => {
   // ** State
-  const [value, setValue] = useState<string>('account')
+  const [value, setValue] = useState<string>('billing')
 
   const handleChange = (event: SyntheticEvent, newValue: string) => {
     setValue(newValue)
@@ -64,6 +65,15 @@ const AccountSettings: NextPage = () => {
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <AccountOutline />
                 <TabName>Account</TabName>
+              </Box>
+            }
+          />
+          <Tab
+            value='billing'
+            label={
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <AccountOutline />
+                <TabName>Billing</TabName>
               </Box>
             }
           />
@@ -95,6 +105,9 @@ const AccountSettings: NextPage = () => {
         </TabPanel>
         <TabPanel sx={{ p: 0 }} value='info'>
           <TabInfo />
+        </TabPanel>
+        <TabPanel sx={{ p: 0 }} value='billing'>
+          <TabBilling />
         </TabPanel>
       </TabContext>
     </Card>
