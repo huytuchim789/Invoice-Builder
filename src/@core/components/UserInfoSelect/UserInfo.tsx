@@ -1,9 +1,12 @@
 import { Box, Typography } from '@mui/material'
-import { useInvoiceAddStore } from '../../store'
 
-export const AddressTab = () => {
-  const { user } = useInvoiceAddStore((state: any) => state.userSelectTabStore)
+import { IUserSelectInvoiceTo } from 'src/@core/models/api/invoice/invoice.interface'
 
+interface Props {
+  user: IUserSelectInvoiceTo
+}
+
+const UserInfo = ({ user }: Props) => {
   return (
     <Box marginTop={2}>
       <Typography fontSize={12} color={'#808080'}>
@@ -18,3 +21,5 @@ export const AddressTab = () => {
     </Box>
   )
 }
+
+export default UserInfo

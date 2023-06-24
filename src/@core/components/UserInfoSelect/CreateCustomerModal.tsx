@@ -6,19 +6,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Box, Button, Drawer, Grid, Stack, TextField, Typography } from '@mui/material'
 
 // ** Interface imports
-import { IAddCustomerUserDataResponseError } from 'src/@core/models/api/invoice/error.interface'
 import {
   IAddUserSelectInvoiceToDataResponse,
   IUserSelectInvoiceTo
 } from 'src/@core/models/api/invoice/invoice.interface'
+import { IAddCustomerUserDataResponseError } from 'src/@core/models/api/invoice/error.interface'
 
 // ** Common imports
-import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { ICustomerUsers, addCustomerUser } from 'src/@core/utils/api/invoice/addCustomerUser'
-
-// ** Store imports
-import { useInvoiceAddStore } from '../../store'
+import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 
 // ** Icon imports
 import CloseIcon from '@mui/icons-material/Close'
@@ -27,6 +24,11 @@ interface IField {
   label: string
   value: string
   helpText: string
+}
+
+interface Props {
+  isOpenModal: boolean
+  handleCloseModal: () => void
 }
 
 const fields: IField[] = [
@@ -67,7 +69,7 @@ const fields: IField[] = [
   }
 ]
 
-export const DrawerNewCustomer = () => {
+const CreateCustomerModal = ({ isOpenModal, handleCloseModal }: Props) => {
   const {
     register,
     handleSubmit,
@@ -76,23 +78,21 @@ export const DrawerNewCustomer = () => {
   } = useForm()
   const queryClient = useQueryClient()
 
-  const { status, setStatus } = useInvoiceAddStore((state: any) => state.statusDrawerStore)
   const snackbar = useSnackbarWithContext()
 
   const { mutate, isLoading: isAddCustomerLoading } = useMutation({
     mutationFn: async (data: ICustomerUsers) => await addCustomerUser(data),
     onSuccess: ({ data }: { data: IAddUserSelectInvoiceToDataResponse }) => {
-      queryClient.setQueryData([QUERY_INVOICE_KEYS.USER_SELECT], (previousUser: IUserSelectInvoiceTo[] | undefined) =>
-        previousUser ? [...previousUser, data.data] : previousUser
-      )
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.USER_SELECT])
 
-      reset()
-      setStatus(false)
       snackbar.success(data.message)
+      reset()
+      handleCloseModal()
     },
     onError: (err: { response: IAddCustomerUserDataResponseError }) => {
       const { response } = err
 
+      handleCloseModal()
       snackbar.error(response.data.message)
     }
   })
@@ -102,7 +102,14 @@ export const DrawerNewCustomer = () => {
   }
 
   return (
-    <Drawer anchor='right' open={status} onClose={() => setStatus(false)}>
+    <Drawer
+      anchor='right'
+      open={isOpenModal}
+      onClose={() => {
+        reset()
+        handleCloseModal()
+      }}
+    >
       <Stack
         direction='row'
         justifyContent='space-between'
@@ -114,7 +121,14 @@ export const DrawerNewCustomer = () => {
         <Typography fontSize={20} style={{ color: '#FFF' }}>
           Add Custom User
         </Typography>
-        <Box component='div' onClick={() => setStatus(false)} style={{ cursor: 'pointer' }}>
+        <Box
+          component='div'
+          onClick={() => {
+            reset()
+            handleCloseModal()
+          }}
+          style={{ cursor: 'pointer' }}
+        >
           <CloseIcon style={{ color: '#FFF' }} />
         </Box>
       </Stack>
@@ -153,3 +167,5 @@ export const DrawerNewCustomer = () => {
     </Drawer>
   )
 }
+
+export default CreateCustomerModal
