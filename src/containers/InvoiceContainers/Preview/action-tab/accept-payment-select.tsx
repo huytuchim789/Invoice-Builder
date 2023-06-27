@@ -1,6 +1,13 @@
-import { Select, MenuItem, FormControl, InputLabel } from '@mui/material'
+import { Select, MenuItem, FormControl, InputLabel, SelectChangeEvent } from '@mui/material'
+import { useInvoicePreviewStore } from '../store'
 
 export const AcceptPaymentSelect = () => {
+  const { setMethod } = useInvoicePreviewStore(state => state.paymentMethodStore)
+
+  const handleChangePaymentMethod = (event: SelectChangeEvent<string>) => {
+    setMethod(event.target.value)
+  }
+
   return (
     <FormControl variant='outlined' sx={{ minWidth: 120, width: '100%' }}>
       <InputLabel id='demo-simple-select-outlined-label'>Sending Method</InputLabel>
@@ -8,12 +15,13 @@ export const AcceptPaymentSelect = () => {
         fullWidth
         labelId='demo-simple-select-outlined-label'
         id='demo-simple-select-outlined'
-        defaultValue={10}
+        defaultValue='web'
         label='Sending Method'
         aria-label='Sending Method'
+        onChange={handleChangePaymentMethod}
       >
-        <MenuItem value={10}>Email Sending</MenuItem>
-        <MenuItem value={11}>Web Sending</MenuItem>
+        <MenuItem value={'mail'}>Email Sending</MenuItem>
+        <MenuItem value={'web'}>Web Sending</MenuItem>
       </Select>
     </FormControl>
   )

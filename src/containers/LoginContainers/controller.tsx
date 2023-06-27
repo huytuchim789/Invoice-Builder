@@ -1,9 +1,7 @@
-import { NextRouter, useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { Store, useLoginStore } from './store'
 import { getGoogleUrl, loginWithGoogle, logout } from 'src/@core/utils/api/auth'
-import Cookies from 'js-cookie'
-import { COOKIE_KEY } from 'src/@core/hocs/with-auth'
 import { setSessionCookie } from 'src/@core/common/cookies'
 import { User } from 'src/types/custom-types'
 

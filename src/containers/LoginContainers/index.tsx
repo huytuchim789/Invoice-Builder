@@ -122,7 +122,6 @@ const LoginContainer = () => {
 
   return (
     <Box className='content-center'>
-      (
       <>
         {' '}
         <Card sx={{ zIndex: 1 }}>

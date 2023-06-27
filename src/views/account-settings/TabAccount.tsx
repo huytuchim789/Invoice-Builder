@@ -1,27 +1,17 @@
 // ** React Imports
-import { useState, ElementType, ChangeEvent, SyntheticEvent, useEffect, useMemo } from 'react'
+import { useState, ElementType, ChangeEvent, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import Link from '@mui/material/Link'
-import Alert from '@mui/material/Alert'
-import Select from '@mui/material/Select'
-import { styled } from '@mui/material/styles'
-import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
-import AlertTitle from '@mui/material/AlertTitle'
-import IconButton from '@mui/material/IconButton'
 import CardContent from '@mui/material/CardContent'
-import FormControl from '@mui/material/FormControl'
 import Button, { ButtonProps } from '@mui/material/Button'
-import { useForm } from 'react-hook-form'
+import { styled } from '@mui/material/styles'
+
 // ** Icons Imports
-import Close from 'mdi-material-ui/Close'
-import { CircularProgress } from '@mui/material'
-import { LoadingComponent } from 'src/@core/components/loading'
 import { LoadingButton } from '@mui/lab'
 import { useSettingController } from './controller'
 import { useSettingStore } from './store'
@@ -29,6 +19,7 @@ import { useSettingStore } from './store'
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
   height: 120,
+  objectFit: 'cover',
   marginRight: theme.spacing(6.25),
   borderRadius: theme.shape.borderRadius
 }))
@@ -52,7 +43,6 @@ const ResetButtonStyled = styled(Button)<ButtonProps>(({ theme }) => ({
 
 const TabAccount = () => {
   // ** State
-  const [openAlert, setOpenAlert] = useState<boolean>(true)
   const [img, setImg] = useState<any>(null)
   const settingController = useSettingController()
   const { info, imgSrc, setImgSrc, loading } = useSettingStore()
@@ -60,10 +50,7 @@ const TabAccount = () => {
   const {
     handleSubmit,
     formState: { errors },
-    control,
     reset,
-    setValue,
-    getValues,
     register
   } = useForm({
     values: { ...info, logo: info?.logo_url }
@@ -78,7 +65,7 @@ const TabAccount = () => {
     }
   }
 
-  const onSubmit = data => {
+  const onSubmit = (data: any) => {
     const formData = new FormData()
     formData.append('logo', img || '')
     formData.append('logo_url', img ? '' : imgSrc)

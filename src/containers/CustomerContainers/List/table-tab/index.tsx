@@ -31,7 +31,7 @@ const CustomerListTableContent = () => {
       <FilterHeaderTable />
       {customer_list && (
         <CustomerListTable
-          rows={customer_list}
+          rows={customer_list.data}
           columns={columns}
           loading={isCustomerListLoading}
           pageSizeOptions={[5, 10, 15, 20]}

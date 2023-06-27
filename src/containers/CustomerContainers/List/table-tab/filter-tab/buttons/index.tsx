@@ -10,6 +10,8 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import CreateCustomerModal from 'src/containers/CustomerContainers/Modals/CreateCustomerModal'
 import ImportCustomerModal from 'src/containers/CustomerContainers/Modals/ImportCustomerModal'
 
+import { exportCustomer } from 'src/@core/utils/api/customer/export'
+
 const ActionButton = styled(Box)({
   padding: '10px',
   display: 'flex',
@@ -31,6 +33,19 @@ const TableHeaderButtons = () => {
 
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleExportCustomerData = async () => {
+    const response = await exportCustomer()
+
+    if (response) {
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'file.csv')
+      document.body.appendChild(link)
+      link.click()
+    }
   }
 
   return (
@@ -65,7 +80,7 @@ const TableHeaderButtons = () => {
             <FileUploadIcon fontSize='small' />
             <Typography>Import Data</Typography>
           </ActionButton>
-          <ActionButton onClick={() => setIsOpenImportCustomerModal(true)}>
+          <ActionButton onClick={handleExportCustomerData}>
             <FileDownloadIcon fontSize='small' />
             <Typography>Export Data</Typography>
           </ActionButton>

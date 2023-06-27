@@ -36,7 +36,7 @@ export const UserSelect = () => {
             <MenuItem value='' onClick={() => setStatus(true)}>
               Add new customer
             </MenuItem>
-            {user_select?.map((user: IUserSelectInvoiceTo) => (
+            {user_select?.data.map((user: IUserSelectInvoiceTo) => (
               <MenuItem value={JSON.stringify(user)} key={user.id}>
                 {user.name}
               </MenuItem>

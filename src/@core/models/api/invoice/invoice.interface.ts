@@ -1,3 +1,5 @@
+import { IItemContent } from 'src/@core/components/Invoice/ItemInfo/store'
+
 export interface IUserSelectInvoiceTo {
   id: string
   created_at: string
@@ -12,7 +14,17 @@ export interface IUserSelectInvoiceTo {
 }
 
 export interface IUserSelectInvoiceToDataResponse {
-  data: IUserSelectInvoiceTo[]
+  data: {
+    current_page: 1
+    data: IUserSelectInvoiceTo[]
+    first_page_url: ''
+    from: null
+    next_page_url: null
+    path: ''
+    per_page: 10
+    prev_page_url: null
+    to: null
+  }
   message: string
 }
 
@@ -53,7 +65,6 @@ export interface IItemsData {
 
 export interface IInvoiceDetailData {
   id: string
-  code: string
   issued_date: string
   created_date: string
   note: string
@@ -65,6 +76,21 @@ export interface IInvoiceDetailData {
   updated_at: string
   items: IItemsData[]
   customer: IAddCustomerUsersData
+}
+
+export interface IInvoiceDetailLocalData {
+  id: string
+  issued_date: string
+  created_date: string
+  note: string
+  tax: number
+  sale_person: string
+  customer_id: string
+  total: number
+  created_at: string
+  updated_at: string
+  items: IItemContent[]
+  customer: IUserSelectInvoiceTo
 }
 
 export interface IInvoiceDetailDataResponse {

@@ -48,6 +48,7 @@ const fields: IField[] = [
 
 export const DrawerSendInvoice = () => {
   const queryClient = useQueryClient()
+  const { method } = useInvoicePreviewStore(state => state.paymentMethodStore)
   const router = useRouter()
   const {
     register,
@@ -71,6 +72,7 @@ export const DrawerSendInvoice = () => {
       formData.append('message', data.message)
       formData.append('subject', data.subject)
       formData.append('file', instance.blob, 'file.pdf')
+      formData.append('send_method', method)
 
       return await sendInvoiceByMail(formData, Number(router.query.page))
     }

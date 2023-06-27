@@ -1,27 +1,27 @@
 import React from 'react'
 import { Card, Grid } from '@mui/material'
 
-import { InfoTab } from './info-tab'
-import { SendTab } from './send-tab'
-import { ActionTab } from './action-tab'
-import { ItemTab } from './item-tab'
-import { SaleTab } from './sale-tab'
-import { NoteTab } from './note-tab'
+import BusinessInfo from './BusinessInfo/BusinessInfo'
+import InvoiceToInfo from './InvoiceToInfo/InvoiceToInfo'
+import ItemInfo from 'src/@core/components/Invoice/ItemInfo/ItemInfo'
+import SaleInfo from 'src/@core/components/Invoice/SaleInfo/SaleInfo'
+import NoteInfo from 'src/@core/components/Invoice/NoteInfo/NoteInfo'
+import ActionButtons from './ActionButtons/Actions'
 
 export const InvoiceAdd = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={12} lg={9}>
         <Card style={{ width: '100%' }}>
-          <InfoTab />
-          <SendTab />
-          <ItemTab />
-          <SaleTab />
-          <NoteTab />
+          <BusinessInfo />
+          <InvoiceToInfo />
+          <ItemInfo />
+          <SaleInfo />
+          <NoteInfo />
         </Card>
       </Grid>
       <Grid item xs={12} md={12} lg={3}>
-        <ActionTab />
+        <ActionButtons />
       </Grid>
     </Grid>
   )

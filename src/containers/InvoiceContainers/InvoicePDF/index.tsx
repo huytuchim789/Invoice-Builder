@@ -7,7 +7,7 @@ import { ItemsTabPdf } from './items-tab'
 import { SalePdfTab } from './sale-tab'
 import { NotePdfTab } from './note-tab'
 
-import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interface'
+import { IInvoiceDetailLocalData } from 'src/@core/models/api/invoice/invoice.interface'
 
 export const InvoiceDetailPdfContext = React.createContext({})
 
@@ -24,7 +24,7 @@ Font.register({
   ]
 })
 
-const InvoicePDF = ({ invoice_detail }: { invoice_detail: IInvoiceDetailData }) => {
+const InvoicePDF = ({ invoice_detail }: { invoice_detail: IInvoiceDetailLocalData }) => {
   return (
     <InvoiceDetailPdfContext.Provider value={{ invoice_detail: invoice_detail }}>
       <Document>

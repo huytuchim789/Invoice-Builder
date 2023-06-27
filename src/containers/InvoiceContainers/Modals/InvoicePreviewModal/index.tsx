@@ -1,12 +1,12 @@
 import { Dialog, DialogContent, DialogTitle, Fade } from '@mui/material'
 import { PDFViewer } from '@react-pdf/renderer'
 import InvoicePDF from '../../InvoicePDF'
-import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interface'
+import { IInvoiceDetailLocalData } from 'src/@core/models/api/invoice/invoice.interface'
 
 interface Props {
   isOpen: boolean
   handleCloseModal: () => void
-  invoice_detail: IInvoiceDetailData
+  invoice_detail: IInvoiceDetailLocalData
 }
 
 const InvoicePreviewModal = ({ isOpen, handleCloseModal, invoice_detail }: Props) => {
