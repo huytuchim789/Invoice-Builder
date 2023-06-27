@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, ChangeEvent } from 'react'
+import { useState, ChangeEvent, useEffect } from 'react'
 import Cards, { Focused } from 'react-credit-cards-2'
 
 // ** MUI Imports
@@ -17,6 +17,8 @@ import { LoadingButton } from '@mui/lab'
 import 'react-credit-cards-2/dist/es/styles-compiled.css'
 import { formatCVC, formatCreditCardNumber, formatExpirationDate } from 'src/@core/utils/common'
 import { styled } from '@mui/material'
+import { getFullYearByLastTwoDigits } from './utils'
+import { addPayment, getCard } from 'src/@core/utils/api/payment'
 
 const CardStyled = styled('div')(() => ({
   '.rccs': {
@@ -65,13 +67,33 @@ const Payment = () => {
     }
   }
 
-  const onSubmit = (data: any) => {
-    console.log(data)
+  const onSubmit = async (data: any) => {
+    const newData = {
+      type: 'card',
+      details: {
+        number: data?.number,
+        ...getFullYearByLastTwoDigits(data?.expiry),
+        cvc: data?.cvc
+      }
+    }
+    try {
+      const response = await addPayment(newData)
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const handleFocusCard = (props: 'number' | 'expiry' | 'cvc' | 'name') => () => {
     setPaymentState(prev => ({ ...prev, focus: props }))
   }
+
+  useEffect(() => {
+    const getCardsApi = async () => {
+      const res = await getCard()
+      console.log(res)
+    }
+  }, [])
 
   return (
     <CardContent>
@@ -121,6 +143,7 @@ const Payment = () => {
                   onChange={handleChangeField('name')}
                   onFocus={handleFocusCard('name')}
                   error={!!errors?.expiry}
+                  inputProps={{ style: { textTransform: 'uppercase' } }}
                   helperText={errors?.expiry ? 'Name is required' : null}
                   InputLabelProps={{ shrink: true }}
                   fullWidth
@@ -133,7 +156,7 @@ const Payment = () => {
                   label='Expiry'
                   placeholder='MM/DD'
                   value={paymentState.expiry}
-                  inputProps={{ pattern: 'dd/dd' }}
+                  // inputProps={{ pattern: 'mm/yy' }}
                   error={!!errors?.expiry}
                   onChange={handleChangeField('expiry')}
                   onFocus={handleFocusCard('expiry')}
@@ -148,7 +171,7 @@ const Payment = () => {
                   label='CVC'
                   placeholder='123'
                   value={paymentState.cvc}
-                  inputProps={{ pattern: 'd{3,4}' }}
+                  // inputProps={{ pattern: 'd{3,4}' }}
                   error={!!errors?.expiry}
                   onChange={handleChangeField('cvc')}
                   onFocus={handleFocusCard('cvc')}
@@ -160,7 +183,6 @@ const Payment = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant='h6'>My Card</Typography>
-            <Box></Box>
           </Grid>
 
           {/* {openAlert ? (
