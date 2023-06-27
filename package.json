@@ -81,6 +81,7 @@
     "notistack": "^3.0.1",
     "nprogress": "^0.2.0",
     "papaparse": "^5.4.1",
+    "payment": "^2.4.6",
     "pixi.js": "^7.2.4",
     "pusher-js": "^8.0.2",
     "react": "18.2.0",

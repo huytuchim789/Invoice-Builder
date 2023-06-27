@@ -1,93 +1,77 @@
 // ** React Imports
-import { useState, ElementType, ChangeEvent, SyntheticEvent, useEffect, useMemo } from 'react'
+import { useState, ChangeEvent } from 'react'
+import Cards, { Focused } from 'react-credit-cards-2'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import Link from '@mui/material/Link'
-import Alert from '@mui/material/Alert'
-import Select from '@mui/material/Select'
-import { styled } from '@mui/material/styles'
-import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
-import AlertTitle from '@mui/material/AlertTitle'
-import IconButton from '@mui/material/IconButton'
 import CardContent from '@mui/material/CardContent'
-import FormControl from '@mui/material/FormControl'
-import Button, { ButtonProps } from '@mui/material/Button'
+import Button from '@mui/material/Button'
 import { useForm } from 'react-hook-form'
 // ** Icons Imports
-import Close from 'mdi-material-ui/Close'
 import { useSettingController } from './../controller'
 import { useSettingStore } from './../store'
-import { CircularProgress } from '@mui/material'
-import { LoadingComponent } from 'src/@core/components/loading'
 import { LoadingButton } from '@mui/lab'
-import Cards from 'react-credit-cards-2'
 import 'react-credit-cards-2/dist/es/styles-compiled.css'
+import { formatCVC, formatCreditCardNumber, formatExpirationDate } from 'src/@core/utils/common'
+import { styled } from '@mui/material'
 
-const ImgStyled = styled('img')(({ theme }) => ({
-  width: 120,
-  height: 120,
-  marginRight: theme.spacing(6.25),
-  borderRadius: theme.shape.borderRadius
-}))
-
-const ButtonStyled = styled(Button)<ButtonProps & { component?: ElementType; htmlFor?: string }>(({ theme }) => ({
-  [theme.breakpoints.down('sm')]: {
-    width: '100%',
-    textAlign: 'center'
-  }
-}))
-
-const ResetButtonStyled = styled(Button)<ButtonProps>(({ theme }) => ({
-  marginLeft: theme.spacing(4.5),
-  [theme.breakpoints.down('sm')]: {
-    width: '100%',
-    marginLeft: 0,
-    textAlign: 'center',
-    marginTop: theme.spacing(4)
+const CardStyled = styled('div')(() => ({
+  '.rccs': {
+    paddingTop: 10,
+    margin: 0
   }
 }))
 
 const Payment = () => {
-  // ** State
-  const [openAlert, setOpenAlert] = useState<boolean>(true)
-  const [img, setImg] = useState<any>(null)
-  const settingController = useSettingController()
-  const { info, loading } = useSettingStore()
-  const [state, setState] = useState({
+  const {
+    handleSubmit,
+    formState: { errors },
+    reset,
+    register
+  } = useForm({
+    values: { number: '', expiry: '', cvc: '', name: '' }
+  })
+
+  const [paymentState, setPaymentState] = useState<{
+    number: string
+    expiry: string
+    cvc: string
+    name: string
+    focus: Focused | undefined
+  }>({
     number: '',
     expiry: '',
     cvc: '',
     name: '',
-    focus: false
+    focus: ''
   })
 
-  const handleInputChange = evt => {
-    const { name, value } = evt.target
+  // ** State
+  const settingController = useSettingController()
+  const { loading } = useSettingStore()
 
-    setState(prev => ({ ...prev, [name]: value }))
+  const handleChangeField = (props: 'number' | 'expiry' | 'cvc' | 'name') => (event: ChangeEvent<HTMLInputElement>) => {
+    if (props === 'expiry') {
+      setPaymentState(prev => ({ ...prev, [`${props}`]: formatExpirationDate(event.target.value) }))
+    } else if (props === 'number') {
+      setPaymentState(prev => ({ ...prev, [`${props}`]: formatCreditCardNumber(event.target.value) }))
+    } else if (props === 'cvc') {
+      setPaymentState(prev => ({ ...prev, [`${props}`]: formatCVC(event.target.value, { number: 3 }) }))
+    } else {
+      setPaymentState(prev => ({ ...prev, [`${props}`]: event.target.value }))
+    }
   }
 
-  const handleInputFocus = evt => {
-    setState(prev => ({ ...prev, focus: evt.target.name }))
+  const onSubmit = (data: any) => {
+    console.log(data)
   }
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-    reset,
-    setValue,
-    getValues,
-    register
-  } = useForm({
-    values: { number: '', expiry: '', cvc: '', name: '', focus: undefined }
-  })
-  const { number, expiry, cvc, name, focus } = getValues()
-  const onSubmit = data => {}
+
+  const handleFocusCard = (props: 'number' | 'expiry' | 'cvc' | 'name') => () => {
+    setPaymentState(prev => ({ ...prev, focus: props }))
+  }
 
   return (
     <CardContent>
@@ -99,55 +83,84 @@ const Payment = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={24} sm={6}>
-            <Cards number={number} expiry={expiry} cvc={cvc} name={name} focused={focus} />
-          </Grid>
-
           <Grid item xs={12} sm={6}>
-            <TextField
-              {...register('name', { required: true })}
-              fullWidth
-              label='Name'
-              placeholder='Cristiano Ronaldo'
-              error={!!errors?.name}
-              helperText={errors?.name ? 'Name is required' : null}
-              InputLabelProps={{ shrink: true }}
-            />
+            <Typography variant='h6'>Card</Typography>
+            <CardStyled>
+              <Cards
+                number={paymentState.number}
+                expiry={paymentState.expiry}
+                cvc={paymentState.cvc}
+                name={paymentState.name}
+                focused={paymentState.focus}
+              />
+            </CardStyled>
+            <Grid container spacing={3} mt={3}>
+              <Grid item xs={12}>
+                <TextField
+                  {...register('number', { required: true })}
+                  fullWidth
+                  label='Card Number'
+                  placeholder='**** **** **** ****'
+                  error={!!errors?.number}
+                  value={paymentState.number}
+                  inputProps={{
+                    pattern: '[d| ]{16,22}'
+                  }}
+                  helperText={errors?.name ? 'Name is required' : null}
+                  InputLabelProps={{ shrink: true }}
+                  onChange={handleChangeField('number')}
+                  onFocus={handleFocusCard('number')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  {...register('name', { required: true })}
+                  label='Name'
+                  placeholder='PHAM NGOC MAI LAM'
+                  value={paymentState.name}
+                  onChange={handleChangeField('name')}
+                  onFocus={handleFocusCard('name')}
+                  error={!!errors?.expiry}
+                  helperText={errors?.expiry ? 'Name is required' : null}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  {...register('expiry', { required: true })}
+                  fullWidth
+                  label='Expiry'
+                  placeholder='MM/DD'
+                  value={paymentState.expiry}
+                  inputProps={{ pattern: 'dd/dd' }}
+                  error={!!errors?.expiry}
+                  onChange={handleChangeField('expiry')}
+                  onFocus={handleFocusCard('expiry')}
+                  helperText={errors?.expiry ? 'Expiry is required' : null}
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  {...register('cvc', { required: true })}
+                  fullWidth
+                  label='CVC'
+                  placeholder='123'
+                  value={paymentState.cvc}
+                  inputProps={{ pattern: 'd{3,4}' }}
+                  error={!!errors?.expiry}
+                  onChange={handleChangeField('cvc')}
+                  onFocus={handleFocusCard('cvc')}
+                  helperText={errors?.expiry ? 'CVC is required' : null}
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              {...register('expiry', { required: true })}
-              fullWidth
-              label='Expiry'
-              placeholder='MM/DD'
-              inputProps={{ pattern: '[0-9]{2}/[0-9]{2}' }}
-              error={!!errors?.expiry}
-              helperText={errors?.expiry ? 'Expiry is required' : null}
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              {...register('address', { required: true })}
-              fullWidth
-              label='Address'
-              placeholder='ABC Pvt. Ltd.'
-              error={!!errors?.address}
-              helperText={errors?.address ? 'Address is required' : null}
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              {...register('phone', { required: true })}
-              fullWidth
-              label='Phone'
-              placeholder='0382038678'
-              error={!!errors?.phone}
-              helperText={errors?.phone ? 'Phone is required' : null}
-              InputLabelProps={{ shrink: true }}
-            />
+            <Typography variant='h6'>My Card</Typography>
+            <Box></Box>
           </Grid>
 
           {/* {openAlert ? (

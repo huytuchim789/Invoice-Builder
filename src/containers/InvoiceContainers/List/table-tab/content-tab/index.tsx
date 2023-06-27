@@ -11,7 +11,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import { updateData } from 'src/@core/utils/update-data'
 import { globalStore } from 'src/@core/hocs/global-store'
 import { pusher } from 'src/@core/common/pusher'
-import { LoadingComponent } from 'src/@core/components/loading'
 
 const EmailTransactionTable = styled(DataGrid)({
   '& .MuiDataGrid-columnHeader:focus, .MuiDataGrid-cell:focus': {
