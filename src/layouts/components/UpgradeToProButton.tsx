@@ -11,13 +11,15 @@ import CardContent from '@mui/material/CardContent'
 
 // ** Third Party Imports
 import { usePopper } from 'react-popper'
+import { globalStore } from 'src/@core/hocs/global-store'
+import { isGuest } from 'src/@core/utils/role-check'
 
 const BuyNowButton = () => {
   // ** States
   const [open, setOpen] = useState<boolean>(false)
   const [popperElement, setPopperElement] = useState(null)
   const [referenceElement, setReferenceElement] = useState(null)
-
+  const { user } = globalStore(state => state.userStore)
   const { styles, attributes, update } = usePopper(referenceElement, popperElement, {
     placement: 'top-end'
   })
@@ -31,19 +33,19 @@ const BuyNowButton = () => {
     setOpen(false)
   }
 
-  return (
+  return isGuest(user) ? (
     <Box
       className='upgrade-to-pro-button mui-fixed'
       sx={{ right: theme => theme.spacing(20), bottom: theme => theme.spacing(10), zIndex: 11, position: 'fixed' }}
     >
-      {/* <Button
+      <Button
         component='a'
         target='_blank'
         variant='contained'
         onMouseEnter={handleOpen}
         onMouseLeave={handleClose}
         ref={(e: any) => setReferenceElement(e)}
-        href='https://themeselection.com/products/materio-mui-react-nextjs-admin-template/'
+        href={`${process.env.APP_FE}/account-settings`}
         sx={{
           backgroundColor: '#ff3e1d',
           boxShadow: '0 1px 20px 1px #ff3e1d',
@@ -103,9 +105,10 @@ const BuyNowButton = () => {
             </CardContent>
           </Paper>
         </Box>
-      </Fade> */}
+      </Fade>
     </Box>
+  ) : (
+    <></>
   )
 }
-
 export default BuyNowButton
