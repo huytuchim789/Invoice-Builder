@@ -12,11 +12,15 @@ import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
 import InvoiceEditOutline from 'mdi-material-ui/DatabaseEditOutline'
 import InvoiceAddOutline from 'mdi-material-ui/PlusBoxOutline'
 import InvoicePreviewOutline from 'mdi-material-ui/ViewListOutline'
-
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
+import { globalStore } from 'src/@core/hocs/global-store'
+import { isGuest } from 'src/@core/utils/role-check'
+import SvgIcon from '@mui/material/SvgIcon'
 
 const navigation = (): VerticalNavItemsType => {
+  const { user } = globalStore(state => state.userStore)
+
   return [
     {
       title: 'Dashboard',
@@ -35,7 +39,8 @@ const navigation = (): VerticalNavItemsType => {
       title: 'List',
       icon: InvoicePreviewOutline,
       path: '/invoice/list',
-      openInNewTab: false
+      openInNewTab: false,
+      subject: 'hello'
     },
     // {
     //   title: 'Preview',
@@ -53,7 +58,8 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Add',
       icon: InvoiceAddOutline,
       path: '/invoice/add',
-      openInNewTab: false
+      openInNewTab: false,
+      disabled: isGuest(user)
     },
     {
       sectionTitle: 'Customers'
@@ -62,7 +68,8 @@ const navigation = (): VerticalNavItemsType => {
       title: 'List',
       icon: InvoicePreviewOutline,
       path: '/customer/list',
-      openInNewTab: false
+      openInNewTab: false,
+      disabled: isGuest(user)
     },
     {
       sectionTitle: 'User Interface'

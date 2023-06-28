@@ -49,6 +49,8 @@ import { USER_INFO } from 'src/@core/models'
 //Import snackbar
 import { SnackbarProvider } from 'notistack'
 import { withAuth } from 'src/@core/hocs/with-auth'
+import { globalStore } from 'src/@core/hocs/global-store'
+import { LoadingComponent } from 'src/@core/components/loading'
 
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -88,7 +90,7 @@ export function App(props: ExtendedAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
   const [statusAlert, update] = useStatusAlert((state: IDataOpenAlert) => [state.statusAlert, state.update])
   const [updateUserInfo] = useDataLogin((state: IDataLogin) => [state.updateUserInfo])
-
+  const { loading, setLoading } = globalStore(state => state)
   useEffect(() => {
     if (hasCookie(USER_INFO)) {
       const data = getCookie(USER_INFO) as string
@@ -134,7 +136,11 @@ export function App(props: ExtendedAppProps) {
               <SettingsConsumer>
                 {({ settings }) => {
                   //@ts-ignore
-                  return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
+                  return loading ? (
+                    <LoadingComponent />
+                  ) : (
+                    <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
+                  )
                 }}
               </SettingsConsumer>
             </SettingsProvider>

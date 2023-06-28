@@ -1,11 +1,12 @@
 import { parseCookie } from 'src/@core/common/cookies'
 
+const rolePaths = ['/invoice/add', '/invoice/edit', '/invoice/add', '/customer/list']
+
 export const isPath = (pathname: string) => {
   const relativeWith = (...others: string[]) => others.some(each => isChildPath(pathname, each))
   const isEmpty = () => ['', '/', null, undefined].includes(pathname)
   const isPrivatePath = () => !relativeWith(...publicPath)
   const isClientPath = () => clientPath.includes(pathname)
-
   return {
     isEmpty,
     relativeWith,
@@ -23,7 +24,9 @@ export const isChildPath = (child?: string, parent?: string) => {
 
   return s2.every(e => s1.includes(e))
 }
-
+export const checkAccessByRole = (pathName: string) => {
+  return rolePaths.some(r => pathName.includes(r))
+}
 export const clientPath = ['pages/sso/auth']
 
 export const publicPath = [...clientPath, '/pages/login', 'pages/404', 'pages/500', 'pages/401']

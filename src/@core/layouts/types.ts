@@ -11,7 +11,7 @@ export type NavLink = {
   action?: string
   subject?: string
   disabled?: boolean
-  badgeContent?: string
+  badgeContent?: string | string[] | ReactNode
   externalLink?: boolean
   openInNewTab?: boolean
   icon?: string | string[] | ReactNode

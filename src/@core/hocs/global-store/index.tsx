@@ -4,6 +4,8 @@ import userStore from '../with-auth/store'
 
 export const globalStore = create(
   devtools(set => ({
-    userStore: { ...userStore(set) }
+    userStore: { ...userStore(set) },
+    loading: false,
+    setLoading: (loading: boolean) => set({ loading })
   }))
 )
