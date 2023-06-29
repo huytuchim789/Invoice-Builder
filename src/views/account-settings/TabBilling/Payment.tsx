@@ -1,5 +1,7 @@
+import 'react-credit-cards-2/dist/es/styles-compiled.css'
+
 // ** React Imports
-import { useState, ChangeEvent, useEffect } from 'react'
+import { useState, ChangeEvent } from 'react'
 import Cards, { Focused } from 'react-credit-cards-2'
 
 // ** MUI Imports
@@ -9,16 +11,20 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
+
 // ** Icons Imports
-import { useSettingController } from './../controller'
-import { useSettingStore } from './../store'
 import { LoadingButton } from '@mui/lab'
-import 'react-credit-cards-2/dist/es/styles-compiled.css'
 import { formatCVC, formatCreditCardNumber, formatExpirationDate } from 'src/@core/utils/common'
 import { styled } from '@mui/material'
 import { getFullYearByLastTwoDigits } from './utils'
-import { addPayment, getCard } from 'src/@core/utils/api/payment'
+import { addPayment, detachCard } from 'src/@core/utils/api/payment'
+import useCardInfo from 'src/@core/hooks/payment/useCardInfo'
+import { globalStore } from 'src/@core/hocs/global-store'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useSnackbarWithContext } from 'src/@core/common/snackbar'
+import { ICardInfo, ICardProps } from 'src/@core/models/api/payment/card.interface'
+import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 
 const CardStyled = styled('div')(() => ({
   '.rccs': {
@@ -27,33 +33,36 @@ const CardStyled = styled('div')(() => ({
   }
 }))
 
+interface FormState {
+  number: string
+  expiry: string
+  cvc: string
+  name: string
+  focus: Focused | undefined
+}
+
 const Payment = () => {
+  const queryClient = useQueryClient()
   const {
     handleSubmit,
     formState: { errors },
     reset,
     register
-  } = useForm({
-    values: { number: '', expiry: '', cvc: '', name: '' }
+  } = useForm<FormState>({
+    values: { number: '', expiry: '', cvc: '', name: '', focus: 'number' }
   })
 
-  const [paymentState, setPaymentState] = useState<{
-    number: string
-    expiry: string
-    cvc: string
-    name: string
-    focus: Focused | undefined
-  }>({
+  const cardInfo = useCardInfo()
+  const { user } = globalStore((state: any) => state.userStore)
+  const snackbar = useSnackbarWithContext()
+
+  const [paymentState, setPaymentState] = useState<FormState>({
     number: '',
     expiry: '',
     cvc: '',
     name: '',
     focus: ''
   })
-
-  // ** State
-  const settingController = useSettingController()
-  const { loading } = useSettingStore()
 
   const handleChangeField = (props: 'number' | 'expiry' | 'cvc' | 'name') => (event: ChangeEvent<HTMLInputElement>) => {
     if (props === 'expiry') {
@@ -67,37 +76,48 @@ const Payment = () => {
     }
   }
 
-  const onSubmit = async (data: any) => {
-    const newData = {
+  const addCard = useMutation({
+    mutationFn: async (payment: ICardProps) => await addPayment(payment),
+    onSuccess: (data: ICardInfo) => {
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.CARD_INFO])
+      snackbar.success(data.message)
+    },
+    onError: (err: { message: string }) => {
+      snackbar.error(err.message)
+    }
+  })
+
+  const detachCardMutate = useMutation({
+    mutationFn: async () => await detachCard(),
+    onSuccess: (data: { message: string }) => {
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.CARD_INFO])
+      snackbar.success(data.message)
+    },
+    onError: (err: { message: string }) => {
+      snackbar.error(err.message)
+    }
+  })
+
+  const onSubmit: SubmitHandler<FormState> = async data => {
+    const newData: ICardProps = {
       type: 'card',
       details: {
-        number: data?.number,
-        ...getFullYearByLastTwoDigits(data?.expiry),
-        cvc: data?.cvc
+        number: data.number,
+        ...getFullYearByLastTwoDigits(data.expiry),
+        cvc: data.cvc
       }
     }
-    try {
-      const response = await addPayment(newData)
-      console.log(response)
-    } catch (error) {
-      console.log(error)
-    }
+
+    addCard.mutate(newData)
   }
 
   const handleFocusCard = (props: 'number' | 'expiry' | 'cvc' | 'name') => () => {
     setPaymentState(prev => ({ ...prev, focus: props }))
   }
 
-  useEffect(() => {
-    const getCardsApi = async () => {
-      const res = await getCard()
-      console.log(res)
-    }
-  }, [])
-
   return (
     <CardContent>
-      <form onSubmit={handleSubmit(data => onSubmit(data))}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={7}>
           <Grid item xs={12} sx={{ marginTop: 4.8, marginBottom: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}>
@@ -105,7 +125,7 @@ const Payment = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} lg={6}>
             <Typography variant='h6'>Card</Typography>
             <CardStyled>
               <Cards
@@ -181,8 +201,61 @@ const Payment = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} lg={6}>
             <Typography variant='h6'>My Card</Typography>
+            {cardInfo.isLoading ? (
+              <Typography>Loading</Typography>
+            ) : !cardInfo.data || cardInfo.isError || !user ? (
+              <Typography>No Card</Typography>
+            ) : (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  backgroundColor: 'rgba(58, 53, 65, 0.04)',
+                  padding: '15px 20px',
+                  borderRadius: '8px',
+                  marginTop: '10px'
+                }}
+              >
+                <Box>
+                  <img src='/images/cards/mastercard.png' alt='Card Image' />
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px', paddingBottom: '10px' }}>
+                    <Typography variant='h6'>{user.name}</Typography>
+                    <Box
+                      sx={{
+                        padding: '3px 5px',
+                        borderRadius: '100px',
+                        backgroundColor: '#ebe3f9'
+                      }}
+                    >
+                      <Typography sx={{ color: 'rgb(145, 85, 253)' }}>Primary</Typography>
+                    </Box>
+                  </Box>
+                  <Typography>**** **** **** {cardInfo.data?.card.last4}</Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-evenly'
+                  }}
+                >
+                  <LoadingButton
+                    loading={detachCardMutate.isLoading}
+                    size='large'
+                    variant='outlined'
+                    color='error'
+                    onClick={() => detachCardMutate.mutate()}
+                  >
+                    Delete
+                  </LoadingButton>
+                  <Typography textAlign='right'>
+                    Card expires at {cardInfo.data?.card.exp_month}/{String(cardInfo.data?.card.exp_year).slice(2, 4)}
+                  </Typography>
+                </Box>
+              </Box>
+            )}
           </Grid>
 
           {/* {openAlert ? (
@@ -205,7 +278,7 @@ const Payment = () => {
           ) : null} */}
 
           <Grid item xs={12}>
-            <LoadingButton loading={loading} variant='contained' sx={{ marginRight: 3.5 }} type='submit'>
+            <LoadingButton loading={addCard.isLoading} variant='contained' sx={{ marginRight: 3.5 }} type='submit'>
               Save Changes
             </LoadingButton>
             <Button onClick={() => reset()} variant='outlined' color='secondary'>

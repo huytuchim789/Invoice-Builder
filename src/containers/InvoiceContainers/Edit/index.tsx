@@ -4,14 +4,14 @@ import { useRouter } from 'next/router'
 import { Card, Grid } from '@mui/material'
 
 import { ActionTab } from './action-tab'
-import { InfoTab } from './info-tab'
-import { SendTab } from './send-tab'
-import { ItemTab } from './item-tab'
-import { SaleTab } from './sale-tab'
-import { NoteTab } from './note-tab'
+import InvoiceToInfo from './InvoiceToInfo/InvoiceToInfo'
 
 import { useInvoiceDetailData } from 'src/@core/hooks/invoice/useInvoiceDetailData'
 import useInvoiceStore from 'src/@core/components/Invoice/store'
+import BusinessInfo from '../Add/BusinessInfo/BusinessInfo'
+import ItemInfo from 'src/@core/components/Invoice/ItemInfo/ItemInfo'
+import SaleInfo from 'src/@core/components/Invoice/SaleInfo/SaleInfo'
+import NoteInfo from 'src/@core/components/Invoice/NoteInfo/NoteInfo'
 
 export const InvoiceEditContext = React.createContext({})
 
@@ -37,11 +37,11 @@ export const InvoiceEdit = () => {
       <Grid container spacing={3}>
         <Grid item xs={12} md={12} lg={9}>
           <Card style={{ width: '100%' }}>
-            <InfoTab />
-            <SendTab />
-            <ItemTab />
-            <SaleTab />
-            <NoteTab />
+            <BusinessInfo />
+            <InvoiceToInfo />
+            <ItemInfo />
+            <SaleInfo />
+            <NoteInfo />
           </Card>
         </Grid>
         <Grid item xs={12} md={12} lg={3}>

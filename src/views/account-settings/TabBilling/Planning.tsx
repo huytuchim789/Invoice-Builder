@@ -10,6 +10,7 @@ import CardContent from '@mui/material/CardContent'
 
 // ** Icons Imports
 import { Alert, AlertTitle, Chip, LinearProgress, Stack } from '@mui/material'
+import PlansModal from '../Modals/PlansModal'
 
 interface State {
   newPassword: string
@@ -30,6 +31,8 @@ const Planning = () => {
     showCurrentPassword: false,
     showConfirmNewPassword: false
   })
+
+  const [isOpenPlansModal, setIsOpenPlanModal] = useState<boolean>(false)
 
   return (
     <form>
@@ -62,7 +65,7 @@ const Planning = () => {
               </Box>
             </Stack>
             <Box sx={{ mt: 11 }}>
-              <Button variant='contained' sx={{ marginRight: 3.5 }}>
+              <Button variant='contained' sx={{ marginRight: 3.5 }} onClick={() => setIsOpenPlanModal(true)}>
                 Upgrade Plan
               </Button>
               <Button
@@ -95,6 +98,7 @@ const Planning = () => {
           </Grid>
         </Grid>
       </CardContent>
+      <PlansModal isOpenModal={isOpenPlansModal} handleClose={() => setIsOpenPlanModal(false)} />
     </form>
   )
 }
