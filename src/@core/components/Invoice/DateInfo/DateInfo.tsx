@@ -1,7 +1,7 @@
 import React from 'react'
 
-import GridComponent from './GridComponent'
 import DatePickerComponent from './DatePickerComponent'
+import GridComponent from '../atoms/GridComponent'
 
 const DateInfo = () => {
   return (

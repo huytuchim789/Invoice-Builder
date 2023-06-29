@@ -43,7 +43,7 @@ export interface IAddCustomerUsersData {
   contact_number_country: string
   updated_at: string
   created_at: string
-  id: number
+  id: string
 }
 
 export interface IAddCustomerUsersDataResponse {

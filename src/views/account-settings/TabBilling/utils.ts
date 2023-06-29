@@ -1,6 +1,5 @@
 export function getFullYearByLastTwoDigits(dateString: string) {
   const currentYear = new Date().getFullYear()
- 
 
   const [month, year] = dateString.split('/')
 

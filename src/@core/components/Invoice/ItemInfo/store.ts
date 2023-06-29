@@ -12,9 +12,10 @@ export interface IItemContent {
 export interface IStore {
   itemContent: IItemContent[]
   subTotal: number
-  addItemContent: () => unknown
-  setItemContent: (value: string | number, key: string, index: number) => unknown
-  deleteItemContent: (index: number) => unknown
+  addItemContent: () => void
+  setItemContent: (value: string | number, key: string, index: number) => void
+  deleteItemContent: (index: number) => void
+  setAllItemContent: (value: IItemContent[]) => void
 }
 
 const initialState: IItemContent[] = [
@@ -77,6 +78,17 @@ export const useItemContentStore = create<IStore>(set => ({
         )
 
         state.itemContent = itemContentArr
+      })
+    ),
+  setAllItemContent: (value: IItemContent[]) =>
+    set(
+      produce((state: { itemContent: IItemContent[]; subTotal: number }) => {
+        state.itemContent = value
+
+        state.subTotal = value.reduce(
+          (accumulateValue: number, nextValue: IItemContent) => accumulateValue + nextValue.price,
+          0
+        )
       })
     )
 }))
