@@ -10,7 +10,8 @@ const env = {
   APP_BE: process.env.APP_BE,
   APP_FE: process.env.APP_FE,
   APP_GOOGLE_BASE: process.env.APP_GOOGLE_BASE,
-  APP_CLIENT_ID: process.env.APP_CLIENT_ID
+  APP_CLIENT_ID: process.env.APP_CLIENT_ID,
+  APP_CHAT: process.env.APP_CHAT
 }
 
 const sassConfig = {

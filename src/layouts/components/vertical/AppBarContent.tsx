@@ -18,6 +18,7 @@ import { Settings } from 'src/@core/context/settingsContext'
 // ** Components
 import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
+import MessengerDropdown from 'src/@core/layouts/components/shared-components/MessengerDropDown'
 
 const NotificationDropdown = dynamic<any>(
   () => import('src/@core/layouts/components/shared-components/NotificationDropdown').then(mod => mod.default),
@@ -82,6 +83,7 @@ const AppBarContent = (props: Props) => {
         )}
         <ModeToggler settings={settings} saveSettings={saveSettings} />
         <NotificationDropdown />
+        <MessengerDropdown />
         <UserDropdown />
       </Box>
     </Box>

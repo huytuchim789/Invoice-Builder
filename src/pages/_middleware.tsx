@@ -12,7 +12,7 @@ export async function middleware(req: NextRequest) {
 
     if (pathname !== redirect && !path.isClientPath()) {
       let res = NextResponse.redirect(new URL(redirect, process.env.APP_FE).toString(), 307)
-      if (redirect === 'pages/login' && !path.isClientPath() && !path.isEmpty()) {
+      if (redirect === '/pages/login' && !path.isClientPath() && !path.isEmpty()) {
         res = res.cookie(COOKIE_KEY.redirect_client, pathname)
       }
       console.warn(`>>> do redirect ${pathname} -> ${redirect}`)
