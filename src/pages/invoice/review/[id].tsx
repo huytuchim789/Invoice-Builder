@@ -14,5 +14,5 @@ const InvoiceReviewPage: NextPage = () => {
   return <InvoiceReview />
 }
 
-// InvoiceReviewPage.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+InvoiceReviewPage.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 export default InvoiceReviewPage

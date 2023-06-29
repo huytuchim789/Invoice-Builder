@@ -174,7 +174,7 @@ const Payment = () => {
                   {...register('expiry', { required: true })}
                   fullWidth
                   label='Expiry'
-                  placeholder='MM/DD'
+                  placeholder='MM/YY'
                   value={paymentState.expiry}
                   // inputProps={{ pattern: 'mm/yy' }}
                   error={!!errors?.expiry}

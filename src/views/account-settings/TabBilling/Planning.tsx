@@ -11,29 +11,28 @@ import CardContent from '@mui/material/CardContent'
 // ** Icons Imports
 import { Alert, AlertTitle, Chip, LinearProgress, Stack } from '@mui/material'
 import PlansModal from '../Modals/PlansModal'
+import { useMutation } from '@tanstack/react-query'
+import { unSubcribeProPlan } from 'src/@core/utils/api/payment'
+import { useSnackbarWithContext } from 'src/@core/common/snackbar'
+import { LoadingButton } from '@mui/lab'
 
-interface State {
-  newPassword: string
-  currentPassword: string
-  showNewPassword: boolean
-  confirmNewPassword: string
-  showCurrentPassword: boolean
-  showConfirmNewPassword: boolean
-}
+
 
 const Planning = () => {
   // ** States
-  const [values, setValues] = useState<State>({
-    newPassword: '',
-    currentPassword: '',
-    showNewPassword: false,
-    confirmNewPassword: '',
-    showCurrentPassword: false,
-    showConfirmNewPassword: false
-  })
+ 
+  const snackbar = useSnackbarWithContext()
 
   const [isOpenPlansModal, setIsOpenPlanModal] = useState<boolean>(false)
-
+  const unSubcribePlan = useMutation({
+    mutationFn: async () => await unSubcribeProPlan(),
+    onSuccess: (data: { message: string }) => {
+      snackbar.success(data.message)
+    },
+    onError: (err: { message: string }) => {
+      snackbar.error(err.message)
+    }
+  })
   return (
     <form>
       <CardContent>
@@ -68,14 +67,14 @@ const Planning = () => {
               <Button variant='contained' sx={{ marginRight: 3.5 }} onClick={() => setIsOpenPlanModal(true)}>
                 Upgrade Plan
               </Button>
-              <Button
-                type='reset'
+              <LoadingButton
+                loading={unSubcribePlan.isLoading}
                 variant='outlined'
                 color='secondary'
-                onClick={() => setValues({ ...values, currentPassword: '', newPassword: '', confirmNewPassword: '' })}
+                onClick={() => unSubcribePlan.mutate()}
               >
                 Cancel Subcription
-              </Button>
+              </LoadingButton>
             </Box>
           </Grid>
           <Grid item xs={6} sx={{ marginTop: 4.8, marginBottom: 3 }}>
