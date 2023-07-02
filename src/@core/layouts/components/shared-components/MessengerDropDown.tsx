@@ -120,52 +120,36 @@ const MessengerDropdown = () => {
   }, [noti_list, updateStatus])
 
   useEffect(() => {
-    if (user.id) {
-      const channel = pusher.subscribe(`private-App.Models.User.${user.id}`)
+    const channel = pusher.subscribe(`${user?.email}`)
+    channel.bind(`conversation:update`, function (data: any) {
+      console.log(data)
+    })
+  }, [])
 
-      channel.bind(`Illuminate\\Notifications\\Events\\BroadcastNotificationCreated`, function (data: any) {
-        const oldData = queryClient.getQueryData([
-          QUERY_INVOICE_KEYS.NOTIFICATION_LIST,
-          page,
-          limit,
-          keyword
-        ]) as INotificationListDataResponse
+  // const markReadNoti = useMutation({
+  //   mutationFn: async (id: string) => await markNotiRead(id),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries([QUERY_INVOICE_KEYS.MESSENGER_LIST])
+  //   },
+  //   onError: (err: any) => {
+  //     snackbar.error(err.message)
+  //   }
+  // })
 
-        oldData.data.unshift(data)
-
-        queryClient.setQueryData([QUERY_INVOICE_KEYS.NOTIFICATION_LIST], {
-          ...oldData
-        })
-
-        setUpdateStatus(!updateStatus)
-      })
-    }
-  }, [user])
-
-  const markReadNoti = useMutation({
-    mutationFn: async (id: string) => await markNotiRead(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.NOTIFICATION_LIST])
-    },
-    onError: (err: any) => {
-      snackbar.error(err.message)
-    }
-  })
-
-  const markReadAllNoti = useMutation({
-    mutationFn: async () => await markAllNotiRead(),
-    onSuccess: () => {
-      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.NOTIFICATION_LIST])
-    },
-    onError: (err: any) => {
-      snackbar.error(err.message)
-    }
-  })
+  // const markReadAllNoti = useMutation({
+  //   mutationFn: async () => await markAllNotiRead(),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries([QUERY_INVOICE_KEYS.MESSENGER_LIST])
+  //   },
+  //   onError: (err: any) => {
+  //     snackbar.error(err.message)
+  //   }
+  // })
 
   // ** Function
   const handleDropdownOpen = (event: SyntheticEvent) => {
     setAnchorEl(event.currentTarget)
-    window.location.href = `${process.env.APP_CHAT}`
+    // window.location.href = `${process.env.APP_CHAT}`
   }
 
   const handleDropdownClose = () => {
@@ -182,11 +166,11 @@ const MessengerDropdown = () => {
     }
   }
 
-  const handleMarkReadNoti = (id: string, read_at: string | null) => {
-    if (read_at === null && !markReadNoti.isLoading) {
-      markReadNoti.mutate(id)
-    }
-  }
+  // const handleMarkReadNoti = (id: string, read_at: string | null) => {
+  //   if (read_at === null && !markReadNoti.isLoading) {
+  //     markReadNoti.mutate(id)
+  //   }
+  // }
 
   return (
     <Fragment>
@@ -204,7 +188,7 @@ const MessengerDropdown = () => {
       >
         <MenuItem disableRipple>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            <Typography sx={{ fontWeight: 600 }}>Notifications</Typography>
+            <Typography sx={{ fontWeight: 600 }}>Messengers</Typography>
             <Chip
               size='small'
               label={`${countUnRead} news`}
@@ -217,7 +201,7 @@ const MessengerDropdown = () => {
           {noti_list &&
             noti_list.data.map((noti: INotificationListData) => (
               <MenuItem
-                onClick={() => handleMarkReadNoti(noti.id, noti.read_at)}
+                // onClick={() => handleMarkReadNoti(noti.id, noti.read_at)}
                 key={noti.id}
                 style={{ backgroundColor: noti.read_at === null ? '#808080' : '#FFFFFF' }}
               >
@@ -238,7 +222,11 @@ const MessengerDropdown = () => {
           disableRipple
           sx={{ py: 3.5, borderBottom: 0, borderTop: theme => `1px solid ${theme.palette.divider}` }}
         >
-          <Button fullWidth variant='contained' onClick={() => markReadAllNoti.mutate()}>
+          <Button
+            fullWidth
+            variant='contained'
+            // onClick={() => markReadAllNoti.mutate()}
+          >
             Read All Notifications
           </Button>
         </MenuItem>
