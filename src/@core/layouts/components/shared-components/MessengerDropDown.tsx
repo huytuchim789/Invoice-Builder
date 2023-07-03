@@ -17,15 +17,15 @@ import Typography, { TypographyProps } from '@mui/material/Typography'
 import MessageOutlinedIcon from 'mdi-material-ui/MessageOutline'
 // ** Third Party Components
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'
-import { useNotificationListData } from 'src/@core/hooks/useNotificationData'
-import { INotificationListData, INotificationListDataResponse } from 'src/@core/models/api/notification.interface'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { markNotiRead } from 'src/@core/utils/api/markNotiRead'
+
+import { useQueryClient } from '@tanstack/react-query'
+import {} from 'src/@core/utils/api/markNotiRead'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
-import { useSnackbarWithContext } from 'src/@core/common/snackbar'
-import { markAllNotiRead } from 'src/@core/utils/api/markAllNotiRead'
 import { globalStore } from 'src/@core/hocs/global-store'
 import { pusher } from 'src/@core/common/pusher'
+import { useMessengers } from 'src/@core/hooks/useMessenger'
+import { Daum, IMessengerResponse } from 'src/@core/models/api/messegner.interface'
+import Link from '@mui/material/Link'
 
 dayjs.extend(utc)
 
@@ -92,37 +92,38 @@ const MenuItemSubtitle = styled(Typography)<TypographyProps>({
 const MessengerDropdown = () => {
   // ** Hook
   const queryClient = useQueryClient()
-  const snackbar = useSnackbarWithContext()
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
   const { user } = globalStore((state: any) => state.userStore)
+  const [updateStatus, setUpdateStatus] = useState(false)
 
   // ** States
   const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null)
-  const [page] = useState<number>(0)
-  const [limit] = useState<number>(10)
-  const [updateStatus, setUpdateStatus] = useState<boolean>(false)
-  const [keyword] = useState<string>('')
 
   // ** Call Data
-  const { data: noti_list } = useNotificationListData({ page, limit, keyword })
-
+  const { data: messengers } = useMessengers()
+  const checkUnSeenMessage = (item: Daum) => {
+    return !item.messages[item.messages.length - 1].seen.map(s => s?.email).includes(user?.email)
+  }
   const countUnRead = useMemo(() => {
-    if (noti_list) {
-      return noti_list.data.reduce((accumulate, currentData) => {
-        if (currentData.read_at === null) {
-          return accumulate + 1
-        }
-        return accumulate
-      }, 0)
-    }
-
-    return 0
-  }, [noti_list, updateStatus])
+    return messengers?.data.filter((item: Daum) => {
+      return checkUnSeenMessage(item)
+    }).length
+  }, [user, updateStatus])
 
   useEffect(() => {
     const channel = pusher.subscribe(`${user?.email}`)
     channel.bind(`conversation:update`, function (data: any) {
-      console.log(data)
+      const oldData = queryClient.getQueryData([QUERY_INVOICE_KEYS.MESSENGER_LIST]) as IMessengerResponse
+      oldData?.data.forEach((item: Daum) => {
+        if (item?.id === data?.id) {
+          data!.messages[0]!.sender = data?.messages[0]?.seen.find((s: any) => s?.id === data?.messages[0]?.senderId)
+          item!.messages = item?.messages.concat(data?.messages)
+        }
+      })
+      setUpdateStatus(!updateStatus)
+      queryClient.setQueryData([QUERY_INVOICE_KEYS.MESSENGER_LIST], {
+        ...oldData
+      })
     })
   }, [])
 
@@ -198,24 +199,32 @@ const MessengerDropdown = () => {
           </Box>
         </MenuItem>
         <ScrollWrapper>
-          {noti_list &&
-            noti_list.data.map((noti: INotificationListData) => (
-              <MenuItem
-                // onClick={() => handleMarkReadNoti(noti.id, noti.read_at)}
+          {messengers &&
+            messengers.data.map((noti: Daum) => (
+              <Link
                 key={noti.id}
-                style={{ backgroundColor: noti.read_at === null ? '#808080' : '#FFFFFF' }}
+                href={`${process.env.APP_CHAT}/conversations/${noti.id}}`}
+                target='_blank'
+                rel='noopener noreferrer'
               >
-                <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                  <Avatar alt='Flora' src={noti.data.sender.avatar_url} />
-                  <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                    <MenuItemTitle>{noti.data.sender.name}</MenuItemTitle>
-                    <MenuItemSubtitle variant='body2'>{noti.data.message}</MenuItemSubtitle>
+                <MenuItem style={{ backgroundColor: noti.createdAt === null ? '#808080' : '#FFFFFF' }}>
+                  <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                    <Avatar alt='Flora' src={noti.messages[noti?.messages?.length - 1]?.sender.image} />
+                    <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
+                      <MenuItemTitle>{noti.messages[noti?.messages?.length - 1]?.sender.name}</MenuItemTitle>
+                      <MenuItemSubtitle variant='body2' fontWeight={!checkUnSeenMessage(noti) ? 'inherit' : 'bold'}>
+                        {noti.messages[noti?.messages?.length - 1]?.body}
+                      </MenuItemSubtitle>
+                    </Box>
+                    <Typography variant='caption' sx={{ color: 'text.disabled' }}>
+                      {dayjs(noti.messages[noti?.messages?.length - 1]?.sender.createdAt)
+                        .utc()
+                        .local()
+                        .format('YYYY-MM-DD HH:mm:ss')}
+                    </Typography>
                   </Box>
-                  <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                    {dayjs(noti.created_at).utc().local().format('YYYY-MM-DD HH:mm:ss')}
-                  </Typography>
-                </Box>
-              </MenuItem>
+                </MenuItem>
+              </Link>
             ))}
         </ScrollWrapper>
         <MenuItem
@@ -227,7 +236,7 @@ const MessengerDropdown = () => {
             variant='contained'
             // onClick={() => markReadAllNoti.mutate()}
           >
-            Read All Notifications
+            Read All Messengers
           </Button>
         </MenuItem>
       </Menu>

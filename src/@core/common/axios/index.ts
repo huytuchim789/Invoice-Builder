@@ -3,7 +3,8 @@ import { API_BASE_URL } from 'src/@core/utils/api'
 import { logout } from 'src/@core/utils/api/auth'
 
 const axiosInstance = axios.create({
-  baseURL: API_BASE_URL
+  baseURL: API_BASE_URL,
+  withCredentials: true,
 })
 
 // Add a request interceptor for authentication
