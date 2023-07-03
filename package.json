@@ -101,6 +101,7 @@
     "react-to-pdf": "^0.0.14",
     "styled-components": "^5.3.11",
     "styled-jsx": "^5.1.2",
+    "use-sound": "^4.0.1",
     "zustand": "^4.3.7"
   },
   "devDependencies": {
