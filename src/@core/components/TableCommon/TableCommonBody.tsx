@@ -17,7 +17,13 @@ const TableCommonBody = () => {
         <TableRow key={dataBody.id}>
           {checkable && (
             <TableCell width={50}>
-              <Checkbox value={dataBody.id} checked={checkedSelected.includes(dataBody.id)} onChange={handleCheck} />
+              <Checkbox
+                value={JSON.stringify({ invoice_id: dataBody?.invoice_id, method: dataBody?.method })}
+                checked={checkedSelected.includes(
+                  JSON.stringify({ invoice_id: dataBody?.invoice_id, method: dataBody?.method })
+                )}
+                onChange={handleCheck}
+              />
             </TableCell>
           )}
           {headerData.map(head => {

@@ -55,9 +55,10 @@ const ParamsTable = () => {
   }, [keyword])
 
   const handleUploadPdf = async (method: 'web' | 'mail'): Promise<any> => {
+    const selectedData = checkedSelected.map(item => JSON.parse(item)?.invoice_id)
     return await sendInvoiceByMail(
       {
-        invoice_ids: checkedSelected,
+        invoice_ids: selectedData,
         send_method: method,
         subject: 'a',
         message: 'nbnb'
