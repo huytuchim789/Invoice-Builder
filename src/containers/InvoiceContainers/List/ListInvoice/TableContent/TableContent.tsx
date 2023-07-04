@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react'
 
 import { Box, SelectChangeEvent } from '@mui/material'
-import { columns } from './table-header'
 import { useListInvoiceStore } from '../../store'
 import { useEmailTransactionData } from 'src/@core/hooks/invoice/useEmailTransactionList'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
@@ -10,8 +9,9 @@ import { updateData } from 'src/@core/utils/update-data'
 import { globalStore } from 'src/@core/hocs/global-store'
 import { pusher } from 'src/@core/common/pusher'
 import TableCommon from 'src/@core/components/TableCommon/TableCommon'
+import { columns } from './TableHeader/TableHeader'
 
-export const ContentTab = () => {
+const TableContent = () => {
   const queryClient = useQueryClient()
   const { user } = globalStore((state: any) => state.userStore)
 
@@ -82,3 +82,5 @@ export const ContentTab = () => {
     </Box>
   )
 }
+
+export default TableContent

@@ -31,7 +31,7 @@ const ActionButton = styled('div')({
   }
 })
 
-export const ActionTab = ({ params }: Props) => {
+const ActionCell = ({ params }: Props) => {
   const router = useRouter()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
@@ -84,3 +84,5 @@ export const ActionTab = ({ params }: Props) => {
     </Stack>
   )
 }
+
+export default ActionCell

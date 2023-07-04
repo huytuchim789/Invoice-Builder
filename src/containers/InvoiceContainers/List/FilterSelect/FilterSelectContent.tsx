@@ -1,13 +1,9 @@
 import { Card, CardContent, Grid } from '@mui/material'
 
-import { InvoiceStatusFilter } from './status-tab'
-import dynamic from 'next/dynamic'
+import InvoiceStatusFilter from './InvoiceStatusSelect'
+import RangeDateSelect from './RangeDateSelect'
 
-const RangeDateTab = dynamic<any>(() => import('./range-date-tab').then(mod => mod.RangeDateTab), {
-  ssr: false
-})
-
-export const FilterTab = () => {
+const FilterSelectContent = () => {
   return (
     <Card>
       <CardContent>
@@ -16,10 +12,12 @@ export const FilterTab = () => {
             <InvoiceStatusFilter />
           </Grid>
           <Grid item lg={6} md={6} sm={12}>
-            <RangeDateTab />
+            <RangeDateSelect />
           </Grid>
         </Grid>
       </CardContent>
     </Card>
   )
 }
+
+export default FilterSelectContent

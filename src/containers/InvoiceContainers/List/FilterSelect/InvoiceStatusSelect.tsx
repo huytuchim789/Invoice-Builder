@@ -1,7 +1,7 @@
 import { FormControl, Select, MenuItem, InputLabel } from '@mui/material'
 
 import { IInvoiceStatus } from 'src/@core/models/status.interface'
-import { useListInvoiceStore } from '../../store'
+import { useListInvoiceStore } from '../store'
 
 interface IItemSelect {
   name: string
@@ -27,7 +27,7 @@ const ItemSelects: IItemSelect[] = [
   }
 ]
 
-export const InvoiceStatusFilter = () => {
+const InvoiceStatusFilter = () => {
   const { invoiceStatus, setInvoiceStatus } = useListInvoiceStore((state: any) => state.invoiceStatusStore)
 
   const handleChangeInvoiceStatus = (status: string) => {
@@ -51,3 +51,5 @@ export const InvoiceStatusFilter = () => {
     </FormControl>
   )
 }
+
+export default InvoiceStatusFilter
