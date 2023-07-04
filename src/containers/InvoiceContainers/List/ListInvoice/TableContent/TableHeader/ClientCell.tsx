@@ -6,7 +6,7 @@ const ClientCellComponent = styled(Box)({
   gap: '10px'
 })
 
-export const ClientCell = ({ params }: any) => {
+const ClientCell = ({ params }: any) => {
   return (
     <ClientCellComponent>
       <Avatar>{params.invoice.customer.name[0]}</Avatar>
@@ -17,3 +17,5 @@ export const ClientCell = ({ params }: any) => {
     </ClientCellComponent>
   )
 }
+
+export default ClientCell

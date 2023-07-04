@@ -28,7 +28,7 @@ const sendingMethod: IMenuItem[] = [
   }
 ]
 
-export const ParamsTab = () => {
+const ParamsTable = () => {
   const router = useRouter()
   const snackbar = useSnackbarWithContext()
   const queryClient = useQueryClient()
@@ -59,7 +59,8 @@ export const ParamsTab = () => {
       {
         invoice_ids: checkedSelected,
         send_method: method,
-        subject: 'a'
+        subject: 'a',
+        message: 'nbnb'
       },
       Number(router.query.page ?? '1')
     )
@@ -122,3 +123,5 @@ export const ParamsTab = () => {
     </Stack>
   )
 }
+
+export default ParamsTable

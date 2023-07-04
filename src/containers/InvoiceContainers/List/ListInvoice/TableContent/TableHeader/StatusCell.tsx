@@ -1,5 +1,5 @@
 import { Box, Typography, styled } from '@mui/material'
-import { getStatusIcons } from '../../component'
+import { getStatusIcons } from '../component'
 
 const StatusCellComponent = styled(Box)({
   display: 'flex',
@@ -14,7 +14,7 @@ const StatusCellComponent = styled(Box)({
   }
 })
 
-export const StatusCell = ({ params }: any) => {
+const StatusCell = ({ params }: any) => {
   return (
     <StatusCellComponent>
       <Box className='status-icon'>{getStatusIcons(params.status)}</Box>
@@ -22,3 +22,5 @@ export const StatusCell = ({ params }: any) => {
     </StatusCellComponent>
   )
 }
+
+export default StatusCell

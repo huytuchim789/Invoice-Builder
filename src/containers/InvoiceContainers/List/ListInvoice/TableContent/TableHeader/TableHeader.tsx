@@ -1,19 +1,18 @@
 import { Typography } from '@mui/material'
 
-import { ActionTab } from './action-tab'
-import { InvoiceIdTab } from './invoice-id'
-
 import extendedDayJs from 'src/@core/utils/dayjs'
-import { ClientCell } from './client'
-import { StatusCell } from './status'
 import { ITableCommonHeader } from 'src/@core/models/common'
+import InvoiceIdCell from './InvoiceIdCell'
+import StatusCell from './StatusCell'
+import ClientCell from './ClientCell'
+import ActionCell from './ActionCell'
 
 export const columns: ITableCommonHeader[] = [
   {
     field: 'id',
     headerName: '#',
     component: (params: any) => {
-      return <InvoiceIdTab params={params} />
+      return <InvoiceIdCell params={params} />
     }
   },
   {
@@ -63,7 +62,7 @@ export const columns: ITableCommonHeader[] = [
     headerName: 'Actions',
     textAlign: 'center',
     component: (params: any) => {
-      return <ActionTab params={params} />
+      return <ActionCell params={params} />
     }
   }
 ]
