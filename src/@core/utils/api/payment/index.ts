@@ -1,5 +1,5 @@
 import axiosInstance from 'src/@core/common/axios'
-import { ICardInfo, ICardProps } from 'src/@core/models/api/payment/card.interface'
+import { ICardInfo, ICardProps, IUnSubcribeResponseData } from 'src/@core/models/api/payment/card.interface'
 
 export const addPayment = async (payment: ICardProps) => {
   const { data } = (await axiosInstance.post('billing/create-payment-method', payment)) as { data: ICardInfo }
@@ -27,6 +27,12 @@ export const subcribeProPlan = async () => {
 
 export const unSubcribeProPlan = async () => {
   const { data } = (await axiosInstance.post('billing/cancel-subscription')) as { data: { message: string } }
+
+  return data
+}
+
+export const checkSubcribe = async () => {
+  const { data } = (await axiosInstance.get('billing/check-subscription')) as { data: IUnSubcribeResponseData }
 
   return data
 }

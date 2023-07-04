@@ -62,7 +62,7 @@ export const ActionTab = ({ params }: Props) => {
           horizontal: 'center'
         }}
       >
-        <ActionButton onClick={() => router.push(`/invoice/edit/${params.row.invoice.id}`)}>
+        <ActionButton onClick={() => router.push(`/invoice/edit/${params.invoice.id}`)}>
           <EditIcon fontSize='medium' />
           <Typography>Edit</Typography>
         </ActionButton>
@@ -70,11 +70,11 @@ export const ActionTab = ({ params }: Props) => {
           <DeleteIcon fontSize='medium' />
           <Typography>Delete</Typography>
         </ActionButton>
-        <ActionButton onClick={() => router.push(`/invoice/preview/${params.row.id}`)}>
+        <ActionButton onClick={() => router.push(`/invoice/preview/${params.id}`)}>
           <VisibilityIcon fontSize='medium' />
           <Typography>Detail</Typography>
         </ActionButton>
-        <Link href={params.row.invoice?.media ? params.row.invoice?.media[0]?.file_url : ''} target='_blank'>
+        <Link href={params.invoice?.media ? params.invoice?.media[0]?.file_url : ''} target='_blank'>
           <ActionButton>
             <DownloadIcon fontSize='medium' />
             <Typography>Download</Typography>

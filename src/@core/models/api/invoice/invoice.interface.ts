@@ -64,6 +64,7 @@ export interface IItemsData {
 }
 
 export interface IInvoiceDetailData {
+  code: string
   id: string
   issued_date: string
   created_date: string
@@ -91,6 +92,13 @@ export interface IInvoiceDetailLocalData {
   updated_at: string
   items: IItemContent[]
   customer: IUserSelectInvoiceTo
+  business?: {
+    address?: string
+    email?: string
+    logo_url?: string
+    name?: string
+    phone?: string
+  }
 }
 
 export interface IInvoiceDetailDataResponse {

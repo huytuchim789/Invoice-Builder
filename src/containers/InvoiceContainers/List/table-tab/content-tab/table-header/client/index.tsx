@@ -9,10 +9,10 @@ const ClientCellComponent = styled(Box)({
 export const ClientCell = ({ params }: any) => {
   return (
     <ClientCellComponent>
-      <Avatar>{params.row.invoice.customer.name[0]}</Avatar>
+      <Avatar>{params.invoice.customer.name[0]}</Avatar>
       <Box>
-        <Typography fontSize={12}>{params.row.invoice.customer.name}</Typography>
-        <Typography fontSize={12}>{params.row.invoice.customer.email}</Typography>
+        <Typography fontSize={12}>{params.invoice.customer.name}</Typography>
+        <Typography fontSize={12}>{params.invoice.customer.email}</Typography>
       </Box>
     </ClientCellComponent>
   )

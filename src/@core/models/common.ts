@@ -1,4 +1,15 @@
+import { ReactElement } from 'react'
+
 export const AUTH_TOKEN_ADMIN = 'admin_english_token'
+
+export interface ITableCommonHeader {
+  field: string
+  headerName: string
+  textAlign?: 'start' | 'end' | 'left' | 'right' | 'center' | 'justify' | 'match-parent'
+  width?: string | number
+  customStyle?: object
+  component?: (data: any) => ReactElement
+}
 
 export interface NewsList {
   id: number

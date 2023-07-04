@@ -8,8 +8,8 @@ import { Button } from '@mui/material'
 import { IInvoiceInfo, editInvoice } from 'src/@core/utils/api/invoice/editInvoice'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
-import InvoicePDF from '../../InvoicePDF'
 import { useInvoiceEditStoreData } from './component/data'
+import InvoiceBoldFormatPDF from '../../InvoicePDF/BoldFormat/BoldFormat'
 
 export const SaveButton = () => {
   const router = useRouter()
@@ -18,7 +18,7 @@ export const SaveButton = () => {
   const { invoice_detail } = useInvoiceEditStoreData()
 
   const MyDoc = useMemo(() => {
-    return <InvoicePDF invoice_detail={invoice_detail} />
+    return <InvoiceBoldFormatPDF invoice_detail={invoice_detail} />
   }, [invoice_detail])
 
   const [instance, updateInstance] = usePDF({ document: MyDoc || <></> })
