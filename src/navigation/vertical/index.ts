@@ -19,7 +19,7 @@ import { isGuest } from 'src/@core/utils/role-check'
 import SvgIcon from '@mui/material/SvgIcon'
 
 const navigation = (): VerticalNavItemsType => {
-  const { user } = globalStore(state => state.userStore)
+  const { user } = globalStore((state: any) => state.userStore)
 
   return [
     {

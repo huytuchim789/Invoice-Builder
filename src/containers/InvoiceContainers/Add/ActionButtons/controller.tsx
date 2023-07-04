@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
 import { globalStore } from 'src/@core/hocs/global-store'
 import useInvoiceStore from 'src/@core/components/Invoice/store'
+import { useSettingStore } from 'src/views/account-settings/store'
 
 export function useInvoiceDetailStoreData() {
   const { user } = globalStore((state: any) => state.userStore)
+  const { info } = useSettingStore()
 
   const { itemInfo, userSelectInfo, noteInfo, dateInfo } = useInvoiceStore()
 
@@ -20,9 +22,10 @@ export function useInvoiceDetailStoreData() {
       customer_id: userSelectInfo.user.id,
       items: itemInfo.itemContent,
       total: itemInfo.subTotal + (itemInfo.subTotal * 21) / 100,
-      customer: userSelectInfo.user
+      customer: userSelectInfo.user,
+      business: info
     }
-  }, [user, itemInfo, userSelectInfo, noteInfo, dateInfo])
+  }, [user, itemInfo, userSelectInfo, noteInfo, dateInfo, info])
 
   return {
     invoice_detail

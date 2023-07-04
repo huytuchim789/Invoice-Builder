@@ -4,25 +4,31 @@ import { usePDF } from '@react-pdf/renderer'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { Button } from '@mui/material'
-import InvoicePDF from '../../InvoicePDF'
 
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { IInvoiceInfo, saveInvoice } from 'src/@core/utils/api/invoice/saveInvoice'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 import { useInvoiceDetailStoreData } from './controller'
+import InvoiceBoldFormatPDF from '../../InvoicePDF/BoldFormat/BoldFormat'
+import { useSettingPdfStore } from '../../store/setting'
+import InoviceLightFormatPdf from '../../InvoicePDF/LightFormat/LightFormat'
 
 export const SaveButton = () => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const snackbar = useSnackbarWithContext()
-
+  const { settingPdf } = useSettingPdfStore()
   const { invoice_detail } = useInvoiceDetailStoreData()
 
   const MyDoc: any = useMemo(() => {
-    if (invoice_detail.sale_person !== '' && invoice_detail.note !== '') {
-      return <InvoicePDF invoice_detail={invoice_detail} />
+    if (invoice_detail) {
+      if (settingPdf.format === 'bold') {
+        return <InvoiceBoldFormatPDF invoice_detail={invoice_detail} font={settingPdf.font} />
+      } else {
+        return <InoviceLightFormatPdf invoice_detail={invoice_detail} font={settingPdf.font} />
+      }
     }
-  }, [invoice_detail])
+  }, [invoice_detail, settingPdf])
 
   const [instance, updateInstance] = usePDF({ document: MyDoc || <></> })
 

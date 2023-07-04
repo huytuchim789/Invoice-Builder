@@ -3,8 +3,6 @@ import { useContext } from 'react'
 import { useRouter } from 'next/router'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { usePDF } from '@react-pdf/renderer'
-
 // ** MUI Library imports
 import { Box, Button, Drawer, Stack, TextField, Typography } from '@mui/material'
 
@@ -20,7 +18,6 @@ import { useInvoicePreviewStore } from '../store'
 
 // ** Icon imports
 import CloseIcon from '@mui/icons-material/Close'
-import InvoicePDF from '../../InvoicePDF'
 import { InvoiceDetailContext } from '..'
 import { sendInvoiceByMail } from 'src/@core/utils/api/invoice/sendInvoiceByMail'
 
@@ -57,25 +54,20 @@ export const DrawerSendInvoice = () => {
     reset
   } = useForm()
   const { invoice_detail } = useContext(InvoiceDetailContext) as { invoice_detail: IInvoiceDetailData }
-  const MyDoc = <InvoicePDF invoice_detail={invoice_detail} />
-
-  const [instance] = usePDF({ document: MyDoc })
 
   const { status, setStatus } = useInvoicePreviewStore((state: any) => state.statusDrawerSendInvoiceStore)
   const snackbar = useSnackbarWithContext()
 
   const handleUploadPdf = async (data: FieldValues): Promise<any> => {
-    if (instance.blob) {
-      const formData = new FormData()
-
-      formData.append('invoice_id', invoice_detail.id)
-      formData.append('message', data.message)
-      formData.append('subject', data.subject)
-      formData.append('file', instance.blob, 'file.pdf')
-      formData.append('send_method', method)
-
-      return await sendInvoiceByMail(formData, Number(router.query.page))
-    }
+    return await sendInvoiceByMail(
+      {
+        invoice_ids: [invoice_detail.id],
+        message: data.message,
+        subject: data.subject,
+        send_method: method
+      },
+      Number(router.query.page)
+    )
   }
 
   const { mutate, isLoading: isAddCustomerLoading } = useMutation({

@@ -1,8 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react'
 
-import { Box, LinearProgress, styled } from '@mui/material'
-import { DataGrid } from '@mui/x-data-grid'
-
+import { Box, SelectChangeEvent } from '@mui/material'
 import { columns } from './table-header'
 import { useListInvoiceStore } from '../../store'
 import { useEmailTransactionData } from 'src/@core/hooks/invoice/useEmailTransactionList'
@@ -11,15 +9,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { updateData } from 'src/@core/utils/update-data'
 import { globalStore } from 'src/@core/hocs/global-store'
 import { pusher } from 'src/@core/common/pusher'
-
-const EmailTransactionTable = styled(DataGrid)({
-  '& .MuiDataGrid-columnHeader:focus, .MuiDataGrid-cell:focus': {
-    border: 'none'
-  },
-  '& .MuiDataGrid-cell:focus-within': {
-    outline: 'none'
-  }
-})
+import TableCommon from 'src/@core/components/TableCommon/TableCommon'
 
 export const ContentTab = () => {
   const queryClient = useQueryClient()
@@ -31,8 +21,8 @@ export const ContentTab = () => {
     state.searchTabStore
   ])
 
-  const [page, setPage] = useState<number>(0)
-  const [limit] = useState<number>(10)
+  const [page, setPage] = useState<number>(1)
+  const [limit, setLimit] = useState<number>(5)
 
   const { data: email_transactions, isLoading: isEmailTransactionsLoading } = useEmailTransactionData({
     page: page,
@@ -45,7 +35,7 @@ export const ContentTab = () => {
 
   useEffect(() => {
     if (email_transactions && user.id) {
-      const channel = pusher.subscribe(`private-sender=${user.id}_email-transactions_page=${page + 1}`)
+      const channel = pusher.subscribe(`private-sender=${user.id}_email-transactions_page=${page}`)
 
       channel.bind('list-updated', function (data: any) {
         const newData = updateData(email_transactions.data, data.emailTransaction.id, data.emailTransaction)
@@ -68,30 +58,26 @@ export const ContentTab = () => {
     }
   }, [email_transactions, user])
 
-  const onChangePagination = useCallback((pagination: { page: number; pageSize: number }) => {
-    setPage(pagination.page)
+  const onChangePagination = useCallback((_event: any, page: number) => {
+    setPage(page)
   }, [])
+
+  const handleChangeLimit = (event: SelectChangeEvent<number>) => {
+    setLimit(Number(event.target.value))
+  }
+
   return (
     <Box mt={3}>
-      <EmailTransactionTable
-        rows={email_transactions?.data || []}
-        columns={columns}
-        slots={{
-          loadingOverlay: LinearProgress
+      <TableCommon
+        data={email_transactions?.data ?? []}
+        isLoading={isEmailTransactionsLoading}
+        headerData={columns}
+        pagination={{
+          handleChangeLimit: handleChangeLimit,
+          totalPage: email_transactions?.current_page,
+          handleChangePage: onChangePagination
         }}
-        loading={isEmailTransactionsLoading}
-        onPaginationModelChange={onChangePagination}
-        pageSizeOptions={[5, 10, 15, 20]}
-        paginationModel={{
-          page: page,
-          pageSize: limit
-        }}
-        style={{
-          border: 'none'
-        }}
-        disableRowSelectionOnClick
-        checkboxSelection
-        paginationMode='server'
+        checkable={true}
       />
     </Box>
   )

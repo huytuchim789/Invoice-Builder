@@ -17,8 +17,8 @@ const StatusCellComponent = styled(Box)({
 export const StatusCell = ({ params }: any) => {
   return (
     <StatusCellComponent>
-      <Box className='status-icon'>{getStatusIcons(params.row.status)}</Box>
-      <Typography>{params.row.status}</Typography>
+      <Box className='status-icon'>{getStatusIcons(params.status)}</Box>
+      <Typography>{params.status}</Typography>
     </StatusCellComponent>
   )
 }

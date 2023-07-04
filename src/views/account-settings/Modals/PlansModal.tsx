@@ -1,8 +1,10 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Dialog, DialogContent, DialogTitle, Grid, Typography } from '@mui/material'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
-import { subcribeProPlan } from 'src/@core/utils/api/payment'
+import useCheckSubcribe from 'src/@core/hooks/payment/useCheckSubcribe'
+import { subcribeProPlan, unSubcribeProPlan } from 'src/@core/utils/api/payment'
+import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 
 interface Props {
   isOpenModal: boolean
@@ -31,17 +33,33 @@ const CircleIcon = () => {
 }
 
 const PlansModal = ({ isOpenModal, handleClose }: Props) => {
+  const queryClient = useQueryClient()
   const snackbar = useSnackbarWithContext()
+
+  const checkSub = useCheckSubcribe()
 
   const subcribe = useMutation({
     mutationFn: async () => await subcribeProPlan(),
     onSuccess: (data: { message: string }) => {
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.CHECK_SUBCRIBE])
       snackbar.success(data.message)
     },
     onError: (err: { message: string }) => {
       snackbar.error(err.message)
     }
   })
+
+  const unSubcribe = useMutation({
+    mutationFn: async () => await unSubcribeProPlan(),
+    onSuccess: (data: { message: string }) => {
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.CHECK_SUBCRIBE])
+      snackbar.success(data.message)
+    },
+    onError: (err: { message: string }) => {
+      snackbar.error(err.message)
+    }
+  })
+
   return (
     <Dialog open={isOpenModal} onClose={handleClose} maxWidth='lg'>
       <Box padding={3}>
@@ -118,15 +136,27 @@ const PlansModal = ({ isOpenModal, handleClose }: Props) => {
                   <Typography>Unlimited responses</Typography>
                 </Box>
               </Box>
-              <LoadingButton
-                loading={subcribe.isLoading}
-                variant='contained'
-                fullWidth
-                sx={{ mt: '20px' }}
-                onClick={() => subcribe.mutate()}
-              >
-                Upgrade
-              </LoadingButton>
+              {checkSub.data && (!checkSub.data.data || checkSub.data.data.stripe_status === 'canceled') ? (
+                <LoadingButton
+                  loading={subcribe.isLoading || checkSub.isFetching}
+                  variant='contained'
+                  fullWidth
+                  sx={{ mt: '20px' }}
+                  onClick={() => subcribe.mutate()}
+                >
+                  Upgrade
+                </LoadingButton>
+              ) : (
+                <LoadingButton
+                  loading={unSubcribe.isLoading || checkSub.isFetching}
+                  variant='contained'
+                  fullWidth
+                  sx={{ mt: '20px' }}
+                  onClick={() => unSubcribe.mutate()}
+                >
+                  UnSubcribe
+                </LoadingButton>
+              )}
             </Grid>
           </Grid>
         </DialogContent>
