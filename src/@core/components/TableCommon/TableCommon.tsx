@@ -37,6 +37,8 @@ export const TableCommonContext = createContext({})
 
 const TableCommon = ({ headerData, data, checkable, isLoading, pagination }: ITableCommon) => {
   const router = useRouter()
+  console.log('ditttttttttttttttt')
+
   const { limit = [5, 10, 20, 30], totalPage, handleChangeLimit, handleChangePage } = pagination ?? {}
 
   return (
