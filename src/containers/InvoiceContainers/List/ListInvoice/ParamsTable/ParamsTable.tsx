@@ -1,16 +1,19 @@
-import { Button, Menu, MenuItem, Stack, TextField } from '@mui/material'
-
-import { useRouter } from 'next/router'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { useListInvoiceStore } from '../../store'
-import useDebounce from 'src/@core/hooks/useDebounce'
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-import { useTableMutilCheckStore } from 'src/@core/components/TableCommon/store'
+import { useRouter } from 'next/router'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+import { LoadingButton } from '@mui/lab'
+import { Button, Menu, MenuItem, Stack, TextField } from '@mui/material'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+
+import { useSearchInvoiceStore } from '../store'
+
+import useDebounce from 'src/@core/hooks/useDebounce'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
+import { useTableMutilCheckStore } from 'src/@core/components/TableCommon/store'
+
 import { sendInvoiceByMail } from 'src/@core/utils/api/invoice/sendInvoiceByMail'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
-import { LoadingButton } from '@mui/lab'
 
 interface IMenuItem {
   name: string
@@ -34,7 +37,7 @@ const ParamsTable = () => {
   const queryClient = useQueryClient()
 
   const { checkedSelected } = useTableMutilCheckStore()
-  const { setKeyword } = useListInvoiceStore((state: any) => state.searchTabStore)
+  const { setKeyword } = useSearchInvoiceStore()
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [value, setValue] = useState<string>('')
@@ -52,6 +55,13 @@ const ParamsTable = () => {
 
   useEffect(() => {
     setKeyword(keyword)
+    router.push({
+      pathname: '/invoice/list',
+      query: {
+        ...router.query,
+        keyword: keyword
+      }
+    })
   }, [keyword])
 
   const handleUploadPdf = async (method: 'web' | 'mail'): Promise<any> => {
@@ -63,7 +73,7 @@ const ParamsTable = () => {
         subject: 'a',
         message: 'nbnb'
       },
-      Number(router.query.page ?? '1')
+      Number(router.query.page || '1')
     )
   }
 
