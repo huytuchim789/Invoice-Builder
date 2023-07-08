@@ -59,9 +59,10 @@ const useListInvoiceController = () => {
 
   useEffect(() => {
     if (email_transactions && user.id) {
-      const channel = pusher.subscribe(`private-sender=${user.id}_email-transactions_page=${page}`)
+      const channel = pusher.subscribe(`private-sender=${user.id}_email-transactions`)
 
       channel.bind('list-updated', function (data: any) {
+        console.log(data)
         const newData = updateData(email_transactions.data, data.emailTransaction.id, data.emailTransaction)
 
         queryClient.setQueryData(
@@ -80,6 +81,10 @@ const useListInvoiceController = () => {
           }
         )
       })
+    }
+
+    return () => {
+      pusher.unsubscribe(`private-sender=${user.id}_email-transactions`)
     }
   }, [email_transactions, user])
 

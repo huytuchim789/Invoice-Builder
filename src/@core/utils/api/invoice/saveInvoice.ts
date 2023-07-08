@@ -18,6 +18,9 @@ export interface IInvoiceInfo {
   items: IInvoiceItemInfo[]
   total: string
   file: Blob
+  send_method: 'web' | 'mail'
+  subject?: string
+  message?: string
 }
 
 export const saveInvoice = (data: IInvoiceInfo) => {

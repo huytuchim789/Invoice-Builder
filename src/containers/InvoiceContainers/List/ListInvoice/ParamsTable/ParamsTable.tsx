@@ -3,8 +3,7 @@ import { useRouter } from 'next/router'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { LoadingButton } from '@mui/lab'
-import { Button, Menu, MenuItem, Stack, TextField } from '@mui/material'
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import { Button, Stack, TextField } from '@mui/material'
 
 import { useSearchInvoiceStore } from '../store'
 
@@ -12,24 +11,8 @@ import useDebounce from 'src/@core/hooks/useDebounce'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { useTableMutilCheckStore } from 'src/@core/components/TableCommon/store'
 
-import { sendInvoiceByMail } from 'src/@core/utils/api/invoice/sendInvoiceByMail'
+import { sendMultipleInvoiceByMail } from 'src/@core/utils/api/invoice/sendInvoiceByMail'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
-
-interface IMenuItem {
-  name: string
-  value: 'web' | 'mail'
-}
-
-const sendingMethod: IMenuItem[] = [
-  {
-    name: 'Web Sending',
-    value: 'web'
-  },
-  {
-    name: 'Mail Sending',
-    value: 'mail'
-  }
-]
 
 const ParamsTable = () => {
   const router = useRouter()
@@ -39,19 +22,9 @@ const ParamsTable = () => {
   const { checkedSelected } = useTableMutilCheckStore()
   const { setKeyword } = useSearchInvoiceStore()
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [value, setValue] = useState<string>('')
 
-  const open = Boolean(anchorEl)
   const keyword = useDebounce(value, 2000)
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
 
   useEffect(() => {
     setKeyword(keyword)
@@ -64,21 +37,14 @@ const ParamsTable = () => {
     })
   }, [keyword])
 
-  const handleUploadPdf = async (method: 'web' | 'mail'): Promise<any> => {
-    const selectedData = checkedSelected.map(item => JSON.parse(item)?.invoice_id)
-    return await sendInvoiceByMail(
-      {
-        invoice_ids: selectedData,
-        send_method: method,
-        subject: 'a',
-        message: 'nbnb'
-      },
-      Number(router.query.page || '1')
-    )
+  const handleUploadPdf = async (): Promise<any> => {
+    return await sendMultipleInvoiceByMail({
+      emailtransaction_ids: checkedSelected
+    })
   }
 
   const { mutate, isLoading: isSendLoading } = useMutation({
-    mutationFn: (method: 'web' | 'mail'): Promise<any> => handleUploadPdf(method),
+    mutationFn: (): Promise<any> => handleUploadPdf(),
     onSuccess: (data: { data: { message: string } }) => {
       queryClient.invalidateQueries([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION])
 
@@ -99,35 +65,13 @@ const ParamsTable = () => {
         onChange={(e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
       />
       <LoadingButton
-        id='basic-button'
-        variant='outlined'
-        aria-haspopup='true'
         loading={isSendLoading}
-        aria-controls={open ? 'basic-menu' : undefined}
-        aria-expanded={open ? 'true' : undefined}
+        variant='contained'
+        onClick={() => mutate()}
         disabled={checkedSelected.length === 0}
-        endIcon={<ArrowDropDownIcon />}
-        onClick={handleClick}
       >
-        Sending
+        Send Invoice
       </LoadingButton>
-      <Menu
-        id='basic-menu'
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button'
-        }}
-      >
-        {sendingMethod.map((method: IMenuItem) => {
-          return (
-            <MenuItem key={method.value} onClick={() => mutate(method.value)}>
-              {method.name}
-            </MenuItem>
-          )
-        })}
-      </Menu>
       <Button variant='contained' onClick={() => router.push('/invoice/add')}>
         Create Invoice
       </Button>
