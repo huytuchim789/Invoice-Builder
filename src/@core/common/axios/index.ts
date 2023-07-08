@@ -3,7 +3,8 @@ import { API_BASE_URL } from 'src/@core/utils/api'
 import { logout } from 'src/@core/utils/api/auth'
 
 const axiosInstance = axios.create({
-  baseURL: API_BASE_URL
+  baseURL: API_BASE_URL,
+  withCredentials: true
 })
 
 // Add a request interceptor for authentication
@@ -28,7 +29,7 @@ axiosInstance.interceptors.response.use(
   },
   error => {
     if (error.response) {
-      if (error.response.status === 401) {
+      if (error.response.status === 401 && !error?.response?.headers['service-name']) {
         logout(false)
       } else if (error.response.status === 500) {
       } else if (error.response.status === 404) {

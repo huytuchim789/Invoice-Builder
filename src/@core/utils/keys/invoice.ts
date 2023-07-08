@@ -7,7 +7,7 @@ export enum QUERY_INVOICE_KEYS {
 
   NOTIFICATION_LIST = 'notification_list',
   PIN_LIST = 'pin_list',
-
+  MESSENGER_LIST = 'messenger_list',
   CARD_INFO = 'card_info',
   CHECK_SUBCRIBE = 'check_subcribe'
 }
