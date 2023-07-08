@@ -90,3 +90,32 @@ export interface IPlanProData {
   }
   message: string
 }
+
+export interface IUnSubcribeItemResponseData {
+  id: number
+  subscription_id: number
+  stripe_id: string
+  stripe_product: string
+  stripe_price: string
+  quantity: number
+  created_at: string
+  updated_at: string
+}
+
+export interface IUnSubcribeResponseData {
+  data: {
+    id: number
+    user_id: string
+    name: string
+    stripe_id: string
+    stripe_status: string
+    stripe_price: string
+    quantity: number
+    trial_ends_at: string | null
+    ends_at: string | null
+    created_at: string
+    updated_at: string
+    items: IUnSubcribeItemResponseData[]
+  }
+  message: string
+}

@@ -36,9 +36,11 @@ export const withAuth = (Component: any) => {
       }
       setLoading(false)
     }
+
     useEffect(() => {
       onGetCurrentUser()
     }, [email])
+
     return Component({ ...props })
   }
   return WithAuthWrapper

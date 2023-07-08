@@ -1,5 +1,12 @@
 import { NextPage } from 'next'
-import { InvoiceList } from 'src/containers/InvoiceContainers/List'
+import dynamic from 'next/dynamic'
+
+const InvoiceList = dynamic<any>(
+  () => import('src/containers/InvoiceContainers/List/InvoiceList').then(mod => mod.InvoiceList),
+  {
+    ssr: false
+  }
+)
 
 const InvoiceListPage: NextPage = () => {
   return <InvoiceList />
