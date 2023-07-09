@@ -7,16 +7,25 @@ import { ItemCell } from './items/ItemCell'
 import { CostCell } from './items/CostCell'
 import { HourCell } from './items/HourCell'
 import { PriceCell } from './items/PriceCell'
+import { useFieldArray } from 'react-hook-form'
 
 export const ItemChildContext = createContext({})
 
 const TableBodyItem = () => {
   const { itemContent, handleDeleteItem } = useItemInfoController()
 
+  const { fields, remove } = useFieldArray({
+    name: 'items'
+  })
+
+  const handleRemoveItem = (index: number) => {
+    remove(index)
+  }
+
   return (
     <TableBody>
       {itemContent.map((item: IItemContent, index: number) => (
-        <ItemChildContext.Provider value={{ item, index }} key={`${item.name}-${index}`}>
+        <ItemChildContext.Provider value={{ item, index, fields: fields }} key={`${item.name}-${index}`}>
           <TableRow style={{ alignItems: 'start' }}>
             <TableCell>
               <ItemCell />
@@ -31,7 +40,14 @@ const TableBodyItem = () => {
               <PriceCell />
             </TableCell>
             <TableCell>
-              <Box component='div' onClick={() => handleDeleteItem(index)} style={{ cursor: 'pointer' }}>
+              <Box
+                component='div'
+                onClick={() => {
+                  handleDeleteItem(index)
+                  handleRemoveItem(index)
+                }}
+                style={{ cursor: 'pointer' }}
+              >
                 <CloseIcon />
               </Box>
             </TableCell>

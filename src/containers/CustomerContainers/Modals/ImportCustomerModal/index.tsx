@@ -100,9 +100,10 @@ const ImportCustomerModal = ({ isOpen, handleCloseModal }: Props) => {
   const importFile = useMutation({
     mutationFn: async (formData: any) => await importCustomer(formData),
     onSuccess: (data: any) => {
-      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.USER_SELECT])
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.CUSTOMER_LIST])
 
-      snackbar.success(data)
+      handleCloseModal()
+      snackbar.success(data.data.message)
     },
     onError: (err: { response: any }) => {
       const { response } = err

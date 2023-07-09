@@ -26,6 +26,7 @@ export interface ITableCommon {
   headerData: ITableCommonHeader[]
   data: any[]
   pagination?: {
+    currentLimit?: number
     limit?: number[]
     totalPage?: number
     handleChangeLimit?: (e: SelectChangeEvent<number>) => void
@@ -38,7 +39,7 @@ export const TableCommonContext = createContext({})
 const TableCommon = ({ headerData, data, checkable, isLoading, pagination }: ITableCommon) => {
   const router = useRouter()
 
-  const { limit = [5, 10, 20, 30], totalPage, handleChangeLimit, handleChangePage } = pagination ?? {}
+  const { limit = [5, 10, 20, 30], totalPage, currentLimit, handleChangeLimit, handleChangePage } = pagination ?? {}
 
   return (
     <TableCommonContext.Provider value={{ headerData, data, checkable, isLoading }}>
@@ -64,7 +65,7 @@ const TableCommon = ({ headerData, data, checkable, isLoading, pagination }: ITa
               <Select
                 labelId='demo-multiple-name-label'
                 id='demo-multiple-name'
-                defaultValue={Number(router.query.limit || limit[0])}
+                defaultValue={Number(router.query.limit || currentLimit || limit[0])}
                 style={{ width: 'auto' }}
                 onChange={handleChangeLimit}
                 input={<OutlinedInput label='Show' />}

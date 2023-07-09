@@ -62,7 +62,6 @@ const useListInvoiceController = () => {
       const channel = pusher.subscribe(`private-sender=${user.id}_email-transactions`)
 
       channel.bind('list-updated', function (data: any) {
-        console.log(data)
         const newData = updateData(email_transactions.data, data.emailTransaction.id, data.emailTransaction)
 
         queryClient.setQueryData(

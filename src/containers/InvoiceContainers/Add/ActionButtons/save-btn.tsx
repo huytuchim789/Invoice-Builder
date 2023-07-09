@@ -99,7 +99,7 @@ export const SaveButton = ({ emailContent }: Props) => {
   }
 
   return (
-    <Button type='button' fullWidth variant='outlined' onClick={handleSaveInvoice} disabled={isSaveInvoiceLoading}>
+    <Button type='submit' fullWidth variant='outlined' disabled={isSaveInvoiceLoading}>
       Save
     </Button>
   )

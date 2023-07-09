@@ -4,10 +4,14 @@ import { TextField } from '@mui/material'
 import { ItemChildContext } from '../TableBodyItem'
 import { IItemContent } from '../store'
 import { useItemInfoController } from '../controller'
+import { useFormContext } from 'react-hook-form'
 
 export const CostCell = () => {
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext()
   const { item, index } = useContext(ItemChildContext) as { item: IItemContent; index: number }
-  const { handleChangeInputItem } = useItemInfoController()
 
   return (
     <>
@@ -17,7 +21,8 @@ export const CostCell = () => {
         type='number'
         size='small'
         variant='outlined'
-        onChange={handleChangeInputItem('cost', index, 'number')}
+        error={Boolean(errors?.items?.[index]?.cost)}
+        {...register(`items[${index}].cost`, { required: true })}
       />
     </>
   )

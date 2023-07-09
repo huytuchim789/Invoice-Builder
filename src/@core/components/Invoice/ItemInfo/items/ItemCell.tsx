@@ -1,10 +1,11 @@
 import { useContext } from 'react'
 
-import { FormControl, Select, MenuItem, Box, TextField } from '@mui/material'
+import { FormControl, Select, MenuItem, Box, TextField, Typography } from '@mui/material'
 
 import { IItemContent } from '../store'
 import { useItemInfoController } from '../controller'
 import { ItemChildContext } from '../TableBodyItem'
+import { FieldError, FieldErrorsImpl, Merge, useFormContext } from 'react-hook-form'
 
 interface IItemSelect {
   name: string
@@ -31,8 +32,15 @@ const ItemSelects: IItemSelect[] = [
 ]
 
 export const ItemCell = () => {
-  const { item, index } = useContext(ItemChildContext) as { item: IItemContent; index: number }
-  const { handleChangeInputItem, handleChangeSelectItem } = useItemInfoController()
+  const { index } = useContext(ItemChildContext) as {
+    item: IItemContent
+    index: number & (FieldError | Merge<FieldError, FieldErrorsImpl<any>>)
+  }
+
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext()
 
   return (
     <>
@@ -41,8 +49,8 @@ export const ItemCell = () => {
           fullWidth
           labelId='demo-simple-select-outlined-label'
           id='demo-simple-select-outlined'
-          defaultValue={item.name}
-          onChange={handleChangeSelectItem('name', index)}
+          defaultValue=''
+          {...register(`items[${index}].name`, { required: true })}
           size='small'
         >
           {ItemSelects.map((item: IItemSelect, index: number) => (
@@ -52,15 +60,21 @@ export const ItemCell = () => {
           ))}
         </Select>
       </FormControl>
+      {errors.items && errors.items[index] && errors.items[index].name && (
+        <Typography color={'red'}>This field is required</Typography>
+      )}
       <Box mt={4}>
         <TextField
           id='outlined-multiline-static'
-          onChange={handleChangeInputItem('description', index, 'string')}
+          {...register(`items.${index}.description`, { required: true })}
           multiline
           rows={2}
           variant='outlined'
           fullWidth
         />
+        {errors.items && errors.items[index] && errors.items[index].description && (
+          <Typography color={'red'}>This field is required</Typography>
+        )}
       </Box>
     </>
   )

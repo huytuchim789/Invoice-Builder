@@ -15,15 +15,16 @@ export interface IUserSelectInvoiceTo {
 
 export interface IUserSelectInvoiceToDataResponse {
   data: {
-    current_page: 1
+    current_page: number
     data: IUserSelectInvoiceTo[]
-    first_page_url: ''
-    from: null
-    next_page_url: null
-    path: ''
-    per_page: 10
-    prev_page_url: null
-    to: null
+    first_page_url: string
+    from: string | null
+    next_page_url: string | null
+    path: string
+    per_page: number
+    prev_page_url: string | null
+    last_page: number
+    to: string | null
   }
   message: string
 }

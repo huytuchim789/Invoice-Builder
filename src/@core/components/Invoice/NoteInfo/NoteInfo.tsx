@@ -1,9 +1,11 @@
-import { ChangeEvent } from 'react'
 import { Box, TextField, Typography } from '@mui/material'
-import { useNoteInfoStore } from './store'
+import { useFormContext } from 'react-hook-form'
 
 const NoteInfo = () => {
-  const { setNote } = useNoteInfoStore()
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext()
 
   return (
     <Box padding={3} borderTop={1} borderColor={'#808080'}>
@@ -14,8 +16,14 @@ const NoteInfo = () => {
         multiline
         minRows={3}
         maxRows={3}
-        onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setNote(e.target.value)}
+        error={!!errors.note}
+        {...register('note', { required: true })}
       />
+      {errors.note && (
+        <Typography color='red' mt={2}>
+          Note is required
+        </Typography>
+      )}
     </Box>
   )
 }

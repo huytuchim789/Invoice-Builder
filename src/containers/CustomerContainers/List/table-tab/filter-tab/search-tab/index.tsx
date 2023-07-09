@@ -1,30 +1,35 @@
 import { TextField } from '@mui/material'
-import { useFilterData } from '../../../component/filter'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import useDebounce from 'src/@core/hooks/useDebounce'
+import { CustomerListContext } from '../..'
+import { useRouter } from 'next/router'
 
 const SearchTab = () => {
-  const { searchValue, handleChangeSearchParams } = useFilterData()
-
+  const router = useRouter()
+  const { setKeyword } = useContext(CustomerListContext) as { setKeyword: (keyword: string) => void }
   const [value, setValue] = useState<string>('')
-  const keyword = useDebounce(value, 2000)
+  const keywordDebounce = useDebounce(value, 1500)
 
   const handleChangeValue = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value)
+    setTimeout(() => {
+      router.push({
+        pathname: '/customer/list',
+        query: {
+          ...router.query,
+          keyword: event.target.value,
+          page: 1
+        }
+      })
+    }, 1500)
   }
 
   useEffect(() => {
-    handleChangeSearchParams(keyword)
-  }, [keyword])
+    setKeyword(keywordDebounce as string)
+  }, [keywordDebounce])
 
   return (
-    <TextField
-      value={searchValue}
-      fullWidth
-      size='small'
-      placeholder="Search customer'sname"
-      onChange={handleChangeValue}
-    />
+    <TextField value={value} fullWidth size='small' placeholder="Search customer'sname" onChange={handleChangeValue} />
   )
 }
 

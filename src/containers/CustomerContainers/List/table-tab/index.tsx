@@ -1,54 +1,73 @@
-import { useCallback, useState } from 'react'
+import { createContext, useCallback, useState } from 'react'
 
-import { Card, styled } from '@mui/material'
-import { DataGrid } from '@mui/x-data-grid'
+import { Card, SelectChangeEvent } from '@mui/material'
 
 import { columns } from './header-tab'
-import { useSelectUserInvoiceTo } from 'src/@core/hooks/invoice/useSelectUserInvoiceTo'
 import FilterHeaderTable from './filter-tab'
+import { useRouter } from 'next/router'
+import TableCommon from 'src/@core/components/TableCommon/TableCommon'
+import useCustomerListData from 'src/@core/hooks/invoice/useCustomerList'
 
-const CustomerListTable = styled(DataGrid)({
-  '& .MuiDataGrid-columnHeader:focus, .MuiDataGrid-cell:focus': {
-    border: 'none'
-  },
-  '& .MuiDataGrid-cell:focus-within': {
-    outline: 'none'
-  }
-})
+export const CustomerListContext = createContext({})
 
 const CustomerListTableContent = () => {
-  const [page, setPage] = useState<number>(0)
-  const [limit] = useState<number>(10)
+  const router = useRouter()
+  const { query } = router
+  const [page, setPage] = useState<number>(Number(query.page || 1))
+  const [limit, setLimit] = useState<number>(Number(query.limit || 10))
+  const [keyword, setKeyword] = useState<string>(String(query.keyword || ''))
 
-  const { data: customer_list, isLoading: isCustomerListLoading } = useSelectUserInvoiceTo()
+  const { data: customer_list, isLoading: isCustomerListLoading } = useCustomerListData({ page, limit, keyword })
 
-  const onChangePagination = useCallback((pagination: { page: number; pageSize: number }) => {
-    setPage(pagination.page)
+  const onChangePagination = useCallback((_event: any, page: number) => {
+    setPage(page)
+
+    router.push({
+      pathname: '/customer/list',
+      query: {
+        ...router.query,
+        page: page
+      }
+    })
   }, [])
 
+  const handleChangeLimit = (event: SelectChangeEvent<number>) => {
+    setLimit(Number(event.target.value))
+
+    router.push({
+      pathname: '/customer/list',
+      query: {
+        ...router.query,
+        limit: event.target.value
+      }
+    })
+  }
+
+  const data = {
+    keyword,
+    setKeyword
+  }
+
   return (
-    <Card>
-      <FilterHeaderTable />
-      {customer_list && (
-        <CustomerListTable
-          rows={customer_list.data}
-          columns={columns}
-          loading={isCustomerListLoading}
-          pageSizeOptions={[5, 10, 15, 20]}
-          onPaginationModelChange={onChangePagination}
-          paginationModel={{
-            page: page,
-            pageSize: limit
-          }}
-          style={{
-            border: 'none'
-          }}
-          disableRowSelectionOnClick
-          checkboxSelection
-          paginationMode='server'
-        />
-      )}
-    </Card>
+    <CustomerListContext.Provider value={data}>
+      <Card>
+        <FilterHeaderTable />
+        {customer_list && (
+          <TableCommon
+            data={customer_list?.data ?? []}
+            isLoading={isCustomerListLoading}
+            headerData={columns}
+            pagination={{
+              currentLimit: limit,
+              handleChangeLimit: handleChangeLimit,
+              totalPage: customer_list?.last_page,
+              handleChangePage: onChangePagination
+            }}
+            checkable={true}
+          />
+        )}
+      </Card>
+    </CustomerListContext.Provider>
   )
 }
 
