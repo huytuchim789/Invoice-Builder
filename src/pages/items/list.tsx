@@ -1,8 +1,8 @@
 import { NextPage } from 'next'
-import ItemInvoiceList from 'src/containers/ItemInvoiceContainers/List/ItemInvoiceList'
+import ItemListContainer from 'src/containers/ItemInvoiceContainers/List'
 
 const ItemInvoiceListPage: NextPage = () => {
-  return <ItemInvoiceList />
+  return <ItemListContainer />
 }
 
 export default ItemInvoiceListPage
