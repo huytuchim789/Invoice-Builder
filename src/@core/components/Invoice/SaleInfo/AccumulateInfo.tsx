@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Grid, Typography } from '@mui/material'
 import { useItemContentStore } from '../ItemInfo/store'
+import { useFormContext } from 'react-hook-form'
 
 interface Props {
   title: string
@@ -26,7 +27,9 @@ const GridAccumulate = ({ title, content, ...props }: Props) => {
 }
 
 const AccumulateInfo = () => {
-  const { subTotal } = useItemContentStore()
+  const { watch } = useFormContext()
+  const items = watch('items')
+  const subTotal = items ? items.reduce((acc: any, item: any) => acc + Number(item.hours) * Number(item.cost), 0) : 0
 
   return (
     <React.Fragment>

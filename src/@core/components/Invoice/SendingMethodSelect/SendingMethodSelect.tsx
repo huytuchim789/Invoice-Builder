@@ -1,11 +1,17 @@
 import { Select, MenuItem, FormControl, InputLabel, SelectChangeEvent } from '@mui/material'
 import { useSendingMethodStore } from './store'
 
-const SendingMethodSelect = () => {
-  const { setMethod } = useSendingMethodStore()
+interface Props {
+  handleOpenMailModal: () => void
+}
+
+const SendingMethodSelect = ({ handleOpenMailModal }: Props) => {
+  const { method, setMethod } = useSendingMethodStore()
 
   const handleChangePaymentMethod = (event: SelectChangeEvent<'web' | 'mail'>) => {
     setMethod(event.target.value as 'web' | 'mail')
+
+    if (event.target.value === 'mail') handleOpenMailModal()
   }
 
   return (
@@ -15,7 +21,7 @@ const SendingMethodSelect = () => {
         fullWidth
         labelId='demo-simple-select-outlined-label'
         id='demo-simple-select-outlined'
-        defaultValue='web'
+        value={method}
         label='Sending Method'
         aria-label='Sending Method'
         onChange={handleChangePaymentMethod}

@@ -1,14 +1,16 @@
-import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
+import { useInvoiceStatusStore, useRangeDateStore } from './FilterSelect/store'
+import { useSearchInvoiceStore } from './ListInvoice/store'
 
-import { searchTabStore } from './ListInvoice/store'
-import { invoiceStatusStore } from './FilterSelect/store/status'
-import { rangeDateStore } from './FilterSelect/store/range-date'
+const useListInvoiceStore = () => {
+  const searchInvoice = useSearchInvoiceStore()
+  const invoiceStatusStore = useInvoiceStatusStore()
+  const rangeDateStore = useRangeDateStore()
 
-export const useListInvoiceStore = create(
-  devtools((set: any) => ({
-    searchTabStore: { ...searchTabStore(set) },
-    invoiceStatusStore: { ...invoiceStatusStore(set) },
-    rangeDateStore: { ...rangeDateStore(set) }
-  }))
-)
+  return {
+    searchInvoice,
+    invoiceStatusStore,
+    rangeDateStore
+  }
+}
+
+export default useListInvoiceStore

@@ -1,1 +1,1 @@
-export * from './search'
+export { default as useSearchInvoiceStore } from './search'

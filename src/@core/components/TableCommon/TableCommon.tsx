@@ -18,6 +18,7 @@ import { ChangeEvent, createContext } from 'react'
 import TableCommonBody from './TableCommonBody'
 import TableCommonHeader from './TableCommonHeader'
 import LoadingData from './LoadingData'
+import { useRouter } from 'next/router'
 
 export interface ITableCommon {
   checkable?: boolean
@@ -25,6 +26,7 @@ export interface ITableCommon {
   headerData: ITableCommonHeader[]
   data: any[]
   pagination?: {
+    currentLimit?: number
     limit?: number[]
     totalPage?: number
     handleChangeLimit?: (e: SelectChangeEvent<number>) => void
@@ -35,7 +37,9 @@ export interface ITableCommon {
 export const TableCommonContext = createContext({})
 
 const TableCommon = ({ headerData, data, checkable, isLoading, pagination }: ITableCommon) => {
-  const { limit = [5, 10, 20, 30], totalPage, handleChangeLimit, handleChangePage } = pagination ?? {}
+  const router = useRouter()
+
+  const { limit = [5, 10, 20, 30], totalPage, currentLimit, handleChangeLimit, handleChangePage } = pagination ?? {}
 
   return (
     <TableCommonContext.Provider value={{ headerData, data, checkable, isLoading }}>
@@ -61,7 +65,7 @@ const TableCommon = ({ headerData, data, checkable, isLoading, pagination }: ITa
               <Select
                 labelId='demo-multiple-name-label'
                 id='demo-multiple-name'
-                value={limit[0]}
+                defaultValue={Number(router.query.limit || currentLimit || limit[0])}
                 style={{ width: 'auto' }}
                 onChange={handleChangeLimit}
                 input={<OutlinedInput label='Show' />}
@@ -73,7 +77,12 @@ const TableCommon = ({ headerData, data, checkable, isLoading, pagination }: ITa
                 ))}
               </Select>
             </FormControl>
-            <Pagination count={totalPage ?? 0} onChange={handleChangePage} color='primary' />
+            <Pagination
+              page={Number(router.query.page || 1)}
+              count={totalPage ?? 0}
+              onChange={handleChangePage}
+              color='primary'
+            />
           </Box>
         )}
       </TableContainer>

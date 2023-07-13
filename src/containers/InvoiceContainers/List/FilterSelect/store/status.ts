@@ -1,18 +1,19 @@
 import { produce } from 'immer'
-import { IInvoiceStatus } from 'src/@core/models/status.interface'
+import { create } from 'zustand'
 
 export interface IInvoiceStatusState {
-  invoiceStatus: IInvoiceStatus
-  setInvoiceStatus: (value: IInvoiceStatus) => unknown
+  invoiceStatus: string
+  setInvoiceStatus: (value: string) => unknown
 }
 
-export const invoiceStatusStore = (set: any) => ({
+const useInvoiceStatusStore = create<IInvoiceStatusState>(set => ({
   invoiceStatus: '',
-  setInvoiceStatus: (value: IInvoiceStatus) => {
-    return set(
-      produce((state: { invoiceStatusStore: { invoiceStatus: IInvoiceStatus } }) => {
-        state.invoiceStatusStore.invoiceStatus = value
+  setInvoiceStatus: (value: string) =>
+    set(
+      produce((state: { invoiceStatus: string }) => {
+        state.invoiceStatus = value
       })
     )
-  }
-})
+}))
+
+export default useInvoiceStatusStore

@@ -1,4 +1,5 @@
 import { IItemContent } from 'src/@core/components/Invoice/ItemInfo/store'
+import { Organization } from '../organization/organization.interface'
 
 export interface IUserSelectInvoiceTo {
   id: string
@@ -15,15 +16,32 @@ export interface IUserSelectInvoiceTo {
 
 export interface IUserSelectInvoiceToDataResponse {
   data: {
-    current_page: 1
+    current_page: number
     data: IUserSelectInvoiceTo[]
-    first_page_url: ''
-    from: null
-    next_page_url: null
-    path: ''
-    per_page: 10
-    prev_page_url: null
-    to: null
+    first_page_url: string
+    from: string | null
+    next_page_url: string | null
+    path: string
+    per_page: number
+    prev_page_url: string | null
+    last_page: number
+    to: string | null
+  }
+  message: string
+}
+
+export interface IItemsDataResponse {
+  data: {
+    current_page: number
+    data: IItemsData[]
+    first_page_url: string
+    from: string | null
+    next_page_url: string | null
+    path: string
+    per_page: number
+    prev_page_url: string | null
+    last_page: number
+    to: string | null
   }
   message: string
 }
@@ -54,11 +72,8 @@ export interface IAddCustomerUsersDataResponse {
 export interface IItemsData {
   id: string
   name: string
-  description: string
-  cost: number
-  hours: number
   price: number
-  invoice_id: string
+  organization: Organization
   created_at: string | null
   updated_at: string | null
 }

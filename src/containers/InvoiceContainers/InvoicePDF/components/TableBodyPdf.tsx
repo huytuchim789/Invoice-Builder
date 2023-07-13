@@ -10,7 +10,7 @@ export const ItemPdfContext = React.createContext({})
 
 export const TableBodyPdf = ({ invoice_detail }: { invoice_detail: IInvoiceDetailLocalData }) => {
   return (
-    <View>
+    <View style={{ width: '100%' }}>
       {invoice_detail.items.map((item: IItemContent, index: number) => (
         <ItemPdfContext.Provider value={{ data: item, count: index }} key={`${item.name}-${index}`}>
           <ItemPdf item={item} />

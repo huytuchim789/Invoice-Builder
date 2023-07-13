@@ -1,5 +1,5 @@
 import { Box, Typography, styled } from '@mui/material'
-import { getStatusIcons } from '../component'
+import { getStatusIcons } from 'src/@core/utils/common'
 
 const StatusCellComponent = styled(Box)({
   display: 'flex',

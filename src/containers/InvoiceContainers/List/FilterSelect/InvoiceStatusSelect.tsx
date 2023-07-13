@@ -1,7 +1,8 @@
 import { FormControl, Select, MenuItem, InputLabel } from '@mui/material'
 
 import { IInvoiceStatus } from 'src/@core/models/status.interface'
-import { useListInvoiceStore } from '../store'
+import { useInvoiceStatusStore } from './store'
+import { useRouter } from 'next/router'
 
 interface IItemSelect {
   name: string
@@ -28,16 +29,30 @@ const ItemSelects: IItemSelect[] = [
 ]
 
 const InvoiceStatusFilter = () => {
-  const { invoiceStatus, setInvoiceStatus } = useListInvoiceStore((state: any) => state.invoiceStatusStore)
+  const router = useRouter()
+  const { invoiceStatus, setInvoiceStatus } = useInvoiceStatusStore()
 
   const handleChangeInvoiceStatus = (status: string) => {
     setInvoiceStatus(status)
+    router.push({
+      pathname: '/invoice/list',
+      query: {
+        ...router.query,
+        status
+      }
+    })
   }
 
   return (
     <FormControl variant='outlined' fullWidth>
       <InputLabel id='demo-simple-select-label'>{invoiceStatus ? invoiceStatus : 'Invoice Status'}</InputLabel>
-      <Select label='Invoice Status' fullWidth labelId='demo-simple-select-label' id='demo-simple-select'>
+      <Select
+        label='Invoice Status'
+        defaultValue={invoiceStatus}
+        fullWidth
+        labelId='demo-simple-select-label'
+        id='demo-simple-select'
+      >
         {ItemSelects.map((item: IItemSelect, index: number) => (
           <MenuItem
             value={item.value}

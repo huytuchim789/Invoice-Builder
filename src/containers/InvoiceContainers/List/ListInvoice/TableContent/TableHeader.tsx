@@ -2,10 +2,11 @@ import { Typography } from '@mui/material'
 
 import extendedDayJs from 'src/@core/utils/dayjs'
 import { ITableCommonHeader } from 'src/@core/models/common'
-import InvoiceIdCell from './InvoiceIdCell'
-import StatusCell from './StatusCell'
-import ClientCell from './ClientCell'
-import ActionCell from './ActionCell'
+
+import InvoiceIdCell from './TableHeader/InvoiceIdCell'
+import StatusCell from './TableHeader/StatusCell'
+import ClientCell from './TableHeader/ClientCell'
+import ActionCell from './TableHeader/ActionCell'
 
 export const columns: ITableCommonHeader[] = [
   {

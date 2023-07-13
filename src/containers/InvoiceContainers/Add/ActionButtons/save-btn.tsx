@@ -12,13 +12,19 @@ import { useInvoiceDetailStoreData } from './controller'
 import InvoiceBoldFormatPDF from '../../InvoicePDF/BoldFormat/BoldFormat'
 import { useSettingPdfStore } from '../../store/setting'
 import InoviceLightFormatPdf from '../../InvoicePDF/LightFormat/LightFormat'
+import useInvoiceStore from 'src/@core/components/Invoice/store'
 
-export const SaveButton = () => {
+interface Props {
+  emailContent: { subject: string; message: string }
+}
+export const SaveButton = ({ emailContent }: Props) => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const snackbar = useSnackbarWithContext()
+
   const { settingPdf } = useSettingPdfStore()
   const { invoice_detail } = useInvoiceDetailStoreData()
+  const { methodSending, itemInfo, noteInfo } = useInvoiceStore()
 
   const MyDoc: any = useMemo(() => {
     if (invoice_detail) {
@@ -38,10 +44,25 @@ export const SaveButton = () => {
     }
   }, [invoice_detail])
 
+  const handleResetData = () => {
+    methodSending.setMethod('web')
+    itemInfo.setAllItemContent([
+      {
+        name: '',
+        description: '',
+        cost: 0,
+        hours: 0,
+        price: 0
+      }
+    ])
+    noteInfo.setNote('')
+  }
+
   const { mutate, isLoading: isSaveInvoiceLoading } = useMutation({
     mutationFn: async (data: IInvoiceInfo) => await saveInvoice(data),
     onSuccess: ({ data }: { data: { message: string } }) => {
       queryClient.invalidateQueries([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION])
+      handleResetData()
       router.push('/invoice/list')
 
       snackbar.success(data.message)
@@ -53,8 +74,10 @@ export const SaveButton = () => {
     }
   })
 
-  const handleSendInvoice = () => {
+  const handleSaveInvoice = () => {
     if (instance.blob !== null) {
+      const mailSubject = methodSending.method === 'mail' ? emailContent : {}
+
       const data: IInvoiceInfo = {
         issued_date: invoice_detail.issued_date,
         created_date: invoice_detail.created_date,
@@ -64,7 +87,9 @@ export const SaveButton = () => {
         customer_id: invoice_detail.customer_id,
         items: invoice_detail.items,
         total: String(invoice_detail.total),
-        file: instance.blob
+        file: instance.blob,
+        send_method: methodSending.method,
+        ...mailSubject
       }
 
       mutate(data)
@@ -74,7 +99,7 @@ export const SaveButton = () => {
   }
 
   return (
-    <Button type='button' fullWidth variant='outlined' onClick={handleSendInvoice} disabled={isSaveInvoiceLoading}>
+    <Button type='submit' fullWidth variant='outlined' disabled={isSaveInvoiceLoading}>
       Save
     </Button>
   )

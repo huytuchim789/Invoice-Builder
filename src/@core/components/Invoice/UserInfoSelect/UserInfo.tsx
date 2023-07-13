@@ -1,9 +1,13 @@
 import { Box, Typography } from '@mui/material'
 
-import { useUserSelectStore } from './store'
+import { useFormContext } from 'react-hook-form'
 
 const UserInfo = () => {
-  const { user } = useUserSelectStore()
+  const { watch } = useFormContext()
+  const user = JSON.parse(watch('user_id') || '{}')
+
+  if (!user) return <Box></Box>
+
   return (
     <Box marginTop={2}>
       <Typography fontSize={12} color={'#808080'}>

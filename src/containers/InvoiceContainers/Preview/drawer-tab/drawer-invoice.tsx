@@ -66,7 +66,7 @@ export const DrawerSendInvoice = () => {
         subject: data.subject,
         send_method: method
       },
-      Number(router.query.page)
+      Number(router.query.page || '1')
     )
   }
 

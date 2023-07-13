@@ -1,0 +1,51 @@
+import { Typography } from '@mui/material'
+
+import extendedDayJs from 'src/@core/utils/dayjs'
+import { ActionTab } from '../actions-tab'
+import { ITableCommonHeader } from 'src/@core/models/common'
+
+export const columns: ITableCommonHeader[] = [
+  // {
+  //   field: 'id',
+  //   headerName: '#',
+  //   width: 250,
+  //   component: (params: any) => {
+  //     return <Typography>{params.id}</Typography>
+  //   }
+  // },
+  {
+    field: 'name',
+    headerName: 'Name',
+    customStyle: {
+      flex: 1
+    },
+    component: (params: any) => {
+      return <Typography>{params.name}</Typography>
+    }
+  },
+  {
+    field: 'price',
+    headerName: 'Price',
+    width: 150,
+    component: (params: any) => {
+      return <Typography>{params.price} $</Typography>
+    }
+  },
+
+  {
+    field: 'created_at',
+    headerName: 'Created At',
+    width: 200,
+    component: (params: any) => {
+      return <Typography>{extendedDayJs(params.created_at).format('YYYY-MM-DD')}</Typography>
+    }
+  },
+  {
+    field: '',
+    headerName: 'Actions',
+    textAlign: 'center',
+    component: (params: any) => {
+      return <ActionTab params={params} />
+    }
+  }
+]

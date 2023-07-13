@@ -1,30 +1,27 @@
 import { useState } from 'react'
 
-import { Box, FormControl, Select, MenuItem, SelectChangeEvent } from '@mui/material'
+import { Box, FormControl, Select, MenuItem, Typography } from '@mui/material'
 
 import { useSelectUserInvoiceTo } from 'src/@core/hooks/invoice/useSelectUserInvoiceTo'
 import { IUserSelectInvoiceTo } from 'src/@core/models/api/invoice/invoice.interface'
 import CreateCustomerModal from './CreateCustomerModal'
-import { useUserSelectStore } from './store'
+import { useFormContext } from 'react-hook-form'
 
 interface Props {
   hasModal?: boolean
 }
 
 const UserInfoSelect = ({ hasModal }: Props) => {
-  const { setUser } = useUserSelectStore()
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext()
   const { data: user_select } = useSelectUserInvoiceTo()
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
 
   const handleCloseModal = () => {
     setIsOpenModal(false)
-  }
-
-  const handleChangeUserSelect = (event: SelectChangeEvent<string>) => {
-    if (event.target.value !== '') {
-      setUser(JSON.parse(event.target.value))
-    }
   }
 
   return (
@@ -34,7 +31,7 @@ const UserInfoSelect = ({ hasModal }: Props) => {
           labelId='demo-simple-select-standard-label'
           id='demo-simple-select-standard'
           defaultValue=''
-          onChange={handleChangeUserSelect}
+          {...register('user_id', { required: true })}
           size='small'
         >
           {hasModal && (
@@ -50,6 +47,7 @@ const UserInfoSelect = ({ hasModal }: Props) => {
             ))}
         </Select>
       </FormControl>
+      {errors.user_id && <Typography color={'red'}>This field is required</Typography>}
       <CreateCustomerModal isOpenModal={isOpenModal} handleCloseModal={handleCloseModal} />
     </Box>
   )

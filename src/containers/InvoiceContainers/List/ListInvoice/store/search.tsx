@@ -1,17 +1,19 @@
 import { produce } from 'immer'
+import { create } from 'zustand'
 
 export interface ISearchTabStore {
-  keyword: string
-  setKeyword: (value: string) => unknown
+  keyword: string | number | string[]
+  setKeyword: (value: string | number | string[]) => unknown
 }
 
-export const searchTabStore = (set: any) => ({
+const useSearchInvoiceStore = create<ISearchTabStore>(set => ({
   keyword: '',
-  setKeyword: (value: string) => {
-    return set(
-      produce((state: { searchTabStore: { keyword: string } }) => {
-        state.searchTabStore.keyword = value
+  setKeyword: (value: string | number | string[]) =>
+    set(
+      produce((state: { keyword: string | number | string[] }) => {
+        state.keyword = value
       })
     )
-  }
-})
+}))
+
+export default useSearchInvoiceStore
