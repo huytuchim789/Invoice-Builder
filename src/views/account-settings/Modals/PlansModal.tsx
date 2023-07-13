@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Dialog, DialogContent, DialogTitle, Grid, Typography } from '@mui/material'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMemo } from 'react'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import useCheckSubcribe from 'src/@core/hooks/payment/useCheckSubcribe'
 import { subcribeProPlan, unSubcribeProPlan } from 'src/@core/utils/api/payment'
@@ -10,7 +11,11 @@ interface Props {
   isOpenModal: boolean
   handleClose: () => void
 }
-
+export enum PLAN_TYPE {
+  NO_PLAN = 'no_plan',
+  TRIAL_PLAN = 'trial_plan',
+  BASIC_PLAN = 'basic_plan'
+}
 const CircleIcon = () => {
   return (
     <svg
@@ -59,7 +64,16 @@ const PlansModal = ({ isOpenModal, handleClose }: Props) => {
       snackbar.error(err.message)
     }
   })
-
+  const currentPlan = useMemo(() => {
+    if (!checkSub?.data?.data || checkSub?.data?.data?.stripe_status === 'canceled') {
+      return PLAN_TYPE.NO_PLAN
+    }
+    if (checkSub?.data?.data?.stripe_status === 'trialing') {
+      return PLAN_TYPE.TRIAL_PLAN
+    } else if (checkSub?.data?.data?.stripe_status === 'active') {
+      return PLAN_TYPE.BASIC_PLAN
+    }
+  }, [checkSub])
   return (
     <Dialog open={isOpenModal} onClose={handleClose} maxWidth='lg'>
       <Box padding={3}>
@@ -69,12 +83,50 @@ const PlansModal = ({ isOpenModal, handleClose }: Props) => {
           needs.
         </Typography>
         <DialogContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12} lg={6}></Grid>
+          <Grid container justifyContent={'space-between'}>
             <Grid
               item
               xs={12}
-              lg={6}
+              lg={5.5}
+              sx={{ border: '1px solid rgba(145, 85, 253, 0.5)', padding: '20px', borderRadius: '8px' }}
+            >
+              <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' gap='10px'>
+                <img width={34} src='/images/cards/plan-pro.png' alt='Plan Pro' />
+                <Typography fontSize={20}>Trial</Typography>
+                <Typography fontSize={14}>Try for 30 days</Typography>
+              </Box>
+              <Box width='100%' display='flex' flexDirection='column' gap='10px' mt='20px'>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <CircleIcon />
+                  <Typography>Invoice management</Typography>
+                </Box>
+              </Box>
+              {currentPlan === PLAN_TYPE.TRIAL_PLAN ? (
+                <LoadingButton
+                  loading={unSubcribe.isLoading || checkSub.isFetching}
+                  variant='outlined'
+                  fullWidth
+                  sx={{ mt: '20px' }}
+                  // onClick={() => unSubcribe.mutate()}
+                >
+                  Your current plan
+                </LoadingButton>
+              ) : (
+                <LoadingButton
+                  loading={subcribe.isLoading || checkSub.isFetching}
+                  variant='contained'
+                  fullWidth
+                  sx={{ mt: '20px' }}
+                  onClick={() => subcribe.mutate()}
+                >
+                  Upgrade
+                </LoadingButton>
+              )}
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              lg={5.5}
               sx={{ border: '1px solid rgba(145, 85, 253, 0.5)', padding: '20px', borderRadius: '8px' }}
             >
               <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' gap='10px'>
@@ -136,7 +188,17 @@ const PlansModal = ({ isOpenModal, handleClose }: Props) => {
                   <Typography>Unlimited responses</Typography>
                 </Box>
               </Box>
-              {checkSub.data && (!checkSub.data.data || checkSub.data.data.stripe_status === 'canceled') ? (
+              {currentPlan === PLAN_TYPE.BASIC_PLAN ? (
+                <LoadingButton
+                  loading={unSubcribe.isLoading || checkSub.isFetching}
+                  variant='contained'
+                  fullWidth
+                  sx={{ mt: '20px' }}
+                  // onClick={() => unSubcribe.mutate()}
+                >
+                  Your current plan
+                </LoadingButton>
+              ) : (
                 <LoadingButton
                   loading={subcribe.isLoading || checkSub.isFetching}
                   variant='contained'
@@ -145,16 +207,6 @@ const PlansModal = ({ isOpenModal, handleClose }: Props) => {
                   onClick={() => subcribe.mutate()}
                 >
                   Upgrade
-                </LoadingButton>
-              ) : (
-                <LoadingButton
-                  loading={unSubcribe.isLoading || checkSub.isFetching}
-                  variant='contained'
-                  fullWidth
-                  sx={{ mt: '20px' }}
-                  onClick={() => unSubcribe.mutate()}
-                >
-                  UnSubcribe
                 </LoadingButton>
               )}
             </Grid>

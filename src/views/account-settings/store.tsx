@@ -1,3 +1,4 @@
+import { ISubscriptionResponse } from 'src/@core/models/api/payment/subscription.interface'
 import create from 'zustand'
 
 type ISetting = {
@@ -15,6 +16,8 @@ export type Store = {
   setLoading: (loading: boolean) => void
   imgSrc: string
   setImgSrc: (imgSrc: string) => void
+  checkSub: ISubscriptionResponse
+  setCheckSub: (checkSub: ISubscriptionResponse) => void
 }
 
 export const useSettingStore = create<Store>(set => ({
@@ -35,5 +38,12 @@ export const useSettingStore = create<Store>(set => ({
   imgSrc: '/images/avatars/1.png',
   setImgSrc(imgSrc) {
     set({ imgSrc })
+  },
+  checkSub: {
+    data: null,
+    message: ''
+  },
+  setCheckSub(checkSub) {
+    set({ checkSub })
   }
 }))
