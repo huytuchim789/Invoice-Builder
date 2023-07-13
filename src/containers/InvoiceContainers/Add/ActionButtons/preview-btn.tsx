@@ -1,13 +1,12 @@
 import { Button } from '@mui/material'
 import InvoicePreviewModal from '../../Modals/InvoicePreviewModal'
-import { useState } from 'react'
-import useInvoiceDetailController from '../controller'
+import { useContext, useState } from 'react'
+import { InvoiceAddContext } from '..'
 
 export const PreviewButton = () => {
-  const { invoice_detail } = useInvoiceDetailController()
+  const { invoice_detail } = useContext(InvoiceAddContext) as { invoice_detail: any }
   const [isOpenInvoicePreviewModal, setIsOpenInvoicePreviewModal] = useState<boolean>(false)
 
-  console.log(invoice_detail)
   return (
     <>
       <Button fullWidth variant='outlined' onClick={() => setIsOpenInvoicePreviewModal(true)}>

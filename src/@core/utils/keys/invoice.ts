@@ -10,5 +10,6 @@ export enum QUERY_INVOICE_KEYS {
 
   CARD_INFO = 'card_info',
   CHECK_SUBCRIBE = 'check_subcribe',
-  CUSTOMER_LIST = 'customer_list'
+  CUSTOMER_LIST = 'customer_list',
+  ITEMS_INVOICE = 'items_invoice'
 }

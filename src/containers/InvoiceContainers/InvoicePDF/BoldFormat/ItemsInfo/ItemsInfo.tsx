@@ -10,7 +10,7 @@ const itemsInfostyle = StyleSheet.create({
   content: {
     display: 'flex',
     padding: '10px',
-    flexDirection: 'row',
+    flexDirection: 'column',
     borderTop: '1px solid #808080'
   }
 })

@@ -19,14 +19,14 @@ const CustomerTable = ({ tableHeader, tableBody }: Props) => {
         </TableHead>
         <TableBody>
           {tableBody.map(body => (
-            <TableRow key={body.name}>
-              <TableCell>{body.name}</TableCell>
-              <TableCell>{body.company}</TableCell>
-              <TableCell>{body.email}</TableCell>
-              <TableCell>{body.country}</TableCell>
-              <TableCell>{body.address}</TableCell>
-              <TableCell>{body.contact_number}</TableCell>
-              <TableCell>{body.contact_number_country}</TableCell>
+            <TableRow key={body['Name']}>
+              <TableCell>{body['Name']}</TableCell>
+              <TableCell>{body['Company']}</TableCell>
+              <TableCell>{body['Email']}</TableCell>
+              <TableCell>{body['Country']}</TableCell>
+              <TableCell>{body['Address']}</TableCell>
+              <TableCell>{body['Contact Number']}</TableCell>
+              <TableCell>{body['Contact Number Country']}</TableCell>
             </TableRow>
           ))}
         </TableBody>

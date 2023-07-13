@@ -53,13 +53,13 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 }))
 
 export interface IBodyTable {
-  address: string
-  company: string
-  contact_number: string
-  contact_number_country: string
-  country: string
-  email: string
-  name: string
+  Address: string
+  Company: string
+  'Contact Number': string
+  'Contact Number Country': string
+  Country: string
+  Email: string
+  Name: string
 }
 
 const ImportCustomerModal = ({ isOpen, handleCloseModal }: Props) => {

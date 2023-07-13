@@ -16,7 +16,6 @@ import InvoicePreviewOutline from 'mdi-material-ui/ViewListOutline'
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
 import { globalStore } from 'src/@core/hocs/global-store'
 import { isGuest } from 'src/@core/utils/role-check'
-import SvgIcon from '@mui/material/SvgIcon'
 
 const navigation = (): VerticalNavItemsType => {
   const { user } = globalStore((state: any) => state.userStore)
@@ -68,6 +67,16 @@ const navigation = (): VerticalNavItemsType => {
       title: 'List',
       icon: InvoicePreviewOutline,
       path: '/customer/list',
+      openInNewTab: false,
+      disabled: isGuest(user)
+    },
+    {
+      sectionTitle: 'Item Invoice'
+    },
+    {
+      title: 'List',
+      icon: InvoicePreviewOutline,
+      path: '/items/list',
       openInNewTab: false,
       disabled: isGuest(user)
     },

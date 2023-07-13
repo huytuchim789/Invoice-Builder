@@ -29,6 +29,22 @@ export interface IUserSelectInvoiceToDataResponse {
   message: string
 }
 
+export interface IItemsDataResponse {
+  data: {
+    current_page: number
+    data: IUserSelectInvoiceTo[]
+    first_page_url: string
+    from: string | null
+    next_page_url: string | null
+    path: string
+    per_page: number
+    prev_page_url: string | null
+    last_page: number
+    to: string | null
+  }
+  message: string
+}
+
 export interface IAddUserSelectInvoiceToDataResponse {
   data: IUserSelectInvoiceTo
   message: string
