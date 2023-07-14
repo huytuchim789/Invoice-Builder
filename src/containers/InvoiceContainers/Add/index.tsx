@@ -34,7 +34,7 @@ export const invoiceCurrentValue = {
       hours: '',
       cost: '',
       description: '',
-      name: ''
+      value: '{}'
     }
   ],
   user_id: ''

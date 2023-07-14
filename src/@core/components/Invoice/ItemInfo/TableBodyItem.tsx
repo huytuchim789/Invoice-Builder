@@ -2,7 +2,7 @@ import { Box, TableBody, TableCell, TableRow } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import { useItemInfoController } from './controller'
 import { IItemContent } from './store'
-import { createContext } from 'react'
+import { createContext, memo, useCallback } from 'react'
 import { ItemCell } from './items/ItemCell'
 import { CostCell } from './items/CostCell'
 import { HourCell } from './items/HourCell'
@@ -18,9 +18,9 @@ const TableBodyItem = () => {
     name: 'items'
   })
 
-  const handleRemoveItem = (index: number) => {
+  const handleRemoveItem = useCallback((index: number) => {
     remove(index)
-  }
+  }, [])
 
   return (
     <TableBody>
@@ -58,4 +58,4 @@ const TableBodyItem = () => {
   )
 }
 
-export default TableBodyItem
+export default memo(TableBodyItem)

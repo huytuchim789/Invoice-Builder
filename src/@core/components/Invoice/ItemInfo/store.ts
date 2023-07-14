@@ -1,4 +1,5 @@
 import { produce } from 'immer'
+import { IItemsData } from 'src/@core/models/api/invoice/invoice.interface'
 import { create } from 'zustand'
 
 export interface IItemContent {
@@ -10,8 +11,10 @@ export interface IItemContent {
 }
 
 export interface IStore {
+  itemsInvoiceSelectList: IItemsData[]
   itemContent: IItemContent[]
   subTotal: number
+  setItemsInvoiceSelectList: (value: IItemsData[]) => void
   addItemContent: () => void
   setItemContent: (value: string | number, key: string, index: number) => void
   deleteItemContent: (index: number) => void
@@ -30,6 +33,7 @@ const initialState: IItemContent[] = [
 
 export const useItemContentStore = create<IStore>(set => ({
   itemContent: initialState,
+  itemsInvoiceSelectList: [],
   subTotal: 0,
   addItemContent: () =>
     set(
@@ -89,6 +93,12 @@ export const useItemContentStore = create<IStore>(set => ({
           (accumulateValue: number, nextValue: IItemContent) => accumulateValue + nextValue.price,
           0
         )
+      })
+    ),
+  setItemsInvoiceSelectList: (value: any) =>
+    set(
+      produce((state: { itemsInvoiceSelectList: any }) => {
+        state.itemsInvoiceSelectList = value
       })
     )
 }))

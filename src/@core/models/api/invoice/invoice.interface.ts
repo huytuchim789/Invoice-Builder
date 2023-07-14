@@ -145,3 +145,8 @@ export interface IInvoiceDataResponse {
   data: IInvoiceData
   message: string
 }
+
+export interface IItemsInvoiceSelectListDataResponse {
+  data: IItemsData[]
+  message: string
+}
