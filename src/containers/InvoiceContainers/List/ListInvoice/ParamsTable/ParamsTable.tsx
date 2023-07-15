@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { LoadingButton } from '@mui/lab'
-import { Button, Stack, TextField } from '@mui/material'
+import { Box, Button, Stack, Switch, TextField, Typography } from '@mui/material'
 
 import { useSearchInvoiceStore } from '../store'
 
@@ -23,7 +23,7 @@ const ParamsTable = () => {
   const { setKeyword } = useSearchInvoiceStore()
 
   const [value, setValue] = useState<string>('')
-
+  const [isPayMode, setIsPayMode] = useState<boolean>(false)
   const keyword = useDebounce(value, 2000)
 
   useEffect(() => {
@@ -42,7 +42,9 @@ const ParamsTable = () => {
       emailtransaction_ids: checkedSelected
     })
   }
-
+  const handleChangeEdit = (e: { target: { checked: boolean | ((prevState: boolean) => boolean) } }) => {
+    setIsPayMode(!e.target.checked)
+  }
   const { mutate, isLoading: isSendLoading } = useMutation({
     mutationFn: (): Promise<any> => handleUploadPdf(),
     onSuccess: (data: { data: { message: string } }) => {
@@ -58,23 +60,29 @@ const ParamsTable = () => {
   })
 
   return (
-    <Stack direction='row' alignItems='center' gap={3} justifyContent='flex-end'>
-      <TextField
-        size='small'
-        placeholder='Search Invoice'
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
-      />
-      <LoadingButton
-        loading={isSendLoading}
-        variant='contained'
-        onClick={() => mutate()}
-        disabled={checkedSelected.length === 0}
-      >
-        Send Invoice
-      </LoadingButton>
-      <Button variant='contained' onClick={() => router.push('/invoice/add')}>
-        Create Invoice
-      </Button>
+    <Stack direction='row' alignItems='center' justifyContent='space-between'>
+      <Box display='flex' gap={3} alignItems='center'>
+        <Typography>Payment Mode</Typography>
+        <Switch onChange={handleChangeEdit} defaultChecked={!isPayMode} />
+      </Box>
+      <Stack direction='row' alignItems='center' gap={3} justifyContent='flex-end'>
+        <TextField
+          size='small'
+          placeholder='Search Invoice'
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
+        />
+        <LoadingButton
+          loading={isSendLoading}
+          variant='contained'
+          onClick={() => mutate()}
+          disabled={checkedSelected.length === 0}
+        >
+          Send Invoice
+        </LoadingButton>
+        <Button variant='contained' onClick={() => router.push('/invoice/add')}>
+          Create Invoice
+        </Button>
+      </Stack>
     </Stack>
   )
 }
