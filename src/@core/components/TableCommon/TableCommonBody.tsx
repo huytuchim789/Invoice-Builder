@@ -1,9 +1,9 @@
 import { Checkbox, TableBody, TableCell, TableRow } from '@mui/material'
-import { ChangeEvent, useContext } from 'react'
+import { ChangeEvent, ReactElement, useContext } from 'react'
 import { ITableCommon, TableCommonContext } from './TableCommon'
 import { useTableMutilCheckStore } from './store'
 
-const TableCommonBody = () => {
+const TableCommonBody = ({ extraRows }: { extraRows: ReactElement }) => {
   const { headerData, data, checkable } = useContext(TableCommonContext) as ITableCommon
   const { checkedSelected, setCheckedSelected } = useTableMutilCheckStore()
 
@@ -37,6 +37,7 @@ const TableCommonBody = () => {
           })}
         </TableRow>
       ))}
+      {extraRows}
     </TableBody>
   )
 }

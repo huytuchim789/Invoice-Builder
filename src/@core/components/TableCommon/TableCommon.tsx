@@ -55,7 +55,18 @@ const TableCommon = ({ headerData, data, checkable, isLoading, pagination }: ITa
               </TableRow>
             </TableBody>
           ) : (
-            <TableCommonBody />
+            <TableCommonBody
+              extraRows={
+                <TableRow>
+                  {/* <TableCell rowSpan={3} /> */}
+                  <TableCell colSpan={4}></TableCell>
+                  <TableCell align='left' sx={{ fontSize: '15px', fontWeight: 'bold' }} variant='footer'>
+                    $ 200
+                  </TableCell>
+                  <TableCell colSpan={3}></TableCell>
+                </TableRow>
+              }
+            />
           )}
         </Table>
         {pagination && (
