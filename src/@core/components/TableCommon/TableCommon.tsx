@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { ITableCommonHeader } from 'src/@core/models/common'
-import { ChangeEvent, createContext } from 'react'
+import { ChangeEvent, ReactElement, createContext } from 'react'
 import TableCommonBody from './TableCommonBody'
 import TableCommonHeader from './TableCommonHeader'
 import LoadingData from './LoadingData'
@@ -32,11 +32,21 @@ export interface ITableCommon {
     handleChangeLimit?: (e: SelectChangeEvent<number>) => void
     handleChangePage?: (e: ChangeEvent<unknown>, page: number) => void
   }
+  extraRows?: ReactElement
+  selectedKey?: string
 }
 
 export const TableCommonContext = createContext({})
 
-const TableCommon = ({ headerData, data, checkable, isLoading, pagination }: ITableCommon) => {
+const TableCommon = ({
+  headerData,
+  data,
+  checkable,
+  isLoading,
+  pagination,
+  extraRows,
+  selectedKey = 'id'
+}: ITableCommon) => {
   const router = useRouter()
 
   const { limit = [5, 10, 20, 30], totalPage, currentLimit, handleChangeLimit, handleChangePage } = pagination ?? {}
@@ -55,18 +65,7 @@ const TableCommon = ({ headerData, data, checkable, isLoading, pagination }: ITa
               </TableRow>
             </TableBody>
           ) : (
-            <TableCommonBody
-              extraRows={
-                <TableRow>
-                  {/* <TableCell rowSpan={3} /> */}
-                  <TableCell colSpan={4}></TableCell>
-                  <TableCell align='left' sx={{ fontSize: '15px', fontWeight: 'bold' }} variant='footer'>
-                    $ 200
-                  </TableCell>
-                  <TableCell colSpan={3}></TableCell>
-                </TableRow>
-              }
-            />
+            <TableCommonBody extraRows={extraRows} selectedKey={selectedKey} />
           )}
         </Table>
         {pagination && (

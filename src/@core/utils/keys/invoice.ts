@@ -12,5 +12,6 @@ export enum QUERY_INVOICE_KEYS {
   CHECK_SUBCRIBE = 'check_subcribe',
   CUSTOMER_LIST = 'customer_list',
   ITEMS_INVOICE = 'items_invoice',
-  ITEMS_INVOICE_SELECT_LIST = 'items_invoice_select_list'
+  ITEMS_INVOICE_SELECT_LIST = 'items_invoice_select_list',
+  TOTAL_SUM_INVOICE = 'total_sum_invoice'
 }

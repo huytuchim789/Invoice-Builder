@@ -4,6 +4,8 @@ import { create } from 'zustand'
 export interface ISearchTabStore {
   keyword: string | number | string[]
   setKeyword: (value: string | number | string[]) => unknown
+  isPaymentMode: boolean
+  setIsPaymentMode: (value: boolean) => unknown
 }
 
 const useSearchInvoiceStore = create<ISearchTabStore>(set => ({
@@ -13,7 +15,11 @@ const useSearchInvoiceStore = create<ISearchTabStore>(set => ({
       produce((state: { keyword: string | number | string[] }) => {
         state.keyword = value
       })
-    )
+    ),
+  isPaymentMode: false,
+  setIsPaymentMode(value) {
+    set({ isPaymentMode: value })
+  }
 }))
 
 export default useSearchInvoiceStore
