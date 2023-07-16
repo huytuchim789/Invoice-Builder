@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axiosInstance from 'src/@core/common/axios'
 
 import { IInvoiceDataResponse } from 'src/@core/models/api/invoice/invoice.interface'
@@ -35,6 +35,7 @@ export const useInvoiceTotalSum = (codes: string[], isPaymentMode: boolean) => {
   return useQuery({
     queryKey: [QUERY_INVOICE_KEYS.TOTAL_SUM_INVOICE, codes],
     queryFn: () => getTotalInvoices(codes),
-    enabled: codes.length > 0 && isPaymentMode
+    enabled: codes.length > 0 && isPaymentMode,
+    refetchOnMount: false
   })
 }

@@ -20,42 +20,48 @@ import AccountOutline from 'mdi-material-ui/AccountOutline'
 
 // ** Types
 import { ThemeColor } from 'src/@core/layouts/types'
+import { useAnalyticsInvoiceData } from 'src/@core/hooks/invoice/useDashboard'
+import numeral from 'numeral'
 
 interface DataType {
-  stats: string
+  stats?: string
   title: string
   color: ThemeColor
   icon: ReactElement
+  key: string
 }
 
 const salesData: DataType[] = [
+  // {
+  //   stats: '245k',
+  //   title: 'Sales',
+  //   color: 'primary',
+  //   icon: <TrendingUp sx={{ fontSize: '1.75rem' }} />
+  // },
   {
-    stats: '245k',
-    title: 'Sales',
-    color: 'primary',
-    icon: <TrendingUp sx={{ fontSize: '1.75rem' }} />
-  },
-  {
-    stats: '12.5k',
+    key: 'customer_count',
+    stats: '',
     title: 'Customers',
     color: 'success',
     icon: <AccountOutline sx={{ fontSize: '1.75rem' }} />
   },
   {
-    stats: '1.54k',
+    key: 'item_count',
+    stats: '',
     color: 'warning',
-    title: 'Products',
+    title: 'Items',
     icon: <CellphoneLink sx={{ fontSize: '1.75rem' }} />
   },
   {
-    stats: '$88k',
+    key: 'total_sum',
+    stats: '',
     color: 'info',
     title: 'Revenue',
     icon: <CurrencyUsd sx={{ fontSize: '1.75rem' }} />
   }
 ]
 
-const renderStats = () => {
+const renderStats = (data: any) => {
   return salesData.map((item: DataType, index: number) => (
     <Grid item xs={12} sm={3} key={index}>
       <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
@@ -74,7 +80,9 @@ const renderStats = () => {
         </Avatar>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography variant='caption'>{item.title}</Typography>
-          <Typography variant='h6'>{item.stats}</Typography>
+          <Typography variant='h6'>{`${item?.key === 'total_sum' ? '$' : ''} ${numeral(data?.[item?.key]).format(
+            '0a'
+          )}`}</Typography>
         </Box>
       </Box>
     </Grid>
@@ -82,6 +90,8 @@ const renderStats = () => {
 }
 
 const StatisticsCard = () => {
+  const { data } = useAnalyticsInvoiceData()
+
   return (
     <Card>
       <CardHeader
@@ -91,14 +101,14 @@ const StatisticsCard = () => {
             <DotsVertical />
           </IconButton>
         }
-        subheader={
-          <Typography variant='body2'>
-            <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>
-              Total 48.5% growth
-            </Box>{' '}
-            😎 this month
-          </Typography>
-        }
+        // subheader={
+        //   <Typography variant='body2'>
+        //     <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>
+        //       Total 48.5% growth
+        //     </Box>{' '}
+        //     😎 this month
+        //   </Typography>
+        // }
         titleTypographyProps={{
           sx: {
             mb: 2.5,
@@ -109,7 +119,7 @@ const StatisticsCard = () => {
       />
       <CardContent sx={{ pt: theme => `${theme.spacing(3)} !important` }}>
         <Grid container spacing={[5, 0]}>
-          {renderStats()}
+          {renderStats(data)}
         </Grid>
       </CardContent>
     </Card>

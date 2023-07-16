@@ -4,6 +4,9 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import { styled, useTheme } from '@mui/material/styles'
+import { useTotalSumInvoiceInMonthData } from 'src/@core/hooks/invoice/useDashboard'
+import numeral from 'numeral'
+import { globalStore } from 'src/@core/hocs/global-store'
 
 // Styled component for the triangle shaped background image
 const TriangleImg = styled('img')({
@@ -22,6 +25,9 @@ const TrophyImg = styled('img')({
 })
 
 const Trophy = () => {
+  const { data } = useTotalSumInvoiceInMonthData()
+  const { user } = globalStore((state: any) => state.userStore)
+
   // ** Hook
   const theme = useTheme()
 
@@ -30,12 +36,12 @@ const Trophy = () => {
   return (
     <Card sx={{ position: 'relative' }}>
       <CardContent>
-        <Typography variant='h6'>Congratulations John! 🥳</Typography>
+        <Typography variant='h6'>{`Congratulations ${user?.name}! 🥳`}</Typography>
         <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
           Best seller of the month
         </Typography>
         <Typography variant='h5' sx={{ my: 4, color: 'primary.main' }}>
-          $42.8k
+          {`$ ${numeral(data).format('0a')}`}
         </Typography>
         <Button size='small' variant='contained'>
           View Sales

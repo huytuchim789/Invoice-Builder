@@ -13,15 +13,19 @@ import { useTableMutilCheckStore } from 'src/@core/components/TableCommon/store'
 
 import { sendMultipleInvoiceByMail } from 'src/@core/utils/api/invoice/sendInvoiceByMail'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
+import { useConfirm } from 'material-ui-confirm'
+import { payInvoices } from 'src/@core/utils/api/payment'
 import { useInvoiceTotalSum } from 'src/@core/hooks/invoice/useInvoiceData'
 
 const ParamsTable = () => {
   const router = useRouter()
   const snackbar = useSnackbarWithContext()
   const queryClient = useQueryClient()
+  const confirm = useConfirm()
 
   const { checkedSelected, setCheckedSelectedAll } = useTableMutilCheckStore()
   const { setKeyword, isPaymentMode, setIsPaymentMode } = useSearchInvoiceStore()
+  const { data } = useInvoiceTotalSum(checkedSelected, isPaymentMode)
 
   const [value, setValue] = useState<string>('')
   const keyword = useDebounce(value, 2000)
@@ -45,6 +49,9 @@ const ParamsTable = () => {
       emailtransaction_ids: checkedSelected
     })
   }
+  const payInvoicesApi = async (): Promise<any> => {
+    return await payInvoices(checkedSelected)
+  }
   const handleChangeEdit = (e: { target: { checked: boolean | ((prevState: boolean) => boolean) } }) => {
     setIsPaymentMode(e.target.checked as boolean)
   }
@@ -58,6 +65,17 @@ const ParamsTable = () => {
     onError: (err: { response: { data: { message: string } } }) => {
       const { response } = err
 
+      snackbar.error(response.data.message)
+    }
+  })
+
+  const { mutate: mutatePayInvoice, isSuccess: isPayInvoice } = useMutation({
+    mutationFn: (): Promise<any> => payInvoicesApi(),
+    onSuccess: (data: { data: { message: string } }) => {
+      snackbar.success(data.data.message)
+    },
+    onError: (err: { response: { data: { message: string } } }) => {
+      const { response } = err
       snackbar.error(response.data.message)
     }
   })
@@ -77,7 +95,20 @@ const ParamsTable = () => {
           <LoadingButton
             loading={isSendLoading}
             variant='contained'
-            onClick={() => mutate()}
+            onClick={() => {
+              confirm({
+                description: (
+                  <Box>
+                    Confirm payment for {`${checkedSelected.length}`} invoices with
+                    <Typography component={'span'} fontWeight={'500'}>{` ${data?.toFixed(2) || 0} `}</Typography>$
+                  </Box>
+                )
+              })
+                .then(() => {
+                  mutatePayInvoice()
+                })
+                .catch(() => console.log('Deletion cancelled.'))
+            }}
             disabled={checkedSelected.length === 0}
           >
             Pay Invoice

@@ -51,6 +51,7 @@ import { SnackbarProvider } from 'notistack'
 import { withAuth } from 'src/@core/hocs/with-auth'
 import { globalStore } from 'src/@core/hocs/global-store'
 import { LoadingComponent } from 'src/@core/components/loading'
+import { ConfirmProvider } from 'material-ui-confirm'
 
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -139,7 +140,9 @@ export function App(props: ExtendedAppProps) {
                   return loading ? (
                     <LoadingComponent />
                   ) : (
-                    <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
+                    <ThemeComponent settings={settings}>
+                      <ConfirmProvider>{getLayout(<Component {...pageProps} />)}</ConfirmProvider>
+                    </ThemeComponent>
                   )
                 }}
               </SettingsConsumer>
