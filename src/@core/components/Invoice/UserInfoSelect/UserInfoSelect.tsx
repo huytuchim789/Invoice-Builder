@@ -14,6 +14,7 @@ interface Props {
 const UserInfoSelect = ({ hasModal }: Props) => {
   const {
     register,
+    watch,
     formState: { errors }
   } = useFormContext()
   const { data: user_select } = useSelectUserInvoiceTo()
@@ -23,6 +24,8 @@ const UserInfoSelect = ({ hasModal }: Props) => {
   const handleCloseModal = () => {
     setIsOpenModal(false)
   }
+  const defaultCustomerString = watch('user_id')
+  // const defaultCustomer = JSON.parse(getValues('user_id'))?.name
 
   return (
     <Box mt={2}>
@@ -30,7 +33,7 @@ const UserInfoSelect = ({ hasModal }: Props) => {
         <Select
           labelId='demo-simple-select-standard-label'
           id='demo-simple-select-standard'
-          defaultValue=''
+          value={defaultCustomerString}
           {...register('user_id', { required: true })}
           size='small'
         >
