@@ -24,6 +24,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
+import SendMailModal from '../Modals/SendMailModal'
 
 export const invoiceCurrentValue = {
   startDate: extendedDayJs().toDate(),
@@ -56,12 +57,10 @@ export const InvoiceAdd = () => {
     subject: '',
     message: ''
   })
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleChangeEmailContent = (subject: string, message: string) => {
-    setEmailContent({
-      subject,
-      message
-    })
+  const handleChangeEmailContent = (key: string, value: string) => {
+    setEmailContent(prevState => ({ ...prevState, [key]: value }))
   }
 
   const methods = useForm({
@@ -73,8 +72,14 @@ export const InvoiceAdd = () => {
 
   const invoice_detail: any = useMemo(() => {
     const userInfoParse = JSON.parse(user_id || '{}')
-    const subTotal = items ? items.reduce((acc: any, item: any) => acc + Number(item.hours) * Number(item.cost), 0) : 0
+    const subTotal = items
+      ? items.reduce((acc: any, item: any) => {
+          const valueStr = item.value ? item.value : '{}'
+          const cost = JSON.parse(valueStr)
 
+          return acc + Number(item.hours) * Number(cost.price ? cost.price : 0)
+        }, 0)
+      : 0
     return {
       id: '',
       updated_at: extendedDayJs(endDate).format('YYYY-MM-DD'),
@@ -128,10 +133,15 @@ export const InvoiceAdd = () => {
 
   const handleSaveInvoice: SubmitHandler<any> = data => {
     if (instance.blob !== null) {
-      const mailSubject = methodSending.method === 'mail' ? emailContent : {}
+      const mailSubject = methodSending.method === 'mail' ? emailContent : { subject: null, message: null }
       const userInfoParse = JSON.parse(user_id || '{}')
       const subTotal = data.items
-        ? data.items.reduce((acc: any, item: any) => acc + Number(item.hours) * Number(item.cost), 0)
+        ? data.items.reduce((acc: any, item: any) => {
+            const valueStr = item.value ? item.value : '{}'
+            const cost = JSON.parse(valueStr)
+
+            return acc + Number(item.hours) * Number(cost.price ? cost.price : 0)
+          }, 0)
         : 0
 
       const formData: IInvoiceInfo = {
@@ -156,7 +166,9 @@ export const InvoiceAdd = () => {
 
   const data = {
     invoice_detail,
-    handleChangeEmailContent
+    isSaveInvoiceLoading,
+    handleChangeEmailContent,
+    setIsModalOpen
   }
 
   return (
@@ -179,6 +191,12 @@ export const InvoiceAdd = () => {
           </Grid>
         </form>
       </FormProvider>
+      <SendMailModal
+        data={emailContent}
+        isOpen={isModalOpen}
+        handleCloseModal={() => setIsModalOpen(false)}
+        handleChangeEmailContent={handleChangeEmailContent}
+      />
     </InvoiceAddContext.Provider>
   )
 }

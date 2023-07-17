@@ -6,7 +6,7 @@ import { IItemContent } from '../store'
 import { useFormContext } from 'react-hook-form'
 
 export const CostCell = () => {
-  const { register, watch } = useFormContext()
+  const { watch } = useFormContext()
   const { index } = useContext(ItemChildContext) as { item: IItemContent; index: number }
 
   const priceString = watch(`items[${index}].value`)
@@ -25,7 +25,6 @@ export const CostCell = () => {
         size='small'
         value={cost.price ? cost.price : 0}
         variant='outlined'
-        {...register(`items[${index}].cost`, { required: true })}
       />
     </>
   )

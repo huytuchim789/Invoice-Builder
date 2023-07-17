@@ -6,7 +6,7 @@ import { ItemChildContext } from '../TableBodyItem'
 import { useFormContext } from 'react-hook-form'
 
 export const HourCell = () => {
-  const { item, index } = useContext(ItemChildContext) as { item: IItemContent; index: number }
+  const { index } = useContext(ItemChildContext) as { item: IItemContent; index: number }
 
   const {
     register,
@@ -18,7 +18,7 @@ export const HourCell = () => {
       <TextField
         type='number'
         {...register(`items[${index}].hours`, { required: true })}
-        defaultValue={item.hours}
+        defaultValue={0}
         error={Boolean(errors?.items?.[index]?.hours)}
         sx={{ width: '150px' }}
         size='small'
