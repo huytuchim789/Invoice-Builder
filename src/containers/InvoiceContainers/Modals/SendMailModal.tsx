@@ -1,5 +1,4 @@
 // ** React imports
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 
 // ** MUI Library imports
 import { Box, Button, Drawer, Stack, TextField, Typography } from '@mui/material'
@@ -10,15 +9,19 @@ import useInvoiceStore from 'src/@core/components/Invoice/store'
 
 interface IField {
   label: string
-  value: string
+  value: 'subject' | 'message'
   multiple: boolean
   helpText: string
 }
 
 interface Props {
+  data: {
+    subject: string | null
+    message: string | null
+  }
   isOpen: boolean
   handleCloseModal: () => void
-  handleChangeSubjectMessage: (subject: string, message: string) => void
+  handleChangeEmailContent: (key: string, value: string) => void
 }
 
 const fields: IField[] = [
@@ -36,24 +39,19 @@ const fields: IField[] = [
   }
 ]
 
-const SendMailModal = ({ isOpen, handleCloseModal, handleChangeSubjectMessage }: Props) => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors }
-  } = useForm()
-
+const SendMailModal = ({ isOpen, data, handleCloseModal, handleChangeEmailContent }: Props) => {
   const { methodSending } = useInvoiceStore()
 
-  const onSubmit: SubmitHandler<FieldValues> = data => {
-    handleChangeSubjectMessage(data.subject, data.message)
+  const handleSave = () => {
     handleCloseModal()
+  }
+
+  const handleChangeTextFeild = (props: string) => (event: any) => {
+    handleChangeEmailContent(props, event.target.value)
   }
 
   const handleClose = () => {
     handleCloseModal()
-    reset()
     methodSending.setMethod('web')
   }
 
@@ -74,33 +72,29 @@ const SendMailModal = ({ isOpen, handleCloseModal, handleChangeSubjectMessage }:
           <CloseIcon style={{ color: '#FFF' }} />
         </Box>
       </Stack>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ width: 300, padding: 2 }} role='presentation' display='flex' flexDirection='column' gap={3}>
-          {fields.map((field: IField, index: number) => (
-            <Box key={`${field}-${index}`}>
-              <TextField
-                label={field.label}
-                error={!!errors[field.value]}
-                defaultValue=''
-                multiline={field.multiple}
-                minRows={5}
-                maxRows={5}
-                {...register(field.value, { required: true })}
-                fullWidth
-                helperText={errors[field.value] && field.helpText}
-              />
-            </Box>
-          ))}
-          <Stack direction='row' gap={3}>
-            <Button type='submit' variant='contained' fullWidth>
-              Save
-            </Button>
-            <Button type='button' variant='outlined' fullWidth>
-              Cancel
-            </Button>
-          </Stack>
-        </Box>
-      </form>
+      <Box sx={{ width: 300, padding: 2 }} role='presentation' display='flex' flexDirection='column' gap={3}>
+        {fields.map((field: IField, index: number) => (
+          <Box key={`${field}-${index}`}>
+            <TextField
+              label={field.label}
+              defaultValue={data[field.value]}
+              onChange={handleChangeTextFeild(field.value)}
+              multiline={field.multiple}
+              minRows={5}
+              maxRows={5}
+              fullWidth
+            />
+          </Box>
+        ))}
+        <Stack direction='row' gap={3}>
+          <Button type='button' onClick={handleSave} variant='contained' fullWidth>
+            Save
+          </Button>
+          <Button type='button' onClick={handleClose} variant='outlined' fullWidth>
+            Cancel
+          </Button>
+        </Stack>
+      </Box>
     </Drawer>
   )
 }

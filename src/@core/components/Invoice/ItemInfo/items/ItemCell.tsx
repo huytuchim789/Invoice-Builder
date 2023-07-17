@@ -15,11 +15,13 @@ export const ItemCell = memo(() => {
 
   const { itemsInvoiceSelectList } = useItemContentStore()
 
-  console.log('itemsInvoiceSelectList', itemsInvoiceSelectList)
   const {
     register,
+    watch,
     formState: { errors }
   } = useFormContext()
+
+  const itemsData = watch(`items[${index}].value`)
 
   return (
     <>
@@ -28,7 +30,7 @@ export const ItemCell = memo(() => {
           fullWidth
           labelId='demo-simple-select-outlined-label'
           id='demo-simple-select-outlined'
-          defaultValue=''
+          value={itemsData}
           {...register(`items[${index}].value`, { required: true })}
           size='small'
         >

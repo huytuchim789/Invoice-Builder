@@ -78,22 +78,6 @@ export interface IItemsData {
   updated_at: string | null
 }
 
-export interface IInvoiceDetailData {
-  code: string
-  id: string
-  issued_date: string
-  created_date: string
-  note: string
-  tax: number
-  sale_person: string
-  customer_id: string
-  total: number
-  created_at: string
-  updated_at: string
-  items: IItemsData[]
-  customer: IAddCustomerUsersData
-}
-
 export interface IInvoiceDetailLocalData {
   id: string
   issued_date: string
@@ -119,6 +103,72 @@ export interface IInvoiceDetailLocalData {
 export interface IInvoiceDetailDataResponse {
   data: IInvoiceDetailData
   message: string
+}
+
+export interface IInvoiceDetailData {
+  id: string
+  code: string
+  issued_date: string
+  created_date: string
+  note: string
+  sender_id: string
+  tax: number
+  sale_person: string
+  customer_id: string
+  total: number
+  created_at: string
+  updated_at: string
+  is_paid: number
+  items: Item[]
+  customer: Customer
+  email_transaction: EmailTransaction
+}
+
+export interface Item {
+  id: string
+  name: string
+  price: number
+  created_at: string
+  updated_at: string
+  organization_id: string
+  pivot: Pivot
+}
+
+export interface Pivot {
+  invoice_id: string
+  item_id: string
+  id: string
+  description: string
+  cost: number
+  hours: number
+  created_at: any
+  updated_at: any
+}
+
+export interface Customer {
+  id: string
+  created_at: string
+  updated_at: string
+  name: string
+  company: string
+  email: string
+  country: string
+  address: string
+  user_id: string
+  contact_number: string
+  contact_number_country: string
+}
+
+export interface EmailTransaction {
+  id: string
+  invoice_id: string
+  status: string
+  email_subject: string
+  email_message: string
+  error_message: any
+  method: string
+  created_at: string
+  updated_at: string
 }
 
 export interface IInvoiceData {

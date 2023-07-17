@@ -25,6 +25,14 @@ export const columns: ITableCommonHeader[] = [
     }
   },
   {
+    field: 'method',
+    headerName: 'Method',
+    width: 100,
+    component: (params: any) => {
+      return <Typography style={{ textTransform: 'capitalize' }}>{params.method}</Typography>
+    }
+  },
+  {
     field: 'customer',
     headerName: 'Client',
     customStyle: {

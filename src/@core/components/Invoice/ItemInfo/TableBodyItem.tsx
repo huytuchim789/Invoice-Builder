@@ -1,30 +1,17 @@
 import { Box, TableBody, TableCell, TableRow } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
-import { useItemInfoController } from './controller'
-import { IItemContent } from './store'
-import { createContext, memo, useCallback } from 'react'
+import { createContext, memo } from 'react'
 import { ItemCell } from './items/ItemCell'
 import { CostCell } from './items/CostCell'
 import { HourCell } from './items/HourCell'
 import { PriceCell } from './items/PriceCell'
-import { useFieldArray } from 'react-hook-form'
 
 export const ItemChildContext = createContext({})
 
-const TableBodyItem = () => {
-  const { itemContent, handleDeleteItem } = useItemInfoController()
-
-  const { fields, remove } = useFieldArray({
-    name: 'items'
-  })
-
-  const handleRemoveItem = useCallback((index: number) => {
-    remove(index)
-  }, [])
-
+const TableBodyItem = ({ fields, handleRemoveItem }: any) => {
   return (
     <TableBody>
-      {itemContent.map((item: IItemContent, index: number) => (
+      {fields.map((item: any, index: number) => (
         <ItemChildContext.Provider value={{ item, index, fields: fields }} key={`${item.name}-${index}`}>
           <TableRow style={{ alignItems: 'start' }}>
             <TableCell>
@@ -43,7 +30,6 @@ const TableBodyItem = () => {
               <Box
                 component='div'
                 onClick={() => {
-                  handleDeleteItem(index)
                   handleRemoveItem(index)
                 }}
                 style={{ cursor: 'pointer' }}

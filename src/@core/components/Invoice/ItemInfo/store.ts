@@ -8,91 +8,30 @@ export interface IItemContent {
   cost: number
   hours: number
   price: number
+  value: string
 }
 
 export interface IStore {
   itemsInvoiceSelectList: IItemsData[]
-  itemContent: IItemContent[]
-  subTotal: number
+  itemsInvoiceDeleteList: number[]
   setItemsInvoiceSelectList: (value: IItemsData[]) => void
-  addItemContent: () => void
-  setItemContent: (value: string | number, key: string, index: number) => void
-  deleteItemContent: (index: number) => void
-  setAllItemContent: (value: IItemContent[]) => void
+  addItemsInvoiceDeleteList: (value: number) => void
+  deleteItemsInvoiceDeleteList: (value: number) => void
 }
 
-const initialState: IItemContent[] = [
-  {
-    name: '',
-    description: '',
-    cost: 0,
-    hours: 0,
-    price: 0
-  }
-]
-
 export const useItemContentStore = create<IStore>(set => ({
-  itemContent: initialState,
   itemsInvoiceSelectList: [],
-  subTotal: 0,
-  addItemContent: () =>
+  itemsInvoiceDeleteList: [],
+  addItemsInvoiceDeleteList: (value: number) =>
     set(
-      produce((state: { itemContent: IItemContent[] }) => {
-        state.itemContent.push({
-          name: '',
-          description: '',
-          cost: 0,
-          hours: 0,
-          price: 0
-        })
+      produce((state: { itemsInvoiceDeleteList: number[] }) => {
+        state.itemsInvoiceDeleteList.push(value)
       })
     ),
-  setItemContent: (value: string | number, key: string, index: number) =>
+  deleteItemsInvoiceDeleteList: (value: number) =>
     set(
-      produce((state: { itemContent: IItemContent[]; subTotal: number }) => {
-        const itemContentArr: IItemContent[] = state.itemContent
-
-        const costValue = key === 'cost' ? value : itemContentArr[index].cost
-        const hourValue = key === 'hours' ? value : itemContentArr[index].hours
-
-        itemContentArr[index] = {
-          ...itemContentArr[index],
-          [key]: value,
-          ['price']: Number(costValue) * Number(hourValue)
-        }
-
-        state.subTotal = itemContentArr.reduce(
-          (accumulateValue: number, nextValue: IItemContent) => accumulateValue + nextValue.price,
-          0
-        )
-
-        state.itemContent = itemContentArr
-      })
-    ),
-  deleteItemContent: (index: number) =>
-    set(
-      produce((state: { itemContent: IItemContent[]; subTotal: number }) => {
-        const itemContentArr: IItemContent[] = state.itemContent
-
-        itemContentArr.splice(index, 1)
-
-        state.subTotal = itemContentArr.reduce(
-          (accumulateValue: number, nextValue: IItemContent) => accumulateValue + nextValue.price,
-          0
-        )
-
-        state.itemContent = itemContentArr
-      })
-    ),
-  setAllItemContent: (value: IItemContent[]) =>
-    set(
-      produce((state: { itemContent: IItemContent[]; subTotal: number }) => {
-        state.itemContent = value
-
-        state.subTotal = value.reduce(
-          (accumulateValue: number, nextValue: IItemContent) => accumulateValue + nextValue.price,
-          0
-        )
+      produce((state: { itemsInvoiceDeleteList: number[] }) => {
+        state.itemsInvoiceDeleteList.filter((item: number) => item !== value)
       })
     ),
   setItemsInvoiceSelectList: (value: any) =>
