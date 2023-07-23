@@ -5,7 +5,7 @@ import { IItemContent } from '../store'
 import { ItemChildContext } from '../TableBodyItem'
 import { useFormContext } from 'react-hook-form'
 
-export const HourCell = () => {
+export const QuantityCell = () => {
   const { item, index } = useContext(ItemChildContext) as { item: IItemContent; index: number }
 
   const {
@@ -17,14 +17,14 @@ export const HourCell = () => {
     <>
       <TextField
         type='number'
-        {...register(`items[${index}].hours`, { required: true })}
+        {...register(`items[${index}].cost`, { required: true })}
         defaultValue={item.hours}
-        error={Boolean(errors?.items?.[index]?.hours)}
+        error={Boolean(errors?.items?.[index]?.cost)}
         sx={{ width: '150px' }}
         size='small'
         variant='outlined'
       />
-      {errors?.items?.[index]?.hours && <Typography color='red'>This field is required</Typography>}
+      {errors?.items?.[index]?.cost && <Typography color='red'>This field is required</Typography>}
     </>
   )
 }

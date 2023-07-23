@@ -33,7 +33,7 @@ const AccumulateInfo = () => {
         const valueStr = item.value ? item.value : '{}'
         const cost = JSON.parse(valueStr)
 
-        return acc + Number(item.hours) * Number(cost.price ? cost.price : 0)
+        return acc + Number(item.hours) * Number(cost.price ? cost.price : 0) * Number(item.cost)
       }, 0)
     : 0
 

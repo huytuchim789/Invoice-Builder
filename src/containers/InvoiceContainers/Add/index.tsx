@@ -25,6 +25,7 @@ import { useRouter } from 'next/router'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 import SendMailModal from '../Modals/SendMailModal'
+import { getItemsFormatData, getSubTotalItem } from 'src/@core/utils/common'
 
 export const invoiceCurrentValue = {
   startDate: extendedDayJs().toDate(),
@@ -70,16 +71,12 @@ export const InvoiceAdd = () => {
 
   const { startDate, endDate, note, items, user_id } = methods.watch()
 
+  console.log('render')
   const invoice_detail: any = useMemo(() => {
     const userInfoParse = JSON.parse(user_id || '{}')
-    const subTotal = items
-      ? items.reduce((acc: any, item: any) => {
-          const valueStr = item.value ? item.value : '{}'
-          const cost = JSON.parse(valueStr)
+    const subTotal = items ? getSubTotalItem(items) : 0
 
-          return acc + Number(item.hours) * Number(cost.price ? cost.price : 0)
-        }, 0)
-      : 0
+    console.log(getItemsFormatData(items))
     return {
       id: '',
       updated_at: extendedDayJs(endDate).format('YYYY-MM-DD'),
@@ -90,12 +87,12 @@ export const InvoiceAdd = () => {
       tax: 21,
       sale_person: user?.name,
       customer_id: userInfoParse.id,
-      items: items,
+      items: getItemsFormatData(items),
       total: subTotal + (subTotal * 21) / 100,
       customer: userInfoParse,
       business: info
     }
-  }, [user, startDate, endDate, note, items, user_id, info])
+  }, [user, startDate, endDate, note, items, user_id, info, methods.getValues()])
 
   const MyDoc: any = useMemo(() => {
     if (invoice_detail) {
@@ -105,7 +102,7 @@ export const InvoiceAdd = () => {
         return <InoviceLightFormatPdf invoice_detail={invoice_detail} font={settingPdf.font} />
       }
     }
-  }, [settingPdf])
+  }, [settingPdf, invoice_detail])
 
   const [instance, updateInstance] = usePDF({ document: MyDoc || <></> })
 
@@ -113,7 +110,7 @@ export const InvoiceAdd = () => {
     if (MyDoc) {
       updateInstance()
     }
-  }, [invoice_detail])
+  }, [invoice_detail, MyDoc])
 
   const { mutate, isLoading: isSaveInvoiceLoading } = useMutation({
     mutationFn: async (data: IInvoiceInfo) => await saveInvoice(data),

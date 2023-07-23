@@ -28,6 +28,7 @@ import { useInvoiceDetailData } from 'src/@core/hooks/invoice/useInvoiceDetailDa
 import { Item } from 'src/@core/models/api/invoice/invoice.interface'
 import { useItemContentStore } from 'src/@core/components/Invoice/ItemInfo/store'
 import { IInvoiceInfo, editInvoice } from 'src/@core/utils/api/invoice/editInvoice'
+import { getItemsFormatData, getSubTotalItem } from 'src/@core/utils/common'
 
 export const invoiceCurrentValue = {
   startDate: extendedDayJs().toDate(),
@@ -61,6 +62,7 @@ export const InvoiceEdit = () => {
     message: ''
   })
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [itemsListCurrent, setItemsListCurrent] = useState<any>([])
 
   const handleChangeEmailContent = (key: string, value: string) => {
     setEmailContent(prevState => ({ ...prevState, [key]: value }))
@@ -83,9 +85,13 @@ export const InvoiceEdit = () => {
         itemsField.push({
           value: JSON.stringify({ ...itemsFind }),
           description: item.pivot.description,
-          hours: item.pivot.hours
+          hours: item.pivot.hours,
+          item_id: item.pivot.item_id,
+          pivot_id: item.pivot.id,
+          cost: item.pivot.cost
         })
       })
+      setItemsListCurrent(itemsField)
 
       methods.reset({
         startDate: extendedDayJs(invoiceDetailQuery.data.created_at).toDate(),
@@ -101,14 +107,8 @@ export const InvoiceEdit = () => {
 
   const invoice_detail: any = useMemo(() => {
     const userInfoParse = JSON.parse(user_id || '{}')
-    const subTotal = items
-      ? items.reduce((acc: any, item: any) => {
-          const valueStr = item.value ? item.value : '{}'
-          const cost = JSON.parse(valueStr)
+    const subTotal = items ? getSubTotalItem(items) : 0
 
-          return acc + Number(item.hours) * Number(cost.price ? cost.price : 0)
-        }, 0)
-      : 0
     return {
       id: invoiceDetailQuery.data?.id,
       updated_at: extendedDayJs(endDate).format('YYYY-MM-DD'),
@@ -119,7 +119,7 @@ export const InvoiceEdit = () => {
       tax: 21,
       sale_person: user?.name,
       customer_id: userInfoParse.id,
-      items: items,
+      items: getItemsFormatData(items),
       total: subTotal + (subTotal * 21) / 100,
       customer: userInfoParse,
       business: info
@@ -134,7 +134,7 @@ export const InvoiceEdit = () => {
         return <InoviceLightFormatPdf invoice_detail={invoice_detail} font={settingPdf.font} />
       }
     }
-  }, [settingPdf])
+  }, [settingPdf, invoice_detail])
 
   const [instance, updateInstance] = usePDF({ document: MyDoc || <></> })
 
@@ -148,6 +148,7 @@ export const InvoiceEdit = () => {
     mutationFn: async (data: IInvoiceInfo) => await editInvoice(data),
     onSuccess: ({ data }: { data: { message: string } }) => {
       queryClient.invalidateQueries([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION])
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.INVOICE_DETAIL, router.query.id as string])
 
       router.push('/invoice/list')
 
@@ -162,16 +163,28 @@ export const InvoiceEdit = () => {
 
   const handleSaveInvoice: SubmitHandler<any> = data => {
     if (instance.blob !== null) {
+      let itemsList: any[] = [...data.items]
+
       const mailSubject = methodSending.method === 'mail' ? emailContent : { subject: null, message: null }
       const userInfoParse = JSON.parse(user_id || '{}')
-      const subTotal = data.items
-        ? data.items.reduce((acc: any, item: any) => {
-            const valueStr = item.value ? item.value : '{}'
-            const cost = JSON.parse(valueStr)
+      const subTotal = data.items ? getSubTotalItem(data.items) : 0
 
-            return acc + Number(item.hours) * Number(cost.price ? cost.price : 0)
-          }, 0)
-        : 0
+      itemsListCurrent.forEach((item: any, index: number) => {
+        if (!data.items[index]) {
+          itemsList[index] = { ...item, item_id: item.item_id, pivot_id: item.pivot_id, isDeleted: 1 }
+        } else {
+          if (item.value !== data.items[index].value) {
+            itemsList.splice(index, 0, {
+              ...data.items[index],
+              item_id: item.item_id,
+              pivot_id: item.pivot_id,
+              isDeleted: 1
+            })
+          } else {
+            itemsList[index] = { ...item, item_id: item.item_id, pivot_id: item.pivot_id, isDeleted: 0 }
+          }
+        }
+      })
 
       const formData: IInvoiceInfo = {
         id: invoiceDetailQuery.data?.id || '',
@@ -181,7 +194,7 @@ export const InvoiceEdit = () => {
         tax: 21,
         sale_person: user?.name,
         customer_id: userInfoParse.id,
-        items: data.items,
+        items: itemsList,
         total: String(subTotal + (subTotal * 21) / 100),
         file: instance.blob,
         send_method: methodSending.method,

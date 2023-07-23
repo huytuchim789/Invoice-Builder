@@ -21,7 +21,9 @@ const BusinessInfo = () => {
       <View style={{ flex: 1 }}>
         <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
           <View>
-            <Image src={invoice_detail.business?.logo_url} style={{ width: 90, height: 90, objectFit: 'cover' }} />
+            {invoice_detail.business?.logo_url && (
+              <Image src={invoice_detail.business?.logo_url} style={{ width: 90, height: 90, objectFit: 'cover' }} />
+            )}
           </View>
           <View style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 3 }}>
             <Text style={{ fontSize: 16 }}>{invoice_detail.business?.address}</Text>

@@ -27,7 +27,11 @@ const TableCommonHeader = () => {
       <TableRow>
         {checkable && (
           <TableCell width={50}>
-            <Checkbox checked={data?.length > 0 && checkedSelected.length === data?.length} onChange={handleCheckAll} />
+            <Checkbox
+              indeterminate={checkedSelected.length > 0 && checkedSelected.length < data?.length}
+              checked={data?.length > 0 && checkedSelected.length === data?.length}
+              onChange={handleCheckAll}
+            />
           </TableCell>
         )}
         {headerData.map((head: ITableCommonHeader, index: number) => {

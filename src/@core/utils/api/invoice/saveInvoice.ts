@@ -37,8 +37,10 @@ export const saveInvoice = (data: IInvoiceInfo) => {
   formData.append('total', data.total)
   formData.append('file', data.file, 'file.pdf')
   formData.append('send_method', data.send_method)
-  formData.append('subject', data.subject ?? '')
-  formData.append('message', data.message ?? '')
+  if (data.send_method === 'mail') {
+    formData.append('subject', data.subject ?? '')
+    formData.append('message', data.message ?? '')
+  }
 
   for (let i = 0; i < data.items.length; i++) {
     const itemsValue = data.items[i].value
@@ -50,6 +52,7 @@ export const saveInvoice = (data: IInvoiceInfo) => {
     formData.append(`items[${i}][id]`, id)
     formData.append(`items[${i}][name]`, name)
     formData.append(`items[${i}][cost]`, String(cost))
+    formData.append(`items[${i}][quantity]`, String(data.items[i].cost))
     formData.append(`items[${i}][description]`, data.items[i].description)
     formData.append(`items[${i}][hours]`, String(data.items[i].hours))
     formData.append(`items[${i}][price]`, String(data.items[i].hours * cost))

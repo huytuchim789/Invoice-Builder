@@ -75,3 +75,28 @@ export const getStatusIcons = (status: string) => {
       return <DraftsIcon fontSize='small' />
   }
 }
+
+export const getSubTotalItem = (items: any) => {
+  return items.reduce((acc: any, item: any) => {
+    const valueStr = item.value ? item.value : '{}'
+    const cost = JSON.parse(valueStr)
+
+    return acc + Number(item.hours) * Number(cost.price ? cost.price : 0) * Number(item.cost)
+  }, 0)
+}
+
+export const getItemsFormatData = (items: any) => {
+  return items.map((item: any) => {
+    const valueConvert = JSON.parse(item.value || '{}')
+
+    return {
+      ...item,
+      name: valueConvert.name,
+      price: valueConvert.price,
+      quantity: item.cost,
+      hours: item.hours,
+      description: item.description,
+      cost: valueConvert.price * item.hours
+    }
+  })
+}

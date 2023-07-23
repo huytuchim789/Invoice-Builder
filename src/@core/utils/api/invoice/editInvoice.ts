@@ -8,6 +8,9 @@ export interface IInvoiceItemInfo {
   price: number
   description: string
   value: string
+  pivot_id?: string
+  item_id?: string
+  isDeleted: number
 }
 
 export interface IInvoiceInfo {
@@ -49,12 +52,22 @@ export const editInvoice = (data: IInvoiceInfo) => {
     const name = JSON.parse(itemsValue ?? '{}').price ?? 0
     const id = JSON.parse(itemsValue ?? '{}').id ?? ''
 
-    formData.append(`items[${i}][id]`, id)
+    if (data.items[i].hasOwnProperty('pivot_id')) {
+      formData.append(`items[${i}][id]`, String(data.items[i].pivot_id))
+    }
+
+    formData.append(`items[${i}][item_id]`, id)
     formData.append(`items[${i}][name]`, name)
     formData.append(`items[${i}][cost]`, String(cost))
     formData.append(`items[${i}][description]`, data.items[i].description)
     formData.append(`items[${i}][hours]`, String(data.items[i].hours))
     formData.append(`items[${i}][price]`, String(data.items[i].hours * cost))
+
+    if (data.items[i].hasOwnProperty('isDeleted')) {
+      formData.append(`items[${i}][is_deleted]`, String(data.items[i].isDeleted))
+    } else {
+      formData.append(`items[${i}][is_deleted]`, '0')
+    }
   }
 
   return axiosInstance.post(`invoices/${data.id}`, formData, {
