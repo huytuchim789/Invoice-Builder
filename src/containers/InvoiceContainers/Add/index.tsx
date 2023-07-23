@@ -24,6 +24,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
+import SendMailModal from '../Modals/SendMailModal'
+import { getItemsFormatData, getSubTotalItem } from 'src/@core/utils/common'
 
 export const invoiceCurrentValue = {
   startDate: extendedDayJs().toDate(),
@@ -34,7 +36,7 @@ export const invoiceCurrentValue = {
       hours: '',
       cost: '',
       description: '',
-      name: ''
+      value: '{}'
     }
   ],
   user_id: ''
@@ -56,12 +58,10 @@ export const InvoiceAdd = () => {
     subject: '',
     message: ''
   })
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleChangeEmailContent = (subject: string, message: string) => {
-    setEmailContent({
-      subject,
-      message
-    })
+  const handleChangeEmailContent = (key: string, value: string) => {
+    setEmailContent(prevState => ({ ...prevState, [key]: value }))
   }
 
   const methods = useForm({
@@ -71,10 +71,12 @@ export const InvoiceAdd = () => {
 
   const { startDate, endDate, note, items, user_id } = methods.watch()
 
+  console.log('render')
   const invoice_detail: any = useMemo(() => {
     const userInfoParse = JSON.parse(user_id || '{}')
-    const subTotal = items ? items.reduce((acc: any, item: any) => acc + Number(item.hours) * Number(item.cost), 0) : 0
+    const subTotal = items ? getSubTotalItem(items) : 0
 
+    console.log(getItemsFormatData(items))
     return {
       id: '',
       updated_at: extendedDayJs(endDate).format('YYYY-MM-DD'),
@@ -85,12 +87,12 @@ export const InvoiceAdd = () => {
       tax: 21,
       sale_person: user?.name,
       customer_id: userInfoParse.id,
-      items: items,
+      items: getItemsFormatData(items),
       total: subTotal + (subTotal * 21) / 100,
       customer: userInfoParse,
       business: info
     }
-  }, [user, startDate, endDate, note, items, user_id, info])
+  }, [user, startDate, endDate, note, items, user_id, info, methods.getValues()])
 
   const MyDoc: any = useMemo(() => {
     if (invoice_detail) {
@@ -100,7 +102,7 @@ export const InvoiceAdd = () => {
         return <InoviceLightFormatPdf invoice_detail={invoice_detail} font={settingPdf.font} />
       }
     }
-  }, [settingPdf])
+  }, [settingPdf, invoice_detail])
 
   const [instance, updateInstance] = usePDF({ document: MyDoc || <></> })
 
@@ -108,7 +110,7 @@ export const InvoiceAdd = () => {
     if (MyDoc) {
       updateInstance()
     }
-  }, [invoice_detail])
+  }, [invoice_detail, MyDoc])
 
   const { mutate, isLoading: isSaveInvoiceLoading } = useMutation({
     mutationFn: async (data: IInvoiceInfo) => await saveInvoice(data),
@@ -128,10 +130,15 @@ export const InvoiceAdd = () => {
 
   const handleSaveInvoice: SubmitHandler<any> = data => {
     if (instance.blob !== null) {
-      const mailSubject = methodSending.method === 'mail' ? emailContent : {}
+      const mailSubject = methodSending.method === 'mail' ? emailContent : { subject: null, message: null }
       const userInfoParse = JSON.parse(user_id || '{}')
       const subTotal = data.items
-        ? data.items.reduce((acc: any, item: any) => acc + Number(item.hours) * Number(item.cost), 0)
+        ? data.items.reduce((acc: any, item: any) => {
+            const valueStr = item.value ? item.value : '{}'
+            const cost = JSON.parse(valueStr)
+
+            return acc + Number(item.hours) * Number(cost.price ? cost.price : 0)
+          }, 0)
         : 0
 
       const formData: IInvoiceInfo = {
@@ -156,7 +163,9 @@ export const InvoiceAdd = () => {
 
   const data = {
     invoice_detail,
-    handleChangeEmailContent
+    isSaveInvoiceLoading,
+    handleChangeEmailContent,
+    setIsModalOpen
   }
 
   return (
@@ -179,6 +188,12 @@ export const InvoiceAdd = () => {
           </Grid>
         </form>
       </FormProvider>
+      <SendMailModal
+        data={emailContent}
+        isOpen={isModalOpen}
+        handleCloseModal={() => setIsModalOpen(false)}
+        handleChangeEmailContent={handleChangeEmailContent}
+      />
     </InvoiceAddContext.Provider>
   )
 }

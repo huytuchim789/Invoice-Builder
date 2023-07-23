@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material'
+import { Chip, Typography } from '@mui/material'
 
 import extendedDayJs from 'src/@core/utils/dayjs'
 import { ITableCommonHeader } from 'src/@core/models/common'
@@ -25,6 +25,14 @@ export const columns: ITableCommonHeader[] = [
     }
   },
   {
+    field: 'method',
+    headerName: 'Method',
+    width: 100,
+    component: (params: any) => {
+      return <Typography style={{ textTransform: 'capitalize' }}>{params.method}</Typography>
+    }
+  },
+  {
     field: 'customer',
     headerName: 'Client',
     customStyle: {
@@ -39,7 +47,20 @@ export const columns: ITableCommonHeader[] = [
     headerName: 'Total',
     width: 150,
     component: (params: any) => {
-      return <Typography>$ {params.invoice.total}</Typography>
+      return params?.invoice?.is_paid ? (
+        <Chip
+          label={`Paid`}
+          color={'success'}
+          sx={{
+            height: 24,
+            fontSize: '0.75rem',
+            textTransform: 'capitalize',
+            '& .MuiChip-label': { fontWeight: 500 }
+          }}
+        />
+      ) : (
+        <Typography>$ {params.invoice.total}</Typography>
+      )
     }
   },
   {

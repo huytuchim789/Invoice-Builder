@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 
 import { Typography } from '@mui/material'
 
@@ -10,7 +10,13 @@ export const PriceCell = () => {
   const { watch } = useFormContext()
   const { index } = useContext(ItemChildContext) as { item: IItemContent; index: number }
 
-  const [hours, cost] = watch([`items[${index}].hours`, `items[${index}].cost`]) || '0'
+  const [priceString, hours, cost] =
+    watch([`items[${index}].value`, `items[${index}].hours`, `items[${index}].cost`]) || '0'
 
-  return <Typography>$ {hours * cost}</Typography>
+  const costConvert = useMemo(() => {
+    if (!priceString) return { price: 0 }
+    return JSON.parse(priceString)
+  }, [priceString])
+
+  return <Typography>$ {hours * (costConvert.price ? costConvert.price : 0) * Number(cost)}</Typography>
 }

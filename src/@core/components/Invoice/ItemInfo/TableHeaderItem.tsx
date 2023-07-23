@@ -5,6 +5,7 @@ import { Column } from './ItemInfo'
 const columns: readonly Column[] = [
   { id: 'item', label: 'item', minWidth: 300 },
   { id: 'cost', label: 'cost', minWidth: 100 },
+  { id: 'quantity', label: 'Quantity', minWidth: 100 },
   {
     id: 'hours',
     label: 'Hours',

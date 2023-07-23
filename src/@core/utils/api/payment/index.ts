@@ -36,3 +36,22 @@ export const checkSubcribe = async () => {
 
   return data
 }
+
+export const payInvoices = async (invoiceCodes: string[]) => {
+  const { data } = await axiosInstance.post(
+    'invoices/pay-invoice',
+    { invoice_codes: invoiceCodes }
+    // {
+    //   onUploadProgress: progressEvent => {
+    //     const { loaded, total } = progressEvent
+    //     console.log(progressEvent)
+
+    //     if (total) {
+    //       const percent = Math.round((loaded * 100) / total)
+    //       // Handle the progress value
+    //     }
+    //   }
+    // }
+  )
+  return data
+}

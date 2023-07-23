@@ -1,4 +1,5 @@
 import { Text, View } from '@react-pdf/renderer'
+// import { useMemo } from 'react'
 
 import { IItemContent } from 'src/@core/components/Invoice/ItemInfo/store'
 
@@ -12,13 +13,13 @@ const ItemPdf = ({ item }: { item: IItemContent }) => {
         <Text style={{ fontSize: 12 }}>{item.description}</Text>
       </View>
       <View style={{ minWidth: 50, padding: '10px' }}>
-        <Text style={{ fontSize: 12 }}>{item.cost}</Text>
+        <Text style={{ fontSize: 12 }}>{item.price}</Text>
       </View>
       <View style={{ minWidth: 50, padding: '10px' }}>
         <Text style={{ fontSize: 12 }}>{item.hours}</Text>
       </View>
       <View style={{ minWidth: 100, padding: '10px' }}>
-        <Text style={{ fontSize: 12 }}>{item.price}</Text>
+        <Text style={{ fontSize: 12 }}>{item.cost}</Text>
       </View>
     </View>
   )

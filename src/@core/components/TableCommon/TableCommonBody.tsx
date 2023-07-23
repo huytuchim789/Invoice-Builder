@@ -1,11 +1,14 @@
 import { Checkbox, TableBody, TableCell, TableRow } from '@mui/material'
-import { ChangeEvent, useContext } from 'react'
+import { ChangeEvent, ReactElement, useContext, useEffect } from 'react'
 import { ITableCommon, TableCommonContext } from './TableCommon'
 import { useTableMutilCheckStore } from './store'
+import { getValueObjectByPath } from 'src/@core/utils/objectResolver'
+import { useSearchInvoiceStore } from 'src/containers/InvoiceContainers/List/ListInvoice/store'
 
-const TableCommonBody = () => {
+const TableCommonBody = ({ extraRows, selectedKey }: { extraRows: ReactElement | undefined; selectedKey: string }) => {
   const { headerData, data, checkable } = useContext(TableCommonContext) as ITableCommon
   const { checkedSelected, setCheckedSelected } = useTableMutilCheckStore()
+  const { isPaymentMode } = useSearchInvoiceStore()
 
   const handleCheck = (event: ChangeEvent<HTMLInputElement>) => {
     setCheckedSelected(event.target.value, event.target.checked)
@@ -14,10 +17,15 @@ const TableCommonBody = () => {
   return (
     <TableBody>
       {data.map(dataBody => (
-        <TableRow key={dataBody.id}>
+        <TableRow key={getValueObjectByPath(selectedKey, dataBody)}>
           {checkable && (
             <TableCell width={50}>
-              <Checkbox value={dataBody.id} checked={checkedSelected.includes(dataBody.id)} onChange={handleCheck} />
+              <Checkbox
+                value={getValueObjectByPath(selectedKey, dataBody)}
+                checked={checkedSelected.includes(getValueObjectByPath(selectedKey, dataBody))}
+                onChange={handleCheck}
+                disabled={isPaymentMode && getValueObjectByPath('invoice.is_paid', dataBody)}
+              />
             </TableCell>
           )}
           {headerData.map(head => {
@@ -37,6 +45,7 @@ const TableCommonBody = () => {
           })}
         </TableRow>
       ))}
+      {extraRows}
     </TableBody>
   )
 }

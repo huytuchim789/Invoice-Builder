@@ -1,46 +1,27 @@
-import { useContext } from 'react'
+import { memo, useContext } from 'react'
 
 import { FormControl, Select, MenuItem, Box, TextField, Typography } from '@mui/material'
 
-import { IItemContent } from '../store'
-import { useItemInfoController } from '../controller'
+import { IItemContent, useItemContentStore } from '../store'
 import { ItemChildContext } from '../TableBodyItem'
 import { FieldError, FieldErrorsImpl, Merge, useFormContext } from 'react-hook-form'
+import { IItemsData } from 'src/@core/models/api/invoice/invoice.interface'
 
-interface IItemSelect {
-  name: string
-  value: string
-}
-
-const ItemSelects: IItemSelect[] = [
-  {
-    name: 'App Design',
-    value: 'App Design'
-  },
-  {
-    name: 'App Customization',
-    value: 'App Customization'
-  },
-  {
-    name: 'ABC Template',
-    value: 'ABC Template'
-  },
-  {
-    name: 'App Development',
-    value: 'App Development'
-  }
-]
-
-export const ItemCell = () => {
+export const ItemCell = memo(() => {
   const { index } = useContext(ItemChildContext) as {
     item: IItemContent
     index: number & (FieldError | Merge<FieldError, FieldErrorsImpl<any>>)
   }
 
+  const { itemsInvoiceSelectList } = useItemContentStore()
+
   const {
     register,
+    watch,
     formState: { errors }
   } = useFormContext()
+
+  const itemsData = watch(`items[${index}].value`)
 
   return (
     <>
@@ -49,12 +30,12 @@ export const ItemCell = () => {
           fullWidth
           labelId='demo-simple-select-outlined-label'
           id='demo-simple-select-outlined'
-          defaultValue=''
-          {...register(`items[${index}].name`, { required: true })}
+          value={itemsData}
+          {...register(`items[${index}].value`, { required: true })}
           size='small'
         >
-          {ItemSelects.map((item: IItemSelect, index: number) => (
-            <MenuItem value={item.value} key={`${item.name}-${index}`}>
+          {itemsInvoiceSelectList.map((item: IItemsData, index: number) => (
+            <MenuItem value={JSON.stringify(item)} key={`${item.name}-${index}`}>
               {item.name}
             </MenuItem>
           ))}
@@ -78,4 +59,4 @@ export const ItemCell = () => {
       </Box>
     </>
   )
-}
+})
