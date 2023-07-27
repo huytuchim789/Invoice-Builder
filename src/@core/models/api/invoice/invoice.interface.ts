@@ -76,6 +76,8 @@ export interface IItemsData {
   organization: Organization
   created_at: string | null
   updated_at: string | null
+  cost?: number
+  description?: string
 }
 
 export interface IInvoiceDetailLocalData {

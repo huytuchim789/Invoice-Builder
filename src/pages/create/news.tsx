@@ -5,7 +5,7 @@ import { NextPage } from 'next'
 import { Card } from '@mui/material'
 
 import { CreateNews } from 'src/@core/content/create/news'
-import { getServerSideProps } from '../account-settings'
+import getServerSideProps from '../account-settings'
 
 const CreateNewsPage: NextPage = () => {
   return (

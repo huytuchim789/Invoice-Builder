@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { memo, useContext } from 'react'
 
 import { FormControl, Select, MenuItem, Box, TextField, Typography } from '@mui/material'

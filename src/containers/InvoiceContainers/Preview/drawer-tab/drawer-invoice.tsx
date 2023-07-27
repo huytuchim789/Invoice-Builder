@@ -59,15 +59,12 @@ export const DrawerSendInvoice = () => {
   const snackbar = useSnackbarWithContext()
 
   const handleUploadPdf = async (data: FieldValues): Promise<any> => {
-    return await sendInvoiceByMail(
-      {
-        invoice_ids: [invoice_detail.id],
-        message: data.message,
-        subject: data.subject,
-        send_method: method
-      },
-      Number(router.query.page || '1')
-    )
+    return await sendInvoiceByMail({
+      invoice_ids: [invoice_detail.id],
+      message: data.message,
+      subject: data.subject,
+      send_method: method
+    })
   }
 
   const { mutate, isLoading: isAddCustomerLoading } = useMutation({

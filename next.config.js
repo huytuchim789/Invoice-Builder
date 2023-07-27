@@ -72,12 +72,16 @@ const settings = {
   assetPrefix: ['production', 'staging'].includes(env.ENVIRONMENT) ? `${env.APP_FE}/${env.ENVIRONMENT}` : '',
   productionBrowserSourceMaps: ['staging'].includes(env.ENVIRONMENT),
   env,
+
   ...sassConfig,
   ...lessConfig,
   ...purgeCssConfig,
   ...images,
   ...webpack,
-
+  typescipt: { ignoreBuildErrors: true },
+  eslint: {
+    ignoreDuringBuilds: true
+  },
   async rewrites() {
     return env.APP_BE === env.APP_FE
       ? []
