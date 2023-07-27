@@ -71,12 +71,9 @@ export const InvoiceAdd = () => {
   })
 
   const { startDate, endDate, note, items, user_id } = methods.watch()
-
-  console.log('render')
   const invoice_detail: any = useMemo(() => {
     const userInfoParse = JSON.parse(user_id || '{}')
     const subTotal = items ? getSubTotalItem(items) : 0
-
     console.log(getItemsFormatData(items))
     return {
       id: '',

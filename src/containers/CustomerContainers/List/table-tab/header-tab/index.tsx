@@ -6,11 +6,11 @@ import { ITableCommonHeader } from 'src/@core/models/common'
 
 export const columns: ITableCommonHeader[] = [
   {
-    field: 'id',
+    field: 'email',
     headerName: '#',
     width: 250,
     component: (params: any) => {
-      return <Typography>{params.id}</Typography>
+      return <Typography>{params.email}</Typography>
     }
   },
   {

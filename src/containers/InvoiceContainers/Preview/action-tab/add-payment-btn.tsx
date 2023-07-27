@@ -13,7 +13,7 @@ export const AddPaymentButton = () => {
         </InputAdornment>
       }
     >
-      Add Payment
+      Mark as paid
     </Button>
   )
 }

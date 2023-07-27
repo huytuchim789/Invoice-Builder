@@ -23,7 +23,7 @@ const ItemListTableContent = () => {
     setPage(page)
 
     router.push({
-      pathname: '/item/list',
+      pathname: '/items/list',
       query: {
         ...router.query,
         page: page
@@ -35,7 +35,7 @@ const ItemListTableContent = () => {
     setLimit(Number(event.target.value))
 
     router.push({
-      pathname: '/item/list',
+      pathname: '/items/list',
       query: {
         ...router.query,
         limit: event.target.value

@@ -12,12 +12,17 @@ export function useReviewController() {
   ctx.router = useRouter()
 
   const onAddComment = async (data: ICommentRequest) => {
+    ctx?.store?.setLoadingBtn(true)
+
     try {
       const res = await addComment(data)
       ctx.store?.setChatList(res?.data?.data)
+      ctx?.store?.setLoadingBtn(false)
+
       snackbar.success('Successfully', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
     } catch (error) {
       snackbar.error('Error', { anchorOrigin: { vertical: 'top', horizontal: 'center' } })
+      ctx?.store?.setLoadingBtn(false)
 
       console.error(error)
     }

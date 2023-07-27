@@ -83,7 +83,7 @@ const CreateCustomerModal = ({ isOpenModal, handleCloseModal }: Props) => {
   const { mutate, isLoading: isAddCustomerLoading } = useMutation({
     mutationFn: async (data: ICustomerUsers) => await addCustomerUser(data),
     onSuccess: ({ data }: { data: IAddUserSelectInvoiceToDataResponse }) => {
-      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.USER_SELECT])
+      queryClient.invalidateQueries([QUERY_INVOICE_KEYS.CUSTOMER_LIST])
 
       snackbar.success(data.message)
       reset()
