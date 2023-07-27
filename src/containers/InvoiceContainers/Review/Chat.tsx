@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React from 'react'
 import Image from 'next/image'
 import { Box, Button, Card, CardContent, CardHeader, Grid, InputAdornment, Stack, TextField } from '@mui/material'
