@@ -20,7 +20,6 @@ import TableCommon from 'src/views/tables/TableCommon'
 // Api Data, Interface Imports
 import { INewsListDataResponse } from 'src/@core/models/api/news.interface'
 import { getNewsList } from 'src/@core/utils/api/news'
-import { getCheckAuthProps } from 'src/@core/common/checkAuthProps'
 
 dayjs.extend(utc)
 
@@ -133,18 +132,7 @@ export const getServerSideProps = async (context: {
   query: { limit: string; page: string; keyword: string; startTime: string; endTime: string }
   req: { headers: { cookie: string } }
 }) => {
-  const { query, req } = context
-
-  const checkAuth = await getCheckAuthProps(req.headers.cookie)
-
-  if (checkAuth) {
-    return {
-      redirect: {
-        destination: '/pages/login',
-        permanent: false
-      }
-    }
-  }
+  const { query } = context
 
   const limit = query?.limit ?? 10
   const page = query?.page ?? 1

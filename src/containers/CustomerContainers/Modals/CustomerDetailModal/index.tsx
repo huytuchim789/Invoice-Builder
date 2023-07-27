@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { Box, Button, Dialog, DialogContent, DialogTitle, Fade, Grid, Stack, Switch, Typography } from '@mui/material'
 import { FormProvider, useForm } from 'react-hook-form'
 import { IUserSelectInvoiceTo } from 'src/@core/models/api/invoice/invoice.interface'

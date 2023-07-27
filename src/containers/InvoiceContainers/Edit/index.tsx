@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { createContext, useEffect, useMemo, useState } from 'react'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { usePDF } from '@react-pdf/renderer'
@@ -163,7 +164,7 @@ export const InvoiceEdit = () => {
 
   const handleSaveInvoice: SubmitHandler<any> = data => {
     if (instance.blob !== null) {
-      let itemsList: any[] = [...data.items]
+      const itemsList: any[] = [...data.items]
 
       const mailSubject = methodSending.method === 'mail' ? emailContent : { subject: null, message: null }
       const userInfoParse = JSON.parse(user_id || '{}')

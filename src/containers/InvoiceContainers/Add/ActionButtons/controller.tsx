@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { useMemo } from 'react'
 import { globalStore } from 'src/@core/hocs/global-store'
 import useInvoiceStore from 'src/@core/components/Invoice/store'

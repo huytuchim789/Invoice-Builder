@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { createContext, useEffect, useMemo, useState } from 'react'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 

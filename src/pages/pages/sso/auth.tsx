@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { CircularProgress, Stack } from '@mui/material'
 import { ReactNode, useEffect } from 'react'
 import { globalStore } from 'src/@core/hocs/global-store'

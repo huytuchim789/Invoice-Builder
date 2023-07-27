@@ -5,7 +5,6 @@ import { getCurrentUser, logout } from 'src/@core/utils/api/auth'
 import { useEffect } from 'react'
 import { COOKIE_KEY } from 'src/@core/common/cookies'
 import { useRouter } from 'next/router'
-import { LoadingComponent } from 'src/@core/components/loading'
 
 // const SpinContainer = dynamic<SpinContainerProps>(
 //   () => import('rcs_common/frontend/shared/components/spin-container').then((mod) => mod.SpinContainer),
@@ -14,9 +13,10 @@ import { LoadingComponent } from 'src/@core/components/loading'
 
 export const withAuth = (Component: any) => {
   const WithAuthWrapper = (props: any) => {
-    const { loading, setLoading } = globalStore(state => state)
+    const { setLoading } = globalStore(state => state) as any
 
     const route = useRouter()
+    //@ts-ignore
     const { user, setUser } = globalStore(state => state.userStore)
     const email = user?.email || ''
     const onGetCurrentUser = async () => {

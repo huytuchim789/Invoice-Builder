@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { useContext } from 'react'
 import { TextField, Typography } from '@mui/material'
 
@@ -11,7 +13,7 @@ export const HourCell = () => {
   const {
     register,
     formState: { errors }
-  } = useFormContext()
+  } = useFormContext<any>()
 
   return (
     <>

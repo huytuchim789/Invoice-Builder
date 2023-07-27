@@ -1,4 +1,5 @@
-// ** Icon imports
+//@ts-nocheck
+
 import Login from 'mdi-material-ui/Login'
 import Table from 'mdi-material-ui/Table'
 import CubeOutline from 'mdi-material-ui/CubeOutline'

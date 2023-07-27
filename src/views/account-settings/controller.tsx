@@ -11,7 +11,7 @@ export function useSettingController() {
   // ctx.dispatch = useDispatch()
   ctx.router = useRouter()
 
-  const changSettings = async data => {
+  const changSettings = async (data: any) => {
     ctx.store?.setLoading(true)
     try {
       const response = await onChangeSettings(data)

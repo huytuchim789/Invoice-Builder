@@ -16,7 +16,8 @@ const initialValues = {
   id: '',
   email: '',
   username: '',
-  avatar_url: ''
+  avatar_url: '',
+  token: ''
 }
 
 export const useDataLogin = create<IDataLogin>(set => ({
