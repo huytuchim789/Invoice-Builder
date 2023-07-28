@@ -4,14 +4,15 @@ import { Box, Card } from '@mui/material'
 import SendingMethodSelect from 'src/@core/components/Invoice/SendingMethodSelect/SendingMethodSelect'
 import { PreviewButton } from './preview-btn'
 import { useContext } from 'react'
-import { InvoiceAddContext } from '..'
+import { InvoiceEditContext } from '..'
 
 const SaveButton = dynamic<any>(() => import('./save-btn').then(mod => mod.SaveButton), {
   ssr: false
 })
 
 const ActionButtons = () => {
-  const { setIsModalOpen } = useContext(InvoiceAddContext) as any
+  const { setIsModalOpen } = useContext(InvoiceEditContext) as any
+
   return (
     <>
       <Card>

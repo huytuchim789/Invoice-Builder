@@ -9,7 +9,7 @@ const SendingMethodSelect = ({ handleOpenMailModal }: Props) => {
   const { method, setMethod } = useSendingMethodStore()
 
   const handleChangePaymentMethod = (event: SelectChangeEvent<'web' | 'mail'>) => {
-    setMethod(event.target.value as 'web' | 'mail')
+    setMethod(event.target.value)
 
     if (event.target.value === 'mail') handleOpenMailModal()
   }

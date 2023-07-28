@@ -1,12 +1,26 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Skeleton, Typography } from '@mui/material'
 
 import { useFormContext } from 'react-hook-form'
 
-const UserInfo = () => {
+interface Props {
+  isLoading?: boolean
+}
+
+const UserInfo = ({ isLoading }: Props) => {
   const { watch } = useFormContext()
   const user = JSON.parse(watch('user_id') || '{}')
 
   if (!user) return <Box></Box>
+
+  if (isLoading)
+    return (
+      <Box marginTop={2}>
+        <Skeleton width={150} />
+        <Skeleton width={150} />
+        <Skeleton width={150} />
+        <Skeleton width={150} />
+      </Box>
+    )
 
   return (
     <Box marginTop={2}>
