@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { Fragment, forwardRef } from 'react'
 import DatePicker from 'react-datepicker'
 
 import { TextField, Typography } from '@mui/material'
@@ -22,7 +22,7 @@ const DatePickerComponent = ({ status }: Props) => {
   } = useFormContext()
 
   return (
-    <>
+    <Fragment>
       <DatePicker
         selected={extendedDayJs(date[status]).toDate()}
         minDate={status === 'end' ? extendedDayJs(date.start).toDate() : null}
@@ -37,7 +37,7 @@ const DatePickerComponent = ({ status }: Props) => {
       {errors[status === 'start' ? 'startDate' : 'endDate'] && (
         <Typography color='red'>This field is required</Typography>
       )}
-    </>
+    </Fragment>
   )
 }
 

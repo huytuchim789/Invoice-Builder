@@ -2,10 +2,10 @@ import { useContext } from 'react'
 
 import { Box, Typography } from '@mui/material'
 
-import { InvoiceDetailContext } from '..'
 import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interface'
+import { InvoiceDetailContext } from '..'
 
-export const NoteTab = () => {
+const NoteTab = () => {
   const { invoice_detail } = useContext(InvoiceDetailContext) as { invoice_detail: IInvoiceDetailData }
 
   return (
@@ -15,3 +15,5 @@ export const NoteTab = () => {
     </Box>
   )
 }
+
+export default NoteTab

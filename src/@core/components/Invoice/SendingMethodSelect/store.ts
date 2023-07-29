@@ -2,15 +2,15 @@ import { produce } from 'immer'
 import { create } from 'zustand'
 
 export interface ISendingMethod {
-  method: 'web' | 'mail'
-  setMethod: (value: 'web' | 'mail') => void
+  method: string
+  setMethod: (value: string) => void
 }
 
 export const useSendingMethodStore = create<ISendingMethod>(set => ({
   method: 'web',
-  setMethod: (value: 'web' | 'mail') =>
+  setMethod: (value: string) =>
     set(
-      produce((state: { method: 'web' | 'mail' }) => {
+      produce((state: { method: string }) => {
         state.method = value
       })
     )
