@@ -1,10 +1,10 @@
 import { Button } from '@mui/material'
 import InvoicePreviewModal from '../../Modals/InvoicePreviewModal'
 import { useContext, useState } from 'react'
-import { InvoiceAddContext } from '..'
+import { InvoiceEditContext } from '..'
 
 export const PreviewButton = () => {
-  const { invoice_detail } = useContext(InvoiceAddContext) as { invoice_detail: any }
+  const { invoice_detail } = useContext(InvoiceEditContext) as { invoice_detail: any }
   const [isOpenInvoicePreviewModal, setIsOpenInvoicePreviewModal] = useState<boolean>(false)
 
   return (

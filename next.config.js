@@ -59,7 +59,7 @@ const webpack = (config, _options) => {
 }
 const images = {
   disableStaticImages: true,
-  domains: ['https://lh3.googleusercontent.com']
+  domains: ['https://lh3.googleusercontent.com', 'res.cloudinary.com']
 }
 const removeImports = require('next-remove-imports')({
   test: /node_modules([\s\S]*?)\.(tsx|ts|js|mjs|jsx)$/,
@@ -78,10 +78,6 @@ const settings = {
   ...purgeCssConfig,
   ...images,
   ...webpack,
-  typescipt: { ignoreBuildErrors: true },
-  eslint: {
-    ignoreDuringBuilds: true
-  },
   async rewrites() {
     return env.APP_BE === env.APP_FE
       ? []

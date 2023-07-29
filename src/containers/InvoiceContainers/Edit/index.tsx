@@ -1,8 +1,9 @@
 //@ts-nocheck
 import React, { createContext, useEffect, useMemo, useState } from 'react'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import { usePDF } from '@react-pdf/renderer'
 import { useRouter } from 'next/router'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { usePDF } from '@react-pdf/renderer'
 
 import { Card, Grid } from '@mui/material'
 
@@ -20,14 +21,14 @@ import { useSettingStore } from 'src/views/account-settings/store'
 import { globalStore } from 'src/@core/hocs/global-store'
 import InvoiceBoldFormatPDF from '../InvoicePDF/BoldFormat/BoldFormat'
 import InoviceLightFormatPdf from '../InvoicePDF/LightFormat/LightFormat'
-import useInvoiceStore from 'src/@core/components/Invoice/store'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useSnackbarWithContext } from 'src/@core/common/snackbar'
-import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 import SendMailModal from '../Modals/SendMailModal'
+
+import useInvoiceStore from 'src/@core/components/Invoice/store'
+import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { useInvoiceDetailData } from 'src/@core/hooks/invoice/useInvoiceDetailData'
 import { Item } from 'src/@core/models/api/invoice/invoice.interface'
 import { useItemContentStore } from 'src/@core/components/Invoice/ItemInfo/store'
+import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 import { IInvoiceInfo, editInvoice } from 'src/@core/utils/api/invoice/editInvoice'
 import { getItemsFormatData, getSubTotalItem } from 'src/@core/utils/common'
 
@@ -45,7 +46,7 @@ export const invoiceCurrentValue = {
   user_id: ''
 }
 
-export const InvoiceAddContext = createContext({})
+export const InvoiceEditContext = createContext({})
 
 export const InvoiceEdit = () => {
   const { user } = globalStore((state: any) => state.userStore)
@@ -80,6 +81,11 @@ export const InvoiceEdit = () => {
     if (invoiceDetailQuery.data) {
       const itemsField: any = []
 
+      methodSending.setMethod(invoiceDetailQuery.data.email_transaction.method)
+      setEmailContent({
+        subject: invoiceDetailQuery.data.email_transaction.email_subject,
+        message: invoiceDetailQuery.data.email_transaction.email_message
+      })
       invoiceDetailQuery.data.items.forEach((item: Item) => {
         const itemsFind = itemsInvoiceSelectList.find((itemSelect: any) => itemSelect.id === item.id)
 
@@ -106,6 +112,8 @@ export const InvoiceEdit = () => {
 
   const { startDate, endDate, note, items, user_id } = methods.watch()
 
+  const isLoadingScreen = useMemo(() => invoiceDetailQuery.isLoading, [invoiceDetailQuery.isLoading])
+
   const invoice_detail: any = useMemo(() => {
     const userInfoParse = JSON.parse(user_id || '{}')
     const subTotal = items ? getSubTotalItem(items) : 0
@@ -123,7 +131,8 @@ export const InvoiceEdit = () => {
       items: getItemsFormatData(items),
       total: subTotal + (subTotal * 21) / 100,
       customer: userInfoParse,
-      business: info
+      business: info,
+      qr_code: invoiceDetailQuery?.data?.qr_code
     }
   }, [user, startDate, endDate, note, items, user_id, info])
 
@@ -211,12 +220,13 @@ export const InvoiceEdit = () => {
   const data = {
     invoice_detail,
     isSaveInvoiceLoading,
+    isLoadingScreen,
     handleChangeEmailContent,
     setIsModalOpen
   }
 
   return (
-    <InvoiceAddContext.Provider value={data}>
+    <InvoiceEditContext.Provider value={data}>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(handleSaveInvoice)}>
           <Grid container spacing={3}>
@@ -235,12 +245,14 @@ export const InvoiceEdit = () => {
           </Grid>
         </form>
       </FormProvider>
-      <SendMailModal
-        data={emailContent}
-        isOpen={isModalOpen}
-        handleCloseModal={() => setIsModalOpen(false)}
-        handleChangeEmailContent={handleChangeEmailContent}
-      />
-    </InvoiceAddContext.Provider>
+      {isModalOpen && (
+        <SendMailModal
+          data={emailContent}
+          isOpen={isModalOpen}
+          handleCloseModal={() => setIsModalOpen(false)}
+          handleChangeEmailContent={handleChangeEmailContent}
+        />
+      )}
+    </InvoiceEditContext.Provider>
   )
 }

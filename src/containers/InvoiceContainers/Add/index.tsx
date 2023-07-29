@@ -1,6 +1,9 @@
 //@ts-nocheck
 import React, { createContext, useEffect, useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { usePDF } from '@react-pdf/renderer'
 
 import { Card, Grid } from '@mui/material'
 
@@ -13,19 +16,18 @@ import SaleInfo from 'src/@core/components/Invoice/SaleInfo/SaleInfo'
 import NoteInfo from 'src/@core/components/Invoice/NoteInfo/NoteInfo'
 
 import ActionButtons from './ActionButtons/Actions'
-import { useSettingPdfStore } from '../store/setting'
+import SendMailModal from '../Modals/SendMailModal'
 import { useSettingStore } from 'src/views/account-settings/store'
-import { globalStore } from 'src/@core/hocs/global-store'
+
+import { useSettingPdfStore } from '../store/setting'
 import InvoiceBoldFormatPDF from '../InvoicePDF/BoldFormat/BoldFormat'
 import InoviceLightFormatPdf from '../InvoicePDF/LightFormat/LightFormat'
-import { usePDF } from '@react-pdf/renderer'
+
 import useInvoiceStore from 'src/@core/components/Invoice/store'
+import { globalStore } from 'src/@core/hocs/global-store'
 import { IInvoiceInfo, saveInvoice } from 'src/@core/utils/api/invoice/saveInvoice'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useRouter } from 'next/router'
 import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
-import SendMailModal from '../Modals/SendMailModal'
 import { getItemsFormatData, getSubTotalItem } from 'src/@core/utils/common'
 
 export const invoiceCurrentValue = {
@@ -71,10 +73,11 @@ export const InvoiceAdd = () => {
   })
 
   const { startDate, endDate, note, items, user_id } = methods.watch()
+
   const invoice_detail: any = useMemo(() => {
     const userInfoParse = JSON.parse(user_id || '{}')
     const subTotal = items ? getSubTotalItem(items) : 0
-    console.log(getItemsFormatData(items))
+
     return {
       id: '',
       updated_at: extendedDayJs(endDate).format('YYYY-MM-DD'),

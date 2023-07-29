@@ -16,10 +16,12 @@ export const AddPaymentButton = () => {
   const payInvoice = async () => {
     try {
       if (!query?.id) return
-      const data = await markAsPaid(query?.id as string)
+      const response = await markAsPaid(query?.id as string)
+      console.log(response.data.data)
+
       queryClient.invalidateQueries([QUERY_INVOICE_KEYS.INVOICE_DETAIL, query?.id])
-      queryClient.setQueryData([QUERY_INVOICE_KEYS.INVOICE_DETAIL, query?.id], (previousItem: [] | undefined) =>
-        previousItem ? [...previousItem, data] : previousItem
+      queryClient.setQueryData([QUERY_INVOICE_KEYS.INVOICE_DETAIL, query?.id], (previousItem: any | undefined) =>
+        response?.data?.data ? response?.data?.data : previousItem
       )
     } catch (error: any) {
       snackbar.error(error.message)

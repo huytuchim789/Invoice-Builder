@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Box, FormControl, Select, MenuItem, Typography } from '@mui/material'
+import { Box, FormControl, Select, MenuItem, Typography, Skeleton } from '@mui/material'
 
 import { useSelectUserInvoiceTo } from 'src/@core/hooks/invoice/useSelectUserInvoiceTo'
 import { IUserSelectInvoiceTo } from 'src/@core/models/api/invoice/invoice.interface'
@@ -9,9 +9,10 @@ import { useFormContext } from 'react-hook-form'
 
 interface Props {
   hasModal?: boolean
+  isLoading?: boolean
 }
 
-const UserInfoSelect = ({ hasModal }: Props) => {
+const UserInfoSelect = ({ hasModal, isLoading }: Props) => {
   const {
     register,
     watch,
@@ -26,6 +27,14 @@ const UserInfoSelect = ({ hasModal }: Props) => {
   }
   const defaultCustomerString = watch('user_id')
   // const defaultCustomer = JSON.parse(getValues('user_id'))?.name
+
+  if (isLoading) {
+    return (
+      <Box marginTop={2}>
+        <Skeleton height={60} width={150} />
+      </Box>
+    )
+  }
 
   return (
     <Box mt={2}>

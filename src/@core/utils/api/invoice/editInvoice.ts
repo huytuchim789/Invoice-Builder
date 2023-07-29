@@ -24,7 +24,7 @@ export interface IInvoiceInfo {
   items: IInvoiceItemInfo[]
   total: string
   file: Blob
-  send_method: 'web' | 'mail'
+  send_method: string
   subject: string | null
   message: string | null
 }

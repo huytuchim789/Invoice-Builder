@@ -124,6 +124,7 @@ export interface IInvoiceDetailData {
   items: Item[]
   customer: Customer
   email_transaction: EmailTransaction
+  qr_code: string
 }
 
 export interface Item {
