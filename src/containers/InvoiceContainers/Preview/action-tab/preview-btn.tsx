@@ -1,9 +1,6 @@
 import { Button } from '@mui/material'
-import { useRouter } from 'next/router'
 
 export const PreviewButton = () => {
-  const { query } = useRouter()
-  const router = useRouter()
   return (
     <Button
       fullWidth
