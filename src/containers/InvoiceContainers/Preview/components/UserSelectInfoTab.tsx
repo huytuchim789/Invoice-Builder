@@ -25,7 +25,7 @@ const UserInfoSelectTab = () => {
           </Box>
         </Grid>
         <Grid item sm={12} md={4} lg={4}>
-          <BillingInfo />
+          <BillingInfo imgUrl={invoice_detail?.qr_code} alt='No Qr' />
         </Grid>
       </Grid>
     </Box>

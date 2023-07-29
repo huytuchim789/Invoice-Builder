@@ -3,8 +3,9 @@ import { ChangeEvent, useContext } from 'react'
 import { ITableCommonHeader } from 'src/@core/models/common'
 import { useTableMutilCheckStore } from './store'
 import { ITableCommon, TableCommonContext } from './TableCommon'
+import { getValueObjectByPath } from 'src/@core/utils/objectResolver'
 
-const TableCommonHeader = () => {
+const TableCommonHeader = ({ selectedKey }: { selectedKey: string }) => {
   const { headerData, data, checkable } = useContext(TableCommonContext) as ITableCommon
   const { checkedSelected, setCheckedSelectedAll } = useTableMutilCheckStore()
 
@@ -13,7 +14,7 @@ const TableCommonHeader = () => {
       const checkedMap = new Set(checkedSelected)
 
       data.forEach(dataTable => {
-        checkedMap.add(dataTable.id)
+        checkedMap.add(getValueObjectByPath(selectedKey, dataTable))
       })
 
       setCheckedSelectedAll(Array.from(checkedMap))

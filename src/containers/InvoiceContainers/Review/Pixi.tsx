@@ -162,7 +162,6 @@ const Pixi = (props: Props) => {
           </React.Fragment>
         )
       })}
-      {/* <MouseFollow /> */}
     </Stage>
   )
 }

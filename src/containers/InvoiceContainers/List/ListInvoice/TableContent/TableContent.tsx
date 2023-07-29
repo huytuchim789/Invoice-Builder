@@ -7,7 +7,7 @@ import useListInvoiceController from '../controller'
 import { useSearchInvoiceStore } from '../store'
 import { useInvoiceTotalSum } from 'src/@core/hooks/invoice/useInvoiceData'
 import { useTableMutilCheckStore } from 'src/@core/components/TableCommon/store'
-import { LoadingComponent } from 'src/@core/components/loading'
+import { log } from 'console'
 
 const TableContent = () => {
   const { email_transactions, isEmailTransactionsLoading, onChangePagination, handleChangeLimit } =

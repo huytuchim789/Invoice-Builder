@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React from 'react'
 import Image from 'next/image'
 import { Box, Button, Card, CardContent, CardHeader, Grid, InputAdornment, Stack, TextField } from '@mui/material'
@@ -13,6 +14,7 @@ import css from 'styled-jsx/css'
 import { useReviewStore } from './store'
 import { Controller, useFormContext } from 'react-hook-form'
 import { makeStyles } from '@mui/styles'
+import { LoadingButton } from '@mui/lab'
 
 interface Props {
   submitMessageHandler: (index: number) => void
@@ -27,7 +29,7 @@ const useHelperTextStyles = makeStyles(() => ({
 }))
 const Chat = ({ submitMessageHandler, chatListRef, activeItemRef, textAreaRef }: Props) => {
   const helperTextStyles = useHelperTextStyles()
-  const { chatList, activeChatIndex, fileUrl } = useReviewStore()
+  const { chatList, activeChatIndex, fileUrl, loadingBtn } = useReviewStore()
 
   const {
     handleSubmit,
@@ -140,17 +142,18 @@ const Chat = ({ submitMessageHandler, chatListRef, activeItemRef, textAreaRef }:
                         )}
                       />
                       {/* <button onClick={() => submitMessageHandler(i)}>post</button> */}
-                      <Button
+                      <LoadingButton
                         className={`submit-btn ${styles.className}`}
                         size='medium'
                         type='submit'
                         variant='contained'
+                        loading={loadingBtn}
                         // onClick={() => }
                       >
                         Post
-                      </Button>
+                      </LoadingButton>
                     </Stack>
-                  )}{' '}
+                  )}
                 </List>
               </Grid>
               <Grid item lg={12}>

@@ -14,7 +14,7 @@ const SearchTab = () => {
     setValue(event.target.value)
     setTimeout(() => {
       router.push({
-        pathname: '/item/list',
+        pathname: '/items/list',
         query: {
           ...router.query,
           keyword: event.target.value,

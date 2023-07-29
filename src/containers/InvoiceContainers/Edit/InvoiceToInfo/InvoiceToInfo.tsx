@@ -5,9 +5,14 @@ import UserInfo from 'src/@core/components/Invoice/UserInfoSelect/UserInfo'
 import BillingInfo from 'src/@core/components/BillingInfo/BillingInfo'
 import { useContext } from 'react'
 import { InvoiceEditContext } from '..'
+import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interface'
 
 const InvoiceTo = () => {
-  const { isLoadingScreen } = useContext(InvoiceEditContext) as { isLoadingScreen: boolean }
+  const { isLoadingScreen, invoice_detail } = useContext(InvoiceEditContext) as {
+    isLoadingScreen: boolean
+    invoice_detail: IInvoiceDetailData
+  }
+  console.log('invoice_detail', invoice_detail)
 
   return (
     <Box padding={3} borderColor='#808080' borderTop={1} mt={2}>
@@ -18,7 +23,7 @@ const InvoiceTo = () => {
           <UserInfo isLoading={isLoadingScreen} />
         </Grid>
         <Grid item sm={4} md={4} lg={4}>
-          <BillingInfo />
+          <BillingInfo imgUrl={invoice_detail?.qr_code} />
         </Grid>
       </Grid>
     </Box>

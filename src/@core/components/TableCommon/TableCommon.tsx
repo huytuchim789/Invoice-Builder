@@ -55,7 +55,7 @@ const TableCommon = ({
     <TableCommonContext.Provider value={{ headerData, data, checkable, isLoading }}>
       <TableContainer component={Paper}>
         <Table>
-          <TableCommonHeader />
+          <TableCommonHeader selectedKey={selectedKey} />
           {isLoading ? (
             <TableBody>
               <TableRow>

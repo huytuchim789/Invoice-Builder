@@ -131,7 +131,8 @@ export const InvoiceEdit = () => {
       items: getItemsFormatData(items),
       total: subTotal + (subTotal * 21) / 100,
       customer: userInfoParse,
-      business: info
+      business: info,
+      qr_code: invoiceDetailQuery?.data?.qr_code
     }
   }, [user, startDate, endDate, note, items, user_id, info])
 

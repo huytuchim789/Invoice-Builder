@@ -10,6 +10,8 @@ export type Store = {
   setFileUrl: (fileUrl: string) => void
   loading: boolean
   setLoading: (loading: boolean) => void
+  loadingBtn: boolean
+  setLoadingBtn: (loading: boolean) => void
 }
 
 export const useReviewStore = create<Store>(set => ({
@@ -28,5 +30,9 @@ export const useReviewStore = create<Store>(set => ({
   loading: false,
   setLoading(loading) {
     set({ loading })
+  },
+  loadingBtn: false,
+  setLoadingBtn(loading) {
+    set({ loadingBtn: loading })
   }
 }))

@@ -1,4 +1,5 @@
 import { Box, Grid, Typography } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
 interface Props {
   title: string
@@ -22,18 +23,15 @@ const GridBill = ({ title, content, ...props }: Props) => {
     </Grid>
   )
 }
-
-const BillingInfo = () => {
-  return (
-    <Box>
-      <Typography>Bill to</Typography>
-      <GridBill title='Total Due' content='$ 12,110.55' />
-      <GridBill title='Bank name' content='American Bank' />
-      <GridBill title='Country' content='United States' />
-      <GridBill title='IBAN' content='ETD95476213874685' />
-      <GridBill title='SWIFT code' content='BR91905' />
-    </Box>
-  )
+const ImgStyled = styled('img')(({ theme }) => ({
+  width: 120,
+  height: 120,
+  objectFit: 'cover',
+  marginRight: theme.spacing(6.25),
+  borderRadius: theme.shape.borderRadius
+}))
+const BillingInfo = ({ imgUrl }: { imgUrl: string }) => {
+  return imgUrl ? <ImgStyled src={imgUrl} /> : <></>
 }
 
 export default BillingInfo
