@@ -1,7 +1,7 @@
 import { ISubscriptionResponse } from 'src/@core/models/api/payment/subscription.interface'
 import create from 'zustand'
 
-type ISetting = {
+export type ISetting = {
   name: string
   email: string
   address: string

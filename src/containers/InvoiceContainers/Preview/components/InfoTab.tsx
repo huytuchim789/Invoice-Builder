@@ -3,6 +3,7 @@ import { Box, Grid, Typography } from '@mui/material'
 import { InvoiceDetailContext } from '..'
 import { IInvoiceDetailData } from 'src/@core/models/api/invoice/invoice.interface'
 import BaseGridComponent from '../atoms/BaseGridComponent'
+import AddressInfo from 'src/@core/components/Invoice/AddressInfo'
 
 const InfoTab = () => {
   const { invoice_detail } = useContext(InvoiceDetailContext) as { invoice_detail: IInvoiceDetailData }
@@ -13,13 +14,7 @@ const InfoTab = () => {
         <Grid item lg={7} md={7} sm={7} xs={12}>
           <Typography variant='h6'>Invoice</Typography>
           <Box marginTop={4}>
-            <Typography fontSize={12} color={'#808080'}>
-              Office 149, 450 South Brand Brooklyn
-              <br />
-              San Diego County, CA 91905, USA
-              <br />
-              +1 (123) 456 7891, +44 (876) 543 2198
-            </Typography>
+            <AddressInfo />
           </Box>
         </Grid>
         <Grid item lg={5} md={5} sm={5} xs={12}>

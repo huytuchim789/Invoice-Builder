@@ -100,6 +100,7 @@ export interface IInvoiceDetailLocalData {
     name?: string
     phone?: string
   }
+  qr_code?: string
 }
 
 export interface IInvoiceDetailDataResponse {

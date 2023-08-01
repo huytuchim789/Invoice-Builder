@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from '@react-pdf/renderer'
+import { StyleSheet, Text, View, Image } from '@react-pdf/renderer'
 import { InvoiceBoldPdfContext } from '../BoldFormat'
 import { IInvoiceDetailLocalData } from 'src/@core/models/api/invoice/invoice.interface'
 import { useContext } from 'react'
@@ -35,12 +35,10 @@ const InvoiceToInfo = () => {
         </View>
       </View>
       <View style={{ flex: 1 }}>
-        <View style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <BillInfoComponent title='Total Due' content='$ 12,110.55' />
-          <BillInfoComponent title='Bank Name' content='American Bank' />
-          <BillInfoComponent title='Country' content='United States' />
-          <BillInfoComponent title='IBAN' content='ETD95476213874685' />
-          <BillInfoComponent title='Swift Code' content='BR91905' />
+        <View>
+          {invoice_detail?.qr_code && (
+            <Image src={invoice_detail?.qr_code} style={{ width: 90, height: 90, objectFit: 'cover' }} />
+          )}
         </View>
       </View>
     </View>
