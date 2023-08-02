@@ -82,7 +82,7 @@ const ItemTab = () => {
                   )
                 })}
                 <TableCell>
-                  <Typography>{item.price * item.pivot.cost * item.pivot.hours}</Typography>
+                  <Typography>{(item.price * item.pivot.cost * item.pivot.hours).toFixed(2)}</Typography>
                 </TableCell>
               </TableRow>
             )

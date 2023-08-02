@@ -6,6 +6,7 @@ import SideBar from './SideBar'
 import { useState } from 'react'
 import InoviceLightFormatPdf from '../../InvoicePDF/LightFormat/LightFormat'
 import { useSettingPdfStore } from '../../store/setting'
+import { useSettingStore } from 'src/views/account-settings/store'
 
 interface Props {
   isOpen: boolean
@@ -24,7 +25,7 @@ const InvoicePreviewModal = ({ isOpen, handleCloseModal, invoice_detail }: Props
     format: 'bold',
     font: 'AlegreyaSans'
   })
-
+  const { info } = useSettingStore()
   return (
     <Dialog open={isOpen} onClose={handleCloseModal} TransitionComponent={Fade} fullWidth maxWidth='md'>
       <DialogTitle>Invoice Preview</DialogTitle>
@@ -34,9 +35,9 @@ const InvoicePreviewModal = ({ isOpen, handleCloseModal, invoice_detail }: Props
           <Box>
             <PDFViewer style={{ width: 400, height: 530 }} showToolbar={false}>
               {setting.format === 'bold' ? (
-                <InvoiceBoldFormatPDF invoice_detail={invoice_detail} font={setting.font} />
+                <InvoiceBoldFormatPDF invoice_detail={invoice_detail} settingInfo={info} font={setting.font} />
               ) : (
-                <InoviceLightFormatPdf invoice_detail={invoice_detail} font={setting.font} />
+                <InoviceLightFormatPdf invoice_detail={invoice_detail} settingInfo={info} font={setting.font} />
               )}
             </PDFViewer>
           </Box>

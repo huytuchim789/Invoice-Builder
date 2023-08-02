@@ -12,7 +12,6 @@ const InvoiceTo = () => {
     isLoadingScreen: boolean
     invoice_detail: IInvoiceDetailData
   }
-  console.log('invoice_detail', invoice_detail)
 
   return (
     <Box padding={3} borderColor='#808080' borderTop={1} mt={2}>
