@@ -3,12 +3,24 @@ import { IItemsData } from 'src/@core/models/api/invoice/invoice.interface'
 import { create } from 'zustand'
 
 export interface IItemContent {
+  id: string
   name: string
+  price: number
+  created_at: string
+  updated_at: string
+  organization_id: string
+  pivot: Pivot
+}
+
+export interface Pivot {
+  invoice_id: string
+  item_id: string
+  id: string
   description: string
   cost: number
   hours: number
-  price: number
-  value: string
+  created_at: any
+  updated_at: any
 }
 
 export interface IStore {

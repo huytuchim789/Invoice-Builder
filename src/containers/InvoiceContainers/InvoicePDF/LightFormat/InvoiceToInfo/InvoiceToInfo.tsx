@@ -34,7 +34,7 @@ const InvoiceToInfo = () => {
           <Text style={{ fontSize: 11 }}>{invoice_detail.customer.email}</Text>
         </View>
       </View>
-      <View style={{ flex: 1 }}>
+      {/* <View style={{ flex: 1 }}>
         <View style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <BillInfoComponent title='Total Due' content='$ 12,110.55' />
           <BillInfoComponent title='Bank Name' content='American Bank' />
@@ -42,7 +42,7 @@ const InvoiceToInfo = () => {
           <BillInfoComponent title='IBAN' content='ETD95476213874685' />
           <BillInfoComponent title='Swift Code' content='BR91905' />
         </View>
-      </View>
+      </View> */}
     </View>
   )
 }

@@ -219,7 +219,7 @@ const NotificationDropdown = () => {
               <MenuItem
                 onClick={() => handleMarkReadNoti(noti.id, noti.read_at)}
                 key={noti.id}
-                style={{ backgroundColor: noti.read_at === null ? '#808080' : '#FFFFFF' }}
+                style={{ backgroundColor: noti.read_at === null ? '#ccc' : '#FFFFFF' }}
               >
                 <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
                   <Avatar alt='Flora' src={noti.data.sender.avatar_url} />

@@ -104,13 +104,14 @@ const MessengerDropdown = () => {
   // ** Call Data
   const { data: messengers, isError, isLoading } = useMessengers()
   const checkUnSeenMessage = (item: Daum) => {
-    return !item.messages[item.messages.length - 1].seen.map(s => s?.email).includes(user?.email)
+    return !item.messages[item.messages.length - 1]?.seen.map(s => s?.email).includes(user?.email)
   }
   const countUnRead = useMemo(() => {
+    
     return messengers?.data.filter((item: Daum) => {
       return checkUnSeenMessage(item)
     }).length
-  }, [user])
+  }, [user,messengers])
 
   useEffect(() => {
     const channel = pusher.subscribe(`${user?.email}`)
@@ -124,6 +125,8 @@ const MessengerDropdown = () => {
       })
       data?.messages[0]?.sender?.email !== user?.email &&
         snackbar.warning(`You Got new Message from  ${data?.messages[0]?.sender?.name} `)
+      console.log(oldData);
+      
       queryClient.setQueryData([QUERY_INVOICE_KEYS.MESSENGER_LIST], {
         ...oldData
       })
