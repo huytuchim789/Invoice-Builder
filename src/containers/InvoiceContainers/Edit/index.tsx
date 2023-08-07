@@ -193,7 +193,7 @@ export const InvoiceEdit = () => {
             itemsList.splice(index, 0, {
               ...data.items[index],
               item_id: item.item_id,
-              quantity: item.cost,
+              quantity: data.items[index].cost,
               pivot_id: item.pivot_id,
               isDeleted: 1
             })
