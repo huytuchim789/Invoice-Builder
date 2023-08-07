@@ -198,7 +198,13 @@ export const InvoiceEdit = () => {
               isDeleted: 1
             })
           } else {
-            itemsList[index] = { ...item, item_id: item.item_id, pivot_id: item.pivot_id, isDeleted: 0 }
+            itemsList[index] = {
+              ...item,
+              quantity: item.cost,
+              item_id: item.item_id,
+              pivot_id: item.pivot_id,
+              isDeleted: 0
+            }
           }
         }
       })
