@@ -181,12 +181,19 @@ export const InvoiceEdit = () => {
 
       itemsListCurrent.forEach((item: any, index: number) => {
         if (!data.items[index]) {
-          itemsList[index] = { ...item, item_id: item.item_id, pivot_id: item.pivot_id, isDeleted: 1 }
+          itemsList[index] = {
+            ...item,
+            quantity: item.cost,
+            item_id: item.item_id,
+            pivot_id: item.pivot_id,
+            isDeleted: 1
+          }
         } else {
           if (item.value !== data.items[index].value) {
             itemsList.splice(index, 0, {
               ...data.items[index],
               item_id: item.item_id,
+              quantity: item.cost,
               pivot_id: item.pivot_id,
               isDeleted: 1
             })
