@@ -173,7 +173,12 @@ export const InvoiceEdit = () => {
 
   const handleSaveInvoice: SubmitHandler<any> = data => {
     if (instance.blob !== null) {
-      const itemsList: any[] = [...data.items]
+      const itemsList: any[] = [
+        ...data.items.map((item: any) => ({
+          ...item,
+          quantity: item.cost
+        }))
+      ]
 
       const mailSubject = methodSending.method === 'mail' ? emailContent : { subject: null, message: null }
       const userInfoParse = JSON.parse(user_id || '{}')
@@ -193,7 +198,7 @@ export const InvoiceEdit = () => {
             itemsList.splice(index, 0, {
               ...data.items[index],
               item_id: item.item_id,
-              quantity: data.items[index].cost,
+              quantity: item.cost,
               pivot_id: item.pivot_id,
               isDeleted: 1
             })
