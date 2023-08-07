@@ -35,7 +35,6 @@ export const saveInvoice = (data: IInvoiceInfo) => {
   formData.append('customer_id', data.customer_id)
   formData.append('sale_person', data.sale_person)
   formData.append('total', data.total)
-  formData.append('file', data.file, 'file.pdf')
   formData.append('send_method', data.send_method)
   if (data.send_method === 'mail') {
     formData.append('subject', data.subject ?? '')

@@ -96,7 +96,7 @@ export const getItemsFormatData = (items: any) => {
       quantity: item.cost,
       hours: item.hours,
       description: item.description,
-      cost: valueConvert.price * item.hours
+      cost: valueConvert.price * item.hours * item.cost
     }
   })
 }

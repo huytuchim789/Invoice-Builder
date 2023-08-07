@@ -39,7 +39,6 @@ export const editInvoice = (data: IInvoiceInfo) => {
   formData.append('customer_id', data.customer_id)
   formData.append('sale_person', data.sale_person)
   formData.append('total', data.total)
-  formData.append('file', data.file, 'file.pdf')
   formData.append('send_method', data.send_method)
   formData.append('subject', data.subject ?? '')
   formData.append('message', data.message ?? '')

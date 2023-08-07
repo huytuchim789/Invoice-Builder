@@ -3,10 +3,12 @@ import { PDFViewer } from '@react-pdf/renderer'
 import { IInvoiceDetailLocalData } from 'src/@core/models/api/invoice/invoice.interface'
 import InvoiceBoldFormatPDF from '../../InvoicePDF/BoldFormat/BoldFormat'
 import SideBar from './SideBar'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import InoviceLightFormatPdf from '../../InvoicePDF/LightFormat/LightFormat'
 import { useSettingPdfStore } from '../../store/setting'
 import { useSettingStore } from 'src/views/account-settings/store'
+import extendedDayJs from 'src/@core/utils/dayjs'
+import { IItemContent } from 'src/@core/components/Invoice/ItemInfo/store'
 
 interface Props {
   isOpen: boolean
@@ -26,6 +28,28 @@ const InvoicePreviewModal = ({ isOpen, handleCloseModal, invoice_detail }: Props
     font: 'AlegreyaSans'
   })
   const { info } = useSettingStore()
+
+  const invoiceDetailPdf = useMemo(() => {
+    if (!invoice_detail) return null
+
+    return {
+      ...invoice_detail,
+      updated_at: extendedDayJs(invoice_detail.created_date).format('YYYY-MM-DD'),
+      created_at: extendedDayJs(invoice_detail.created_at).format('YYYY-MM-DD'),
+      issued_date: extendedDayJs(invoice_detail.issued_date).format('YYYY-MM-DD'),
+      created_date: extendedDayJs(invoice_detail.created_at).format('YYYY-MM-DD'),
+      items: invoice_detail.items.map((item: IItemContent) => {
+        return {
+          cost: item.price,
+          hours: item.pivot?.hours,
+          quantity: item.pivot?.cost,
+          price: 0,
+          name: item.name,
+          description: item.pivot?.description
+        }
+      })
+    }
+  }, [invoice_detail])
   return (
     <Dialog open={isOpen} onClose={handleCloseModal} TransitionComponent={Fade} fullWidth maxWidth='md'>
       <DialogTitle>Invoice Preview</DialogTitle>
@@ -35,9 +59,9 @@ const InvoicePreviewModal = ({ isOpen, handleCloseModal, invoice_detail }: Props
           <Box>
             <PDFViewer style={{ width: 400, height: 530 }} showToolbar={false}>
               {setting.format === 'bold' ? (
-                <InvoiceBoldFormatPDF invoice_detail={invoice_detail} settingInfo={info} font={setting.font} />
+                <InvoiceBoldFormatPDF invoice_detail={invoiceDetailPdf} settingInfo={info} font={setting.font} />
               ) : (
-                <InoviceLightFormatPdf invoice_detail={invoice_detail} settingInfo={info} font={setting.font} />
+                <InoviceLightFormatPdf invoice_detail={invoiceDetailPdf} settingInfo={info} font={setting.font} />
               )}
             </PDFViewer>
           </Box>
