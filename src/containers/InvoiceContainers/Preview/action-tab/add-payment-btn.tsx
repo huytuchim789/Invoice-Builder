@@ -28,7 +28,7 @@ export const AddPaymentButton = () => {
       console.error(error)
     }
   }
-  return !invoiceData.is_paid ? (
+  return invoiceData.is_paid ? (
     <Button
       fullWidth
       variant='contained'

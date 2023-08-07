@@ -101,6 +101,7 @@ export interface IInvoiceDetailLocalData {
     phone?: string
   }
   qr_code?: string
+  code:string
 }
 
 export interface IInvoiceDetailDataResponse {

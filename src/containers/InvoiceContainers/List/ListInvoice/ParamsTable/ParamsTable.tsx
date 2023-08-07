@@ -22,6 +22,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import DraftsIcon from '@mui/icons-material/Drafts'
 import { downloadInvoices } from 'src/@core/utils/api/invoice/downloadInvoice'
+import { globalStore } from 'src/@core/hocs/global-store'
 
 const ActionButton = styled(Box)({
   padding: '10px',
@@ -33,6 +34,7 @@ const ActionButton = styled(Box)({
 })
 const ParamsTable = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const { user, setUser } = globalStore(state => state.userStore)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -82,10 +84,10 @@ const ParamsTable = () => {
   }
   const { mutate, isLoading: isSendLoading } = useMutation({
     mutationFn: (): Promise<any> => sendEmails(),
-    onSuccess: (data: { data: { message: string } }) => {
+    onSuccess: (data: { data: { message: string[] } }) => {
       queryClient.invalidateQueries([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION])
 
-      snackbar.success(data.data.message)
+      snackbar.success("Send Invoice Successfully")
     },
     onError: (err: { response: { data: { message: string } } }) => {
       const { response } = err
@@ -96,8 +98,10 @@ const ParamsTable = () => {
 
   const { mutate: mutatePayInvoice, isSuccess: isPayInvoice } = useMutation({
     mutationFn: (): Promise<any> => payInvoicesApi(),
-    onSuccess: (data: { data: { message: string } }) => {
-      snackbar.success(data.data.message)
+    onSuccess: (data: { message: string }) => {
+      console.log(data);
+      
+      snackbar.success(data.message)
     },
     onError: (err: { response: { data: { message: string } } }) => {
       const { response } = err
@@ -209,7 +213,7 @@ const ParamsTable = () => {
             </Popover>
           </>
         )}
-        <Button variant='contained' onClick={() => router.push('/invoice/add')}>
+        <Button variant='contained' onClick={() => router.push('/invoice/add')} disabled={user?.role!=='user'}>
           Create Invoice
         </Button>
 
