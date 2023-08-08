@@ -19,7 +19,7 @@ const BusinessInfo = () => {
     invoice_detail: IInvoiceDetailLocalData
     settingInfo: ISetting
   }
-  // const { info } = useSettingStore()
+
   return settingInfo ? (
     <View style={infoTabstyle.content}>
       <View style={{ flex: 1 }}>

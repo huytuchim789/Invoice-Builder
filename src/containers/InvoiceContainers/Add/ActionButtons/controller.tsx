@@ -18,7 +18,7 @@ export function useInvoiceDetailStoreData() {
       issued_date: dateInfo.date.end,
       created_date: dateInfo.date.start,
       note: noteInfo.note,
-      tax: 21,
+      tax: 8,
       sale_person: user?.name,
       customer_id: userSelectInfo.user.id,
       items: itemInfo.itemContent,

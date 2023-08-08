@@ -125,11 +125,11 @@ export const InvoiceEdit = () => {
       issued_date: extendedDayJs(endDate).format('YYYY-MM-DD'),
       created_date: extendedDayJs(startDate).format('YYYY-MM-DD'),
       note: note,
-      tax: 21,
+      tax: 8,
       sale_person: user?.name,
       customer_id: userInfoParse.id,
       items: getItemsFormatData(items),
-      total: subTotal + (subTotal * 21) / 100,
+      total: subTotal + (subTotal * 8) / 100,
       customer: userInfoParse,
       business: info,
       qr_code: invoiceDetailQuery?.data?.qr_code
@@ -173,7 +173,12 @@ export const InvoiceEdit = () => {
 
   const handleSaveInvoice: SubmitHandler<any> = data => {
     if (instance.blob !== null) {
-      const itemsList: any[] = [...data.items]
+      const itemsList: any[] = [
+        ...data.items.map((item: any) => ({
+          ...item,
+          quantity: item.cost
+        }))
+      ]
 
       const mailSubject = methodSending.method === 'mail' ? emailContent : { subject: null, message: null }
       const userInfoParse = JSON.parse(user_id || '{}')
@@ -181,17 +186,30 @@ export const InvoiceEdit = () => {
 
       itemsListCurrent.forEach((item: any, index: number) => {
         if (!data.items[index]) {
-          itemsList[index] = { ...item, item_id: item.item_id, pivot_id: item.pivot_id, isDeleted: 1 }
+          itemsList[index] = {
+            ...item,
+            quantity: item.cost,
+            item_id: item.item_id,
+            pivot_id: item.pivot_id,
+            isDeleted: 1
+          }
         } else {
           if (item.value !== data.items[index].value) {
             itemsList.splice(index, 0, {
               ...data.items[index],
               item_id: item.item_id,
+              quantity: item.cost,
               pivot_id: item.pivot_id,
               isDeleted: 1
             })
           } else {
-            itemsList[index] = { ...item, item_id: item.item_id, pivot_id: item.pivot_id, isDeleted: 0 }
+            itemsList[index] = {
+              ...item,
+              quantity: item.cost,
+              item_id: item.item_id,
+              pivot_id: item.pivot_id,
+              isDeleted: 0
+            }
           }
         }
       })
@@ -201,7 +219,7 @@ export const InvoiceEdit = () => {
         issued_date: data.endDate,
         created_date: data.startDate,
         note: data.note,
-        tax: 21,
+        tax: 8,
         sale_person: user?.name,
         customer_id: userInfoParse.id,
         items: itemsList,

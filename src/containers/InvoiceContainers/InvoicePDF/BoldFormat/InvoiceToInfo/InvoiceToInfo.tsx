@@ -1,8 +1,7 @@
+import { useContext } from 'react'
 import { StyleSheet, Text, View, Image } from '@react-pdf/renderer'
 import { InvoiceBoldPdfContext } from '../BoldFormat'
 import { IInvoiceDetailLocalData } from 'src/@core/models/api/invoice/invoice.interface'
-import { useContext } from 'react'
-import BillInfoComponent from '../../components/BillInfoComponent'
 
 const invoiceToInfostyle = StyleSheet.create({
   content: {

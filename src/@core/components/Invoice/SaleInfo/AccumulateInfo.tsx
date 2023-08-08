@@ -40,10 +40,10 @@ const AccumulateInfo = () => {
   return (
     <React.Fragment>
       <GridAccumulate title='Subtotal' content={`${subTotal}`} />
-      <GridAccumulate title='Tax' content='21%' />
+      <GridAccumulate title='Tax' content='8%' />
       <GridAccumulate
         title='Total'
-        content={`${subTotal + (subTotal * 21) / 100}`}
+        content={`${subTotal + (subTotal * 8) / 100}`}
         style={{ borderTop: 1, borderColor: '#808080' }}
       />
     </React.Fragment>

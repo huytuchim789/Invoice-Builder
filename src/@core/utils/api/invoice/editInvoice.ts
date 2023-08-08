@@ -3,6 +3,7 @@ import extendedDayJs from '../../dayjs'
 
 export interface IInvoiceItemInfo {
   name: string
+  quantity: number
   cost: number
   hours: number
   price: number
@@ -25,6 +26,7 @@ export interface IInvoiceInfo {
   total: string
   file: Blob
   send_method: string
+  quantity: number
   subject: string | null
   message: string | null
 }
@@ -39,7 +41,6 @@ export const editInvoice = (data: IInvoiceInfo) => {
   formData.append('customer_id', data.customer_id)
   formData.append('sale_person', data.sale_person)
   formData.append('total', data.total)
-  formData.append('file', data.file, 'file.pdf')
   formData.append('send_method', data.send_method)
   formData.append('subject', data.subject ?? '')
   formData.append('message', data.message ?? '')
@@ -59,6 +60,8 @@ export const editInvoice = (data: IInvoiceInfo) => {
     formData.append(`items[${i}][item_id]`, id)
     formData.append(`items[${i}][name]`, name)
     formData.append(`items[${i}][cost]`, String(cost))
+    formData.append(`items[${i}][quantity]`, String(data.items[i].quantity))
+
     formData.append(`items[${i}][description]`, data.items[i].description)
     formData.append(`items[${i}][hours]`, String(data.items[i].hours))
     formData.append(`items[${i}][price]`, String(data.items[i].hours * cost))

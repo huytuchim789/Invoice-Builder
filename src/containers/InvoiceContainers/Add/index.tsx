@@ -85,11 +85,11 @@ export const InvoiceAdd = () => {
       issued_date: extendedDayJs(endDate).format('YYYY-MM-DD'),
       created_date: extendedDayJs(startDate).format('YYYY-MM-DD'),
       note: note,
-      tax: 21,
+      tax: 8,
       sale_person: user?.name,
       customer_id: userInfoParse.id,
       items: getItemsFormatData(items),
-      total: subTotal + (subTotal * 21) / 100,
+      total: subTotal + (subTotal * 8) / 100,
       customer: userInfoParse,
       business: info
     }
@@ -138,7 +138,7 @@ export const InvoiceAdd = () => {
             const valueStr = item.value ? item.value : '{}'
             const cost = JSON.parse(valueStr)
 
-            return acc + Number(item.hours) * Number(cost.price ? cost.price : 0)
+            return acc + Number(item.hours) * Number(cost.price ? cost.price : 0) * Number(item.cost ? item.cost : 0)
           }, 0)
         : 0
 
@@ -146,12 +146,11 @@ export const InvoiceAdd = () => {
         issued_date: data.endDate,
         created_date: data.startDate,
         note: data.note,
-        tax: 21,
+        tax: 8,
         sale_person: user?.name,
         customer_id: userInfoParse.id,
         items: data.items,
-        total: String(subTotal + (subTotal * 21) / 100),
-        file: instance.blob,
+        total: String(subTotal + (subTotal * 8) / 100),
         send_method: methodSending.method,
         ...mailSubject
       }
