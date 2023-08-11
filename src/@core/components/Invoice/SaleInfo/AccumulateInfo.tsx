@@ -7,6 +7,8 @@ interface Props {
   content: string
   style?: React.CSSProperties
 }
+const isNumeric = (num: any) =>
+  (typeof num === 'number' || (typeof num === 'string' && num.trim() !== '')) && !isNaN(num as number)
 
 const GridAccumulate = ({ title, content, ...props }: Props) => {
   return (
@@ -18,7 +20,7 @@ const GridAccumulate = ({ title, content, ...props }: Props) => {
       </Grid>
       <Grid item lg={8} md={8} sm={8}>
         <Typography fontSize={14} color={'#808080'} textAlign='right'>
-          {content}
+          {isNumeric(content) ? Number(content)?.toFixed(2) : content}
         </Typography>
       </Grid>
     </Grid>
@@ -43,7 +45,7 @@ const AccumulateInfo = () => {
       <GridAccumulate title='Tax' content='8%' />
       <GridAccumulate
         title='Total'
-        content={`${subTotal + (subTotal * 8) / 100}`}
+        content={`${Number(subTotal + (subTotal * 8) / 100)}`}
         style={{ borderTop: 1, borderColor: '#808080' }}
       />
     </React.Fragment>

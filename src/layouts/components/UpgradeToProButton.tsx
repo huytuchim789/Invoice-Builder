@@ -13,13 +13,14 @@ import CardContent from '@mui/material/CardContent'
 import { usePopper } from 'react-popper'
 import { globalStore } from 'src/@core/hocs/global-store'
 import { isGuest } from 'src/@core/utils/role-check'
+import { useRouter } from 'next/router'
 
 const BuyNowButton = () => {
   // ** States
   const [open, setOpen] = useState<boolean>(false)
   const [popperElement, setPopperElement] = useState(null)
   const [referenceElement, setReferenceElement] = useState(null)
-
+  const router = useRouter()
   //@ts-ignore
   const { user } = globalStore(state => state.userStore)
   const { styles, attributes, update } = usePopper(referenceElement, popperElement, {
@@ -42,7 +43,6 @@ const BuyNowButton = () => {
     >
       <Button
         component='a'
-        target='_blank'
         variant='contained'
         onMouseEnter={handleOpen}
         onMouseLeave={handleClose}
@@ -59,7 +59,7 @@ const BuyNowButton = () => {
       >
         Upgrade To Pro
       </Button>
-      <Fade in={open} timeout={700}>
+      {/* <Fade in={open} timeout={700}>
         <Box
           style={styles.popper}
           ref={setPopperElement}
@@ -107,7 +107,7 @@ const BuyNowButton = () => {
             </CardContent>
           </Paper>
         </Box>
-      </Fade>
+      </Fade> */}
     </Box>
   ) : (
     <></>
