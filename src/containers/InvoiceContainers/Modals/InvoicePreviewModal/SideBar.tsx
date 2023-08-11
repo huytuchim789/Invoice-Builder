@@ -36,7 +36,7 @@ const SideBar = ({ setSetting }: Props) => {
         </RadioGroup>
       </FormControl>
       <FormControl fullWidth>
-        <InputLabel id='demo-simple-select-label'>Font Family</InputLabel>
+        <InputLabel id='demo-simple-select-label'>Font</InputLabel>
         <Select
           labelId='demo-simple-select-label'
           id='demo-simple-select'

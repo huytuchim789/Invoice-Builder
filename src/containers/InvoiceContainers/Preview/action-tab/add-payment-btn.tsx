@@ -17,7 +17,6 @@ export const AddPaymentButton = () => {
     try {
       if (!query?.id) return
       const response = await markAsPaid(query?.id as string)
-      console.log(response.data.data)
 
       queryClient.invalidateQueries([QUERY_INVOICE_KEYS.INVOICE_DETAIL, query?.id])
       queryClient.setQueryData([QUERY_INVOICE_KEYS.INVOICE_DETAIL, query?.id], (previousItem: any | undefined) =>

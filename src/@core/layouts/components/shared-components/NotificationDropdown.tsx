@@ -119,7 +119,6 @@ const NotificationDropdown = () => {
 
     return 0
   }, [noti_list, updateStatus])
-
   useEffect(() => {
     if (user.id) {
       const channel = pusher.subscribe(`private-App.Models.User.${user.id}`)
@@ -228,7 +227,7 @@ const NotificationDropdown = () => {
                     <MenuItemSubtitle variant='body2'>{noti.data.message}</MenuItemSubtitle>
                   </Box>
                   <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                    {dayjs(noti.created_at).utc().local().format('YYYY-MM-DD HH:mm:ss')}
+                    {dayjs(noti.created_at).utc().local().format('YYYY-MM-DD')}
                   </Typography>
                 </Box>
               </MenuItem>

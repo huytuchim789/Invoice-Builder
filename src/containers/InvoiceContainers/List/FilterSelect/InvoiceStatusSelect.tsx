@@ -45,7 +45,7 @@ const InvoiceStatusFilter = () => {
 
   return (
     <FormControl variant='outlined' fullWidth>
-      <InputLabel id='demo-simple-select-label'>{invoiceStatus ? invoiceStatus : 'Invoice Status'}</InputLabel>
+      <InputLabel id='demo-simple-select-label'>{'Invoice Status'}</InputLabel>
       <Select
         label='Invoice Status'
         defaultValue={invoiceStatus}

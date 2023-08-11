@@ -34,7 +34,7 @@ const ActionButton = styled(Box)({
 })
 const ParamsTable = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
-  const { user, setUser } = globalStore(state => state.userStore)
+  const { user } = globalStore(state => state.userStore)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -44,7 +44,6 @@ const ParamsTable = () => {
     setAnchorEl(null)
   }
 
-  const handleExportCustomerData = async () => {}
   const router = useRouter()
   const snackbar = useSnackbarWithContext()
   const queryClient = useQueryClient()
@@ -87,7 +86,7 @@ const ParamsTable = () => {
     onSuccess: (data: { data: { message: string[] } }) => {
       queryClient.invalidateQueries([QUERY_INVOICE_KEYS.EMAIL_TRANSACTION])
 
-      snackbar.success("Send Invoice Successfully")
+      snackbar.success('Send Invoice Successfully')
     },
     onError: (err: { response: { data: { message: string } } }) => {
       const { response } = err
@@ -99,8 +98,6 @@ const ParamsTable = () => {
   const { mutate: mutatePayInvoice, isSuccess: isPayInvoice } = useMutation({
     mutationFn: (): Promise<any> => payInvoicesApi(),
     onSuccess: (data: { message: string }) => {
-      console.log(data);
-      
       snackbar.success(data.message)
     },
     onError: (err: { response: { data: { message: string } } }) => {
@@ -213,7 +210,7 @@ const ParamsTable = () => {
             </Popover>
           </>
         )}
-        <Button variant='contained' onClick={() => router.push('/invoice/add')} disabled={user?.role!=='user'}>
+        <Button variant='contained' onClick={() => router.push('/invoice/add')} disabled={user?.role !== 'user'}>
           Create Invoice
         </Button>
 
