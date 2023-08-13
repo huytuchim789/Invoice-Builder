@@ -37,7 +37,7 @@ const InvoicePreviewModal = ({ isOpen, handleCloseModal, invoice_detail }: Props
       updated_at: extendedDayJs(invoice_detail.created_date).format('YYYY-MM-DD'),
       created_at: extendedDayJs(invoice_detail.created_at).format('YYYY-MM-DD'),
       issued_date: extendedDayJs(invoice_detail.issued_date).format('YYYY-MM-DD'),
-      created_date: extendedDayJs(invoice_detail.created_at).format('YYYY-MM-DD'),
+      created_date: extendedDayJs(invoice_detail.created_date).format('YYYY-MM-DD'),
       items: invoice_detail.items.map((item: IItemContent) => {
         return {
           cost: item.price,
