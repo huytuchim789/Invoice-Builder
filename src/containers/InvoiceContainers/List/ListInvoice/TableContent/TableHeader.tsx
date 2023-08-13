@@ -68,7 +68,7 @@ export const columns: ITableCommonHeader[] = [
     headerName: 'Created At',
     width: 150,
     component: (params: any) => {
-      return <Typography>{extendedDayJs(params.invoice.created_at).format('YYYY-MM-DD')}</Typography>
+      return <Typography>{extendedDayJs(params.invoice.created_date).format('YYYY-MM-DD')}</Typography>
     }
   },
   {

@@ -101,8 +101,8 @@ export const InvoiceEdit = () => {
       setItemsListCurrent(itemsField)
 
       methods.reset({
-        startDate: extendedDayJs(invoiceDetailQuery.data.created_at).toDate(),
-        endDate: extendedDayJs(invoiceDetailQuery.data.updated_at).toDate(),
+        startDate: extendedDayJs(invoiceDetailQuery.data.created_date).toDate(),
+        endDate: extendedDayJs(invoiceDetailQuery.data.issued_date).toDate(),
         note: invoiceDetailQuery.data.note,
         items: itemsField,
         user_id: JSON.stringify(invoiceDetailQuery.data.customer)

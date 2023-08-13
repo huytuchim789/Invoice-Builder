@@ -37,8 +37,8 @@ const BusinessPdfInfo = () => {
           style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}
         >
           <InfoPdfComponent title='Invoice Code' content={invoice_detail.code} />
-          <InfoPdfComponent title='Start Date' content={invoice_detail.created_date} />
-          <InfoPdfComponent title='End Date' content={invoice_detail.issued_date} />
+          <InfoPdfComponent title='Date Issued' content={invoice_detail.created_date} />
+          <InfoPdfComponent title='Due Date' content={invoice_detail.issued_date} />
         </View>
       </View>
     </View>
