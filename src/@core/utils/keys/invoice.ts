@@ -16,5 +16,6 @@ export enum QUERY_INVOICE_KEYS {
   TOTAL_SUM_INVOICE = 'total_sum_invoice',
   TOTAL_SUM_INVOICE_IN_MONTH = 'total_sum_invoice_in_month',
   ANALYTICS_INVOICE = 'analytics_invoice',
-  PAYMENTS_HISTORY = 'payments_history'
+  PAYMENTS_HISTORY = 'payments_history',
+  RECENTLY_PAID_INVOICES = 'recently_paid_invoices'
 }

@@ -12,6 +12,8 @@ import TableContainer from '@mui/material/TableContainer'
 
 // ** Types Imports
 import { ThemeColor } from 'src/@core/layouts/types'
+import { useRecentlyPaidInvoicesData } from 'src/@core/hooks/invoice/useDashboard'
+import { Link } from '@mui/material'
 
 interface RowType {
   age: number
@@ -106,13 +108,16 @@ const rows: RowType[] = [
 
 const statusObj: StatusObj = {
   applied: { color: 'info' },
-  rejected: { color: 'error' },
+  unpaid: { color: 'error' },
   current: { color: 'primary' },
   resigned: { color: 'warning' },
-  professional: { color: 'success' }
+  paid: { color: 'success' }
 }
 
 const DashboardTable = () => {
+  const { data } = useRecentlyPaidInvoicesData()
+  console.log(data)
+
   return (
     <Card>
       <TableContainer>
@@ -120,40 +125,43 @@ const DashboardTable = () => {
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
+              <TableCell>Invoice</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Salary</TableCell>
-              <TableCell>Age</TableCell>
               <TableCell>Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row: RowType) => (
-              <TableRow hover key={row.name} sx={{ '&:last-of-type td, &:last-of-type th': { border: 0 } }}>
-                <TableCell sx={{ py: theme => `${theme.spacing(0.5)} !important` }}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <Typography sx={{ fontWeight: 500, fontSize: '0.875rem !important' }}>{row.name}</Typography>
-                    <Typography variant='caption'>{row.designation}</Typography>
-                  </Box>
-                </TableCell>
-                <TableCell>{row.email}</TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>{row.salary}</TableCell>
-                <TableCell>{row.age}</TableCell>
-                <TableCell>
-                  <Chip
-                    label={row.status}
-                    color={statusObj[row.status].color}
-                    sx={{
-                      height: 24,
-                      fontSize: '0.75rem',
-                      textTransform: 'capitalize',
-                      '& .MuiChip-label': { fontWeight: 500 }
-                    }}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
+            {data &&
+              data.map((row: any) => (
+                <TableRow hover key={row?.name} sx={{ '&:last-of-type td, &:last-of-type th': { border: 0 } }}>
+                  <TableCell sx={{ py: theme => `${theme.spacing(0.5)} !important` }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <Typography sx={{ fontWeight: 500, fontSize: '0.875rem !important' }}>
+                        {row?.customer.name}
+                      </Typography>
+                      <Typography variant='caption'>{row?.customer.email}</Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Link href={`/invoices/preview/${row?.id}`}>{row?.code}</Link>
+                  </TableCell>
+                  <TableCell>{row?.issued_date}</TableCell>
+                  <TableCell>{`${row?.total}$`}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={row?.is_paid ? 'Paid' : 'Unpaid'}
+                      color={statusObj[row?.is_paid ? 'paid' : 'unpaid']?.color}
+                      sx={{
+                        height: 24,
+                        fontSize: '0.75rem',
+                        textTransform: 'capitalize',
+                        '& .MuiChip-label': { fontWeight: 500 }
+                      }}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
