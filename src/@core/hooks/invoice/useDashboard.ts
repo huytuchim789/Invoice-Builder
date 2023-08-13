@@ -15,6 +15,10 @@ const getPaymentsHistory = async () => {
   const { data } = await axiosInstance.get('dashboard/payment-history')
   return data?.data
 }
+const getRecentlyPaidInvoices = async () => { 
+  const { data } = await axiosInstance.get('dashboard/recently-paid-invoices')
+  return data?.data
+}
 export const useTotalSumInvoiceInMonthData = () => {
   return useQuery({
     queryKey: [QUERY_INVOICE_KEYS.TOTAL_SUM_INVOICE_IN_MONTH],
@@ -33,5 +37,12 @@ export const usePaymentsHistoryData = () => {
   return useQuery({
     queryKey: [QUERY_INVOICE_KEYS.PAYMENTS_HISTORY],
     queryFn: () => getPaymentsHistory()
+  })
+}
+
+export const useRecentlyPaidInvoicesData = () => {
+  return useQuery({
+    queryKey: [QUERY_INVOICE_KEYS.RECENTLY_PAID_INVOICES],
+    queryFn: () => getRecentlyPaidInvoices()
   })
 }
