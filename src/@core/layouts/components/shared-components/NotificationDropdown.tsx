@@ -27,6 +27,7 @@ import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { markAllNotiRead } from 'src/@core/utils/api/markAllNotiRead'
 import { globalStore } from 'src/@core/hocs/global-store'
 import { pusher } from 'src/@core/common/pusher'
+import { useRouter } from 'next/router'
 
 dayjs.extend(utc)
 
@@ -96,7 +97,7 @@ const NotificationDropdown = () => {
   const snackbar = useSnackbarWithContext()
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
   const { user } = globalStore((state: any) => state.userStore)
-
+  const router = useRouter()
   // ** States
   const [anchorEl, setAnchorEl] = useState<(EventTarget & Element) | null>(null)
   const [page] = useState<number>(0)
@@ -216,9 +217,13 @@ const NotificationDropdown = () => {
           {noti_list &&
             noti_list.data.map((noti: INotificationListData) => (
               <MenuItem
-                onClick={() => handleMarkReadNoti(noti.id, noti.read_at)}
+                onClick={() => {
+                  handleMarkReadNoti(noti.id, noti.read_at)
+                  noti?.data?.invoice_id && router.replace(`/invoice/review/${noti?.data?.invoice_id}`)
+                }}
                 key={noti.id}
                 style={{ backgroundColor: noti.read_at === null ? '#ccc' : '#FFFFFF' }}
+                
               >
                 <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
                   <Avatar alt='Flora' src={noti.data.sender.avatar_url} />

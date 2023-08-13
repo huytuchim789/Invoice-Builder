@@ -81,7 +81,7 @@ const renderStats = (data: any) => {
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography variant='caption'>{item.title}</Typography>
           <Typography variant='h6'>{`${item?.key === 'total_sum' ? '$' : ''} ${numeral(data?.[item?.key]).format(
-            '0a'
+            item?.key === 'total_sum'?'0.0a':'0.a'
           )}`}</Typography>
         </Box>
       </Box>

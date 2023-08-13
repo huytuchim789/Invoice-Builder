@@ -18,8 +18,8 @@ const InfoTab = () => {
           </Box>
         </Grid>
         <Grid item lg={5} md={5} sm={5} xs={12}>
-          <BaseGridComponent title='Invoice Id' description={invoice_detail.code} />
-          <BaseGridComponent title='Date Issued' description={invoice_detail.created_at} />
+          <BaseGridComponent title='Invoice Code' description={invoice_detail.code} />
+          <BaseGridComponent title='Date Issued' description={invoice_detail.created_date} />
           <BaseGridComponent title='Due Date' description={invoice_detail.issued_date} />
         </Grid>
       </Grid>

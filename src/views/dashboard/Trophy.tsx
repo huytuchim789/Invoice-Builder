@@ -41,7 +41,7 @@ const Trophy = () => {
           Best seller of the month
         </Typography>
         <Typography variant='h5' sx={{ my: 4, color: 'primary.main' }}>
-          {`$ ${numeral(data).format('0a')}`}
+          {`$ ${numeral(data).format('0.0a')}`}
         </Typography>
         <Button size='small' variant='contained'>
           View Sales
