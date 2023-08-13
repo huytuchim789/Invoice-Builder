@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker'
 import { TextField, Typography } from '@mui/material'
 import extendedDayJs from 'src/@core/utils/dayjs'
 import { useDateInfoStore } from './store'
-import { useFormContext } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 
 interface Props {
   status: 'start' | 'end'
@@ -15,24 +15,38 @@ const CustomInput = forwardRef((props, ref) => {
 })
 
 const DatePickerComponent = ({ status }: Props) => {
-  const { date, setDate } = useDateInfoStore()
   const {
-    register,
-    formState: { errors }
+    formState: { errors },
+    control,
+    watch
   } = useFormContext()
+
+  const startDate = watch('startDate')
+  const endDate = watch('endDate')
 
   return (
     <Fragment>
-      <DatePicker
-        selected={extendedDayJs(date[status]).toDate()}
-        minDate={status === 'end' ? extendedDayJs(date.start).toDate() : null}
-        maxDate={extendedDayJs().toDate()}
-        {...register(status === 'start' ? 'startDate' : 'endDate', { required: true })}
-        showYearDropdown
-        showMonthDropdown
-        placeholderText='MM-DD-YYYY'
-        customInput={<CustomInput />}
-        onChange={(date: Date) => setDate(status, extendedDayJs(date).startOf('day').format('YYYY-MM-DD'))}
+      <Controller
+        name={status === 'start' ? 'startDate' : 'endDate'}
+        control={control}
+        render={({ field }) => {
+          const { onChange, ref, value } = field
+
+          return (
+            <DatePicker
+              ref={ref}
+              selected={status === 'start' ? extendedDayJs(startDate).toDate() : extendedDayJs(endDate).toDate()}
+              minDate={status === 'end' ? extendedDayJs(startDate).toDate() : null}
+              maxDate={extendedDayJs().toDate()}
+              value={value}
+              showYearDropdown
+              showMonthDropdown
+              placeholderText='MM-DD-YYYY'
+              customInput={<CustomInput />}
+              onChange={onChange}
+            />
+          )
+        }}
       />
       {errors[status === 'start' ? 'startDate' : 'endDate'] && (
         <Typography color='red'>This field is required</Typography>
