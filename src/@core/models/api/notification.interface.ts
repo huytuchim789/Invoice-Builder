@@ -7,6 +7,7 @@ export interface INotificationListData {
     email_transaction: IEmailTransactionData
     message: string
     sender: IAuthData
+    invoice_id?:string
   }
   id: string
   notifiable_id: string

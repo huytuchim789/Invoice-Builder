@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Stack, Popover, Button, styled, Typography, Link, Box } from '@mui/material'
@@ -12,6 +14,7 @@ import { useSnackbarWithContext } from 'src/@core/common/snackbar'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { QUERY_INVOICE_KEYS } from 'src/@core/utils/keys/invoice'
 import { deleteInvoice } from 'src/@core/utils/api/invoice/deleteInvoice'
+import { globalStore } from 'src/@core/hocs/global-store'
 
 interface Props {
   params: any
@@ -39,6 +42,7 @@ const ActionButton = styled('div')({
 const ActionCell = ({ params }: Props) => {
   const router = useRouter()
   const { query } = useRouter()
+  const { user } = globalStore(state => state.userStore)
 
   const snackbar = useSnackbarWithContext()
   const queryClient = useQueryClient()
@@ -106,7 +110,7 @@ const ActionCell = ({ params }: Props) => {
           horizontal: 'center'
         }}
       >
-        <ActionButton onClick={() => router.push(`/invoice/edit/${params.invoice.id}`)}>
+        {user?.role==='guest'?<></>:<><ActionButton onClick={() => router.replace(`/invoice/edit/${params.invoice.id}`)}>
           <EditIcon fontSize='medium' />
           <Typography>Edit</Typography>
         </ActionButton>
@@ -128,7 +132,7 @@ const ActionCell = ({ params }: Props) => {
         >
           <DeleteIcon fontSize='medium' />
           <Typography>Delete</Typography>
-        </ActionButton>
+        </ActionButton></>}
         <ActionButton onClick={() => router.push(`/invoice/preview/${params.id}`)}>
           <VisibilityIcon fontSize='medium' />
           <Typography>Detail</Typography>

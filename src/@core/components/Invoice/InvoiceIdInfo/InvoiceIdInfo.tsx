@@ -5,7 +5,7 @@ import { useInvoiceIdStore } from './store'
 const InvoiceIdInfo = () => {
   const { invoiceId } = useInvoiceIdStore()
 
-  return <GridComponent content='Invoice ID' component={<Typography>{invoiceId}</Typography>} />
+  return <GridComponent content='Invoice Code' component={<Typography>{invoiceId}</Typography>} />
 }
 
 export default InvoiceIdInfo
